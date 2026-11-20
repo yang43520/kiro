@@ -181,9 +181,9 @@ def check_single(path, tax_path):
         mm = re.search(pat, topic)
         if mm:
             err(f"正文里出现了{label}：“{mm.group(0)}”")
-    mm = re.search(r"Poly ?Haven|BlenderKit|Megascans|Quixel|Sketchfab|KitBash|素材库|HDRI|扫描素材|现成的?模型|模型资产", topic)
+    mm = re.search(r"BlenderKit|Sketchfab|KitBash|素材库|HDRI|环境贴图|扫描模型|现成的?模型|模型资产", topic)
     if mm:
-        err(f"正文里出现了外部素材：“{mm.group(0)}”（项目只允许插件，不允许素材）")
+        err(f"正文里出现了外部素材：“{mm.group(0)}”（项目只允许插件和贴图，不允许其他素材）")
     md = re.search(r"约\s*([\d.]+)\s*秒", first)
     dur = float(md.group(1)) if md else None
     if dur is None:
