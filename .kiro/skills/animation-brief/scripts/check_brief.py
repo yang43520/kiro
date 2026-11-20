@@ -181,7 +181,8 @@ def check_single(path, tax_path):
         mm = re.search(pat, topic)
         if mm:
             err(f"正文里出现了{label}：“{mm.group(0)}”")
-    mm = re.search(r"BlenderKit|Sketchfab|KitBash|素材库|HDRI|环境贴图|扫描模型|现成的?模型|模型资产", topic)
+    positive = re.sub(r"(不使用|不能使用|不能用|不用|不能出现|禁止使用|禁止|不导入|不能导入)[^；。]*", "", topic)
+    mm = re.search(r"BlenderKit|Sketchfab|KitBash|素材库|HDRI|环境贴图|扫描模型|现成的?模型|模型资产", positive)
     if mm:
         err(f"正文里出现了外部素材：“{mm.group(0)}”（项目只允许插件和贴图，不允许其他素材）")
     mm = re.search(r"Hard ?Ops|Boxcutter|Launch Control|Auto-Rig Pro|The Grove|Geo-Scatter|RBDLab|Simply Cloth|Physical Starlight|SceneCity|Photographer|Gaffer|FLIP Fluids|Botaniq|DECALmachine|KitOps", topic)
