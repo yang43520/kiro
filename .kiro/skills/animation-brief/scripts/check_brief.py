@@ -164,6 +164,16 @@ def check_single(path, tax_path):
     else:
         if f"以下是《{m.group(1)}》：" not in topic:
             err(f"缺少“以下是《{m.group(1)}》：”这一句，剧本正文要接在它后面")
+        else:
+            sp = os.path.join(os.path.dirname(path), f"{m.group(1)}.md")
+            if not os.path.exists(sp):
+                err(f"缺少只有剧本的文件 {m.group(1)}.md")
+            else:
+                st = read(sp)
+                body = t.split(f"以下是《{m.group(1)}》：", 1)[1].strip()
+                expect = f"# {m.group(1)}\n\n{body}"
+                if st.strip() != expect.strip():
+                    err(f"{m.group(1)}.md 的内容和主文件里的剧本正文不一致，需要重新同步")
     for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
                        (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
                        (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
@@ -217,6 +227,9 @@ def main():
         tax_path = args[args.index("--taxonomy") + 1]
     base = os.path.basename(brief_path)
     if not base.endswith("_制作需求.md"):
+        if base.endswith("剧本.md") and os.path.exists(os.path.join(os.path.dirname(brief_path), base[:-5] + ".md")):
+            warn("请检查主文件（<标题>.md），剧本文件会随主文件一起核对")
+            brief_path = os.path.join(os.path.dirname(brief_path), base[:-5] + ".md")
         check_single(brief_path, tax_path)
         return
     if not base.endswith("_制作需求.md"):
