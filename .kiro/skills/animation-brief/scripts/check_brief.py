@@ -108,6 +108,116 @@ def section(text, start, end=None):
     return s
 
 
+
+TOPIC_H = "## 考题目（Prompt、剧本）"
+TP_H = "## 考点"
+
+
+def check_tp_section(sec, tp_path):
+    tp = {}
+    for r in table_rows(section(open(tp_path, encoding="utf-8-sig").read(), "## 考点表", "## 档位配方")):
+        if len(r) >= 4 and r[0].isdigit():
+            tp[r[0]] = (r[2], r[3])
+    trs = [r for r in table_rows(sec) if r and r[0].isdigit()]
+    if not trs:
+        err("「考点」里没有考点")
+    grades, ids = [], []
+    for r in trs:
+        if len(r) < 5:
+            err(f"考点行应有 5 列：{r}"); continue
+        if r[0] not in tp:
+            err(f"考点编号 {r[0]} 不在考点表中"); continue
+        name, g = tp[r[0]]
+        if r[1] != name:
+            err(f"考点 {r[0]} 的名称应为“{name}”，现在是“{r[1]}”")
+        if r[2] != g:
+            err(f"考点 {r[0]} 的分级应为 {g}，现在是 {r[2]}")
+        grades.append(g); ids.append(r[0])
+    mt = re.search(r"\*\*题目档位\*\*[：:]\s*(基准档|进阶档|上限档)", sec)
+    if not mt:
+        err("缺少“题目档位”（基准档/进阶档/上限档）")
+    elif grades:
+        ok, why = recipe_ok(mt.group(1), grades)
+        if not ok:
+            err(f"考点组合不符合{mt.group(1)}的配方：{why}")
+    if "**耦合链**" not in sec:
+        err("缺少“耦合链”说明")
+    mg = re.search(r"\*\*最高分级\*\*[：:]\s*(L\d)", sec)
+    if not mg:
+        err("缺少“最高分级”")
+    elif grades and mg.group(1) != max(grades):
+        err(f"最高分级应为 {max(grades)}，现在写的是 {mg.group(1)}")
+    return tp, ids
+
+
+def check_single(path, tax_path):
+    t = read(path)
+    if TOPIC_H not in t:
+        err(f"缺少“{TOPIC_H}”一节")
+        report(); return
+    topic = section(t, TOPIC_H, TP_H)
+    paras = [x.strip() for x in topic.split("\n\n") if x.strip()]
+    first = paras[0] if paras else ""
+    m = re.match(r"基于《(.+?剧本)》，用 Blender 5\.0\.0", first)
+    if not m:
+        err("开头应写成“基于《X剧本》，用 Blender 5.0.0 制作……”")
+    else:
+        if f"以下是《{m.group(1)}》：" not in topic:
+            err(f"缺少“以下是《{m.group(1)}》：”这一句，剧本正文要接在它后面")
+    for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
+                       (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
+                       (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
+                       (r"`", "代码格式的反引号")):
+        mm = re.search(pat, topic)
+        if mm:
+            err(f"考题目里出现了{label}：“{mm.group(0)}”")
+    md = re.search(r"约\s*([\d.]+)\s*秒", first)
+    dur = float(md.group(1)) if md else None
+    if dur is None:
+        err("开头没有写时长")
+    elif not 8 <= dur <= 15.6:
+        err(f"时长 {dur} 秒超出 8–15.6 秒")
+    res = set(re.findall(r"(\d{3,4})×(\d{3,4})", topic))
+    fps = set(re.findall(r"(\d+)\s*帧/秒", topic))
+    if len(res) != 1 or len(fps) != 1:
+        err(f"分辨率或帧率不一致或缺失：{res or '无'} / {fps or '无'}")
+    mf = re.search(r"共\s*(\d+)\s*帧", topic)
+    if mf and dur and len(fps) == 1 and int(mf.group(1)) != round(dur * int(next(iter(fps)))):
+        err(f"总帧数 {mf.group(1)} 和时长×帧率不一致")
+    if "无声音" not in topic:
+        warn("没有写“无声音”")
+    if "核心考点如下" not in topic:
+        err("缺少“核心考点如下：”")
+    segs = re.findall(r"第\s*([\d.]+)–([\d.]+)\s*秒", topic)
+    if not segs:
+        err("剧本正文缺少“第 X–Y 秒”的分段")
+    elif dur and abs(float(segs[-1][1]) - dur) > 0.5:
+        warn(f"最后一段结束于 {segs[-1][1]} 秒，和时长 {dur} 秒不一致")
+    if not re.search(r"结束[。]?", topic.split("以下是")[-1]):
+        warn("剧本正文没有写画面在什么时刻结束")
+    sec = section(t, TP_H)
+    if not sec:
+        err("缺少“## 考点”一节")
+    else:
+        tp_path = find_up(os.path.dirname(path), ".kiro/steering/animation-test-points.md") \
+            or os.path.join(HERE, "..", "references", "test-points.md")
+        tp, ids = check_tp_section(sec, tp_path)
+        core = section(topic, "核心考点如下：", "以下是《")
+        for i in ids:
+            if f"考点 {i}，" not in core:
+                err(f"“核心考点如下”里没有写到考点 {i}")
+        mc = re.search(r"\*\*类目\*\*[：:]\s*(\S+)", sec)
+        if mc:
+            if not tax_path:
+                tax_path = find_up(os.path.dirname(path), ".kiro/steering/animation-taxonomy.md") \
+                    or os.path.join(HERE, "..", "references", "animation-taxonomy.md")
+            if os.path.exists(tax_path):
+                cats, _, _ = load_taxonomy(tax_path)
+                if mc.group(1) not in cats:
+                    err(f"类目“{mc.group(1)}”不在分类表中")
+    report()
+
+
 def main():
     args = sys.argv[1:]
     if not args:
@@ -118,6 +228,9 @@ def main():
     if "--taxonomy" in args:
         tax_path = args[args.index("--taxonomy") + 1]
     base = os.path.basename(brief_path)
+    if not base.endswith("_制作需求.md"):
+        check_single(brief_path, tax_path)
+        return
     if not base.endswith("_制作需求.md"):
         err("制作需求文件名应为 <标题>_制作需求.md")
     title = base.replace("_制作需求.md", "")
@@ -204,7 +317,7 @@ def main():
         warn("没有「五、考点与分级」一节（旧任务可以忽略；新任务必须有）")
     elif os.path.exists(tp_path):
         tp = {}
-        for r in table_rows(section(open(tp_path, encoding="utf-8-sig").read(), "## 考点表", "## 选取规则")):
+        for r in table_rows(section(open(tp_path, encoding="utf-8-sig").read(), "## 考点表", "## 档位配方")):
             if len(r) >= 4 and r[0].isdigit():
                 tp[r[0]] = (r[2], r[3])
         trs = [r for r in table_rows(sec5) if r and r[0].isdigit()]
