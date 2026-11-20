@@ -109,7 +109,7 @@ def section(text, start, end=None):
 
 
 
-TOPIC_H = "## 考题目（Prompt、剧本）"
+TOPIC_H = "## Prompt 与剧本"
 TP_H = "## 考点"
 
 
@@ -170,7 +170,7 @@ def check_single(path, tax_path):
                        (r"`", "代码格式的反引号")):
         mm = re.search(pat, topic)
         if mm:
-            err(f"考题目里出现了{label}：“{mm.group(0)}”")
+            err(f"正文里出现了{label}：“{mm.group(0)}”")
     md = re.search(r"约\s*([\d.]+)\s*秒", first)
     dur = float(md.group(1)) if md else None
     if dur is None:
@@ -186,8 +186,8 @@ def check_single(path, tax_path):
         err(f"总帧数 {mf.group(1)} 和时长×帧率不一致")
     if "无声音" not in topic:
         warn("没有写“无声音”")
-    if "核心考点如下" not in topic:
-        err("缺少“核心考点如下：”")
+    if "重点效果要求如下" not in topic:
+        err("缺少“重点效果要求如下：”")
     segs = re.findall(r"第\s*([\d.]+)–([\d.]+)\s*秒", topic)
     if not segs:
         err("剧本正文缺少“第 X–Y 秒”的分段")
@@ -195,7 +195,7 @@ def check_single(path, tax_path):
         warn(f"最后一段结束于 {segs[-1][1]} 秒，和时长 {dur} 秒不一致")
     if not re.search(r"结束[。]?", topic.split("以下是")[-1]):
         warn("剧本正文没有写画面在什么时刻结束")
-    for pat, label in ((r"考点\s*\d+", "考点编号"), (r"\bL[1-4]\b", "L1–L4 分级"),
+    for pat, label in ((r"考点|考题|考察", "“考点/考题/考察”字样"), (r"\bL[1-4]\b", "L1–L4 分级"),
                        (r"题目档位|基准档|进阶档|上限档", "题目档位"), (r"耦合链", "耦合链"),
                        (r"\*\*类目\*\*", "类目")):
         mm = re.search(pat, t)
