@@ -138,7 +138,7 @@ def main():
             err(f"{label} 没有写分辨率或帧率")
             return None
         return (r.group(1), r.group(2), f.group(1))
-    acc_text = section(b, "## 四、试做验收要点")
+    acc_text = section(b, "## 四、试做验收要点", "## 五、")
     s_basic = section(s, "## 基本设定", "## ")
     specs = {"剧本「基本设定」": spec(s_basic, "剧本「基本设定」"),
              "Prompt「输出规格」": spec(section(p, "输出规格："), "Prompt「输出规格」"),
@@ -159,6 +159,42 @@ def main():
             warn(f"剧本里出现“{w}”，剧本只应写画面内容")
     if "无声音" not in s_basic:
         warn("剧本「基本设定」没有写“无声音”")
+
+    # ---------- test points (section 5)
+    tp_path = find_up(os.path.dirname(brief_path), ".kiro/steering/animation-test-points.md") \
+        or os.path.join(HERE, "..", "references", "test-points.md")
+    sec5 = section(b, "## 五、考点与分级")
+    if not sec5:
+        warn("没有「五、考点与分级」一节（旧任务可以忽略；新任务必须有）")
+    elif os.path.exists(tp_path):
+        tp = {}
+        for r in table_rows(section(open(tp_path, encoding="utf-8-sig").read(), "## 考点表", "## 选取规则")):
+            if len(r) >= 4 and r[0].isdigit():
+                tp[r[0]] = (r[2], r[3])
+        trs = [r for r in table_rows(sec5) if r and r[0].isdigit()]
+        if not trs:
+            err("「五、考点与分级」里没有考点")
+        grades = []
+        for r in trs:
+            if len(r) < 5:
+                err(f"考点行应有 5 列：{r}"); continue
+            if r[0] not in tp:
+                err(f"考点编号 {r[0]} 不在考点表中"); continue
+            name, g = tp[r[0]]
+            if r[1] != name:
+                err(f"考点 {r[0]} 的名称应为“{name}”，现在是“{r[1]}”")
+            if r[2] != g:
+                err(f"考点 {r[0]} 的分级应为 {g}，现在是 {r[2]}")
+            grades.append(g)
+        if "**耦合链**" not in sec5:
+            err("「五、考点与分级」缺少“耦合链”说明")
+        mg = re.search(r"\*\*最高分级\*\*[：:]\s*(L\d)", sec5)
+        if not mg:
+            err("「五、考点与分级」缺少“最高分级”")
+        elif grades and mg.group(1) != max(grades):
+            err(f"最高分级应为 {max(grades)}，现在写的是 {mg.group(1)}")
+        if "「五、考点与分级」" not in b.split("---", 1)[0]:
+            warn("文件开头的说明没有写明「五、考点与分级」不属于制作输入")
 
     # ---------- acceptance quotes
     rows = table_rows(acc_text)
