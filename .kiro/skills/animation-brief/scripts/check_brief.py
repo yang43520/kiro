@@ -184,6 +184,13 @@ def check_single(path, tax_path):
     mm = re.search(r"BlenderKit|Sketchfab|KitBash|素材库|HDRI|环境贴图|扫描模型|现成的?模型|模型资产", topic)
     if mm:
         err(f"正文里出现了外部素材：“{mm.group(0)}”（项目只允许插件和贴图，不允许其他素材）")
+    mm = re.search(r"Hard ?Ops|Boxcutter|Launch Control|Auto-Rig Pro|The Grove|Geo-Scatter|RBDLab|Simply Cloth|Physical Starlight|SceneCity|Photographer|Gaffer|FLIP Fluids|Botaniq|DECALmachine|KitOps", topic)
+    if mm:
+        err(f"正文里出现了商业插件：“{mm.group(0)}”（只用内置和开源插件）")
+    if "可借助" not in topic.split("以下是《")[0]:
+        warn("Prompt 里没有插件建议（“可借助……等插件”）")
+    if "基本几何体" not in topic:
+        warn("没有写“禁止用基本几何体拼凑”这条通用底线")
     md = re.search(r"约\s*([\d.]+)\s*秒", first)
     dur = float(md.group(1)) if md else None
     if dur is None:
