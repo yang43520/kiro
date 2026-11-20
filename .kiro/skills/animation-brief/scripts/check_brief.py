@@ -155,7 +155,7 @@ def check_single(path, tax_path):
     if TOPIC_H not in t:
         err(f"缺少“{TOPIC_H}”一节")
         report(); return
-    topic = section(t, TOPIC_H, TP_H)
+    topic = section(t, TOPIC_H)
     paras = [x.strip() for x in topic.split("\n\n") if x.strip()]
     first = paras[0] if paras else ""
     m = re.match(r"基于《(.+?剧本)》，用 Blender 5\.0\.0", first)
@@ -195,26 +195,14 @@ def check_single(path, tax_path):
         warn(f"最后一段结束于 {segs[-1][1]} 秒，和时长 {dur} 秒不一致")
     if not re.search(r"结束[。]?", topic.split("以下是")[-1]):
         warn("剧本正文没有写画面在什么时刻结束")
-    sec = section(t, TP_H)
-    if not sec:
-        err("缺少“## 考点”一节")
-    else:
-        tp_path = find_up(os.path.dirname(path), ".kiro/steering/animation-test-points.md") \
-            or os.path.join(HERE, "..", "references", "test-points.md")
-        tp, ids = check_tp_section(sec, tp_path)
-        core = section(topic, "核心考点如下：", "以下是《")
-        for i in ids:
-            if f"考点 {i}，" not in core:
-                err(f"“核心考点如下”里没有写到考点 {i}")
-        mc = re.search(r"\*\*类目\*\*[：:]\s*(\S+)", sec)
-        if mc:
-            if not tax_path:
-                tax_path = find_up(os.path.dirname(path), ".kiro/steering/animation-taxonomy.md") \
-                    or os.path.join(HERE, "..", "references", "animation-taxonomy.md")
-            if os.path.exists(tax_path):
-                cats, _, _ = load_taxonomy(tax_path)
-                if mc.group(1) not in cats:
-                    err(f"类目“{mc.group(1)}”不在分类表中")
+    for pat, label in ((r"考点\s*\d+", "考点编号"), (r"\bL[1-4]\b", "L1–L4 分级"),
+                       (r"题目档位|基准档|进阶档|上限档", "题目档位"), (r"耦合链", "耦合链"),
+                       (r"\*\*类目\*\*", "类目")):
+        mm = re.search(pat, t)
+        if mm:
+            err(f"文件里出现了{label}：“{mm.group(0)}”（考点、分级、档位和类目只在回复中说明）")
+    if re.search(r"^## 考点", t, re.M):
+        err("文件里不应有“## 考点”一节")
     report()
 
 
