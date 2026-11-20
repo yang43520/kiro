@@ -3,7 +3,7 @@ name: animation-brief
 description: 把一个动画创意写成可交付的 Blender 动画制作需求：剧本、制作 Prompt、类目与标签、试做验收要点，必要时渲染效果图。用于"我想做一个……动画""帮我写剧本和 prompt""加个效果图""让提示词更写实"等创意视频生成任务。Turns an animation idea into a Blender 5.0 production brief (script, prompt, taxonomy tags, acceptance checklist, optional mockup renders).
 metadata:
   author: yang43520
-  version: "1.3"
+  version: "1.4"
 ---
 
 # 创意动画制作需求（animation-brief）
@@ -64,6 +64,7 @@ metadata:
 - 所有尺寸、距离、速度、时间都写成具体数字，并说明是参考值。
 - 动作按秒写清"谁在什么时候做什么"，第一帧就要在动，结尾停在主体仍在运动的时刻。
 - 写实类任务按 `references/realism-checklist.md` 写进具体的材质和结构细节。用户说"更写实一些"时，按清单加细节。
+- **制作方法底线**：写实类任务必须从 `references/production-baseline.md` 里找到对应的动画类型，把"通用底线"和该类型的"制作方法底线"用专业术语写进 Prompt 的重点效果要求和"另外"一段，重点写清"禁止用基本几何体拼凑""细节密度""尺度参照"。用户确认制作环境可以用插件和素材库后，在"另外"一段加一句"可借助……等插件或素材库"，只作建议，不写成必须安装的前提。
 - 检查物理和镜头逻辑，例如镜头要停到某物的后上方，那么它必须先从镜头下方经过。
 - "重点效果要求如下"里的描述和剧本正文的对应段落要说同一件事，数字一致。
 - 只写画面、运动、节奏和镜头；可以用专业动画术语，不能出现写脚本、写代码、代码指令、API 名或属性名。
