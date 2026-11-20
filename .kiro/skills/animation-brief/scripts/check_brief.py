@@ -70,6 +70,35 @@ def load_taxonomy(path):
     return cats, tags, behaviors
 
 
+def recipe_ok(tier, grades):
+    n = {g: grades.count(g) for g in ("L1", "L2", "L3", "L4")}
+    desc = " + ".join(f"{v}×{k}" for k, v in n.items() if v)
+    if tier == "基准档":
+        if n["L3"] or n["L4"]:
+            return False, f"基准档不能有 L3/L4（现在是 {desc}）"
+        if n["L2"] == 1 and n["L1"] <= 1:
+            return True, ""
+        if n["L2"] == 0 and 2 <= n["L1"] <= 3:
+            return True, ""
+        return False, f"基准档只能是单个 L2（最多附带 1 个 L1）或 2～3 个 L1（现在是 {desc}）"
+    if tier == "进阶档":
+        if n["L4"]:
+            return False, f"进阶档不能有 L4（现在是 {desc}）"
+        core = (n["L3"] == 1 and n["L2"] == 0) or (n["L3"] == 0 and n["L2"] == 2)
+        if core and n["L1"] <= 2:
+            return True, ""
+        return False, f"进阶档只能是单个 L3 或 L2 + L2，最多附带 2 个 L1（现在是 {desc}）"
+    if n["L1"] > 2:
+        return False, f"上限档最多附带 2 个 L1（现在是 {desc}）"
+    if n["L4"] == 1 and n["L3"] == 0 and n["L2"] <= 1:
+        return True, ""
+    if n["L4"] == 0 and n["L3"] == 1 and 1 <= n["L2"] <= 2:
+        return True, ""
+    if n["L4"] == 0 and n["L3"] == 2 and n["L2"] == 0:
+        return True, ""
+    return False, f"上限档只能是单个 L4（最多附带 1 个 L2）、L3 + L2（可再加 1 个 L2）或 L3 + L3（现在是 {desc}）"
+
+
 def section(text, start, end=None):
     if start not in text:
         return ""
@@ -109,6 +138,13 @@ def main():
     p = b.split("```text", 1)[1].split("```", 1)[0].strip()
     if not p.startswith("使用 Blender 5.0.0"):
         err("Prompt 没有以“使用 Blender 5.0.0”开头")
+    for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
+                       (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
+                       (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
+                       (r"`", "代码格式的反引号")):
+        m = re.search(pat, p)
+        if m:
+            err(f"Prompt 里出现了{label}：“{m.group(0)}”（提示词不能包含代码、API 或属性名）")
     if f"《{title}剧本》" not in p:
         err(f"Prompt 里没有引用《{title}剧本》")
     m = re.search(r"约\s*([\d.]+)\s*秒", p)
@@ -186,6 +222,13 @@ def main():
             if r[2] != g:
                 err(f"考点 {r[0]} 的分级应为 {g}，现在是 {r[2]}")
             grades.append(g)
+        mt = re.search(r"\*\*题目档位\*\*[：:]\s*(基准档|进阶档|上限档)", sec5)
+        if not mt:
+            err("「五、考点与分级」缺少“题目档位”（基准档/进阶档/上限档）")
+        elif grades:
+            ok, why = recipe_ok(mt.group(1), grades)
+            if not ok:
+                err(f"考点组合不符合{mt.group(1)}的配方：{why}")
         if "**耦合链**" not in sec5:
             err("「五、考点与分级」缺少“耦合链”说明")
         mg = re.search(r"\*\*最高分级\*\*[：:]\s*(L\d)", sec5)
