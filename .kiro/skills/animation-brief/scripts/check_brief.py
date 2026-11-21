@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""检查一份动画制作需求（<标题>_制作需求.md）和对应剧本是否符合 animation-brief 规则。
+"""检查一个动画任务是否符合 animation-brief 规则。
 
-用法：python3 check_brief.py <任务文件夹>/<标题>_制作需求.md [--taxonomy 路径]
+新格式：主文件 <标题>.md，同时核对 <标题>剧本.md 和 <标题>考点说明.md（含档位下限：默认至少进阶档）。
+旧格式：<标题>_制作需求.md 和对应剧本。
+
+用法：python3 check_brief.py <任务文件夹>/<标题>.md [--taxonomy 路径]
+      python3 check_brief.py <任务文件夹>/<标题>_制作需求.md [--taxonomy 路径]
 退出码：有 ERROR 时为 1，否则为 0。
 """
 import os
@@ -150,6 +154,39 @@ def check_tp_section(sec, tp_path):
     return tp, ids
 
 
+def check_tp_file(main_path):
+    """检查和主文件同目录的 <标题>考点说明.md（内部校验用，不交给制作方）。"""
+    folder = os.path.dirname(main_path)
+    title = os.path.basename(main_path)[:-3]
+    name = f"{title}考点说明.md"
+    path = os.path.join(folder, name)
+    if not os.path.exists(path):
+        warn(f"缺少考点说明文件 {name}（已有任务可以忽略；新任务必须有）")
+        return
+    tp_path = find_up(folder, ".kiro/steering/animation-test-points.md") \
+        or os.path.join(HERE, "..", "references", "test-points.md")
+    if not os.path.exists(tp_path):
+        warn("找不到考点表，跳过考点说明检查")
+        return
+    e0, w0 = len(ERR), len(WARN)
+    t = read(path)
+    if not t.lstrip().startswith(f"# {title}考点说明"):
+        err(f"标题应为“# {title}考点说明”")
+    check_tp_section(t, tp_path)
+    mt = re.search(r"\*\*题目档位\*\*[：:]\s*(基准档|进阶档|上限档)", t)
+    ms = re.search(r"\*\*档位来源\*\*[：:]\s*(默认|用户指定)", t)
+    if not ms:
+        err("缺少“档位来源”（默认/用户指定）")
+    if mt and mt.group(1) == "基准档":
+        if not ms or ms.group(1) != "用户指定":
+            err("档位低于进阶档：新任务默认至少进阶档；只有用户明确提到基准档时才能用基准档，"
+                "并写“档位来源：用户指定”")
+        else:
+            warn("本题是基准档（用户指定），请确认用户确实明确提到了基准档")
+    ERR[e0:] = [f"{name}：{m}" for m in ERR[e0:]]
+    WARN[w0:] = [f"{name}：{m}" for m in WARN[w0:]]
+
+
 def check_single(path, tax_path):
     t = read(path)
     if TOPIC_H not in t:
@@ -224,6 +261,7 @@ def check_single(path, tax_path):
             err(f"文件里出现了{label}：“{mm.group(0)}”（考点、分级、档位和类目只在回复中说明）")
     if re.search(r"^## 考点", t, re.M):
         err("文件里不应有“## 考点”一节")
+    check_tp_file(path)
     report()
 
 
@@ -238,9 +276,12 @@ def main():
         tax_path = args[args.index("--taxonomy") + 1]
     base = os.path.basename(brief_path)
     if not base.endswith("_制作需求.md"):
-        if base.endswith("剧本.md") and os.path.exists(os.path.join(os.path.dirname(brief_path), base[:-5] + ".md")):
-            warn("请检查主文件（<标题>.md），剧本文件会随主文件一起核对")
-            brief_path = os.path.join(os.path.dirname(brief_path), base[:-5] + ".md")
+        for suffix, label in (("剧本.md", "剧本文件"), ("考点说明.md", "考点说明文件")):
+            main_path = os.path.join(os.path.dirname(brief_path), base[:-len(suffix)] + ".md")
+            if base.endswith(suffix) and os.path.exists(main_path):
+                warn(f"请检查主文件（<标题>.md），{label}会随主文件一起核对")
+                brief_path = main_path
+                break
         check_single(brief_path, tax_path)
         return
     if not base.endswith("_制作需求.md"):
