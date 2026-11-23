@@ -199,9 +199,70 @@ def check_tp_file(main_path, require_cat=False):
                 err(f"主类目“{cat}”不在类目表中")
     elif require_cat:
         err("缺少“主类目”（一级/二级/三级）")
+    if require_cat:
+        tax = find_up(folder, ".kiro/steering/animation-taxonomy.md") \
+            or os.path.join(HERE, "..", "references", "animation-taxonomy.md")
+        check_tags(t, tax)
     ERR[e0:] = [f"{name}：{m}" for m in ERR[e0:]]
     WARN[w0:] = [f"{name}：{m}" for m in WARN[w0:]]
     return cat
+
+
+def check_tags(text, tax_path):
+    """检查“## 类目与标签”里的标签表是否符合类目表第三、四节的规则。"""
+    sec = section(text, "## 类目与标签")
+    if not sec:
+        err("缺少“## 类目与标签”一节")
+        return
+    if not os.path.exists(tax_path):
+        warn("找不到类目表，跳过标签检查")
+        return
+    _, tags, behaviors = load_taxonomy(tax_path)
+    rows = table_rows(sec)
+    if not rows or rows[0][:3] != ["标签组", "选定标签", "必要说明"]:
+        err("标签表的表头应为：标签组｜选定标签｜必要说明")
+        return
+    seen, n_beh, n_main = set(), 0, 0
+    for r in rows[1:]:
+        if len(r) < 2:
+            continue
+        g, v = r[0], r[1]
+        seen.add(g)
+        if g not in ALL_GROUPS:
+            err(f"未知的标签组“{g}”"); continue
+        if v.startswith("不填") or v == "":
+            if g in REQUIRED:
+                err(f"必填标签组“{g}”没有填写")
+            elif len(r) < 3 or not r[2].strip():
+                warn(f"选填标签组“{g}”不填时，最好写一句理由")
+            continue
+        if g == "动画行为":
+            n_beh += 1
+            is_main = v.startswith("主行为")
+            n_main += is_main
+            path = re.sub(r"^(主行为|辅助行为)[：:]", "", v).strip()
+            parts = tuple(x.strip() for x in path.split("/"))
+            if len(parts) != 3 or parts not in behaviors:
+                err(f"动画行为“{path}”不在类目表中（应写成 大类/行为类/标签名）")
+            elif is_main and parts[0] not in MAIN_OK:
+                err(f"主行为“{path}”的大类不能作为主行为")
+            continue
+        names = [re.sub(r"[（(].*?[）)]", "", x).strip() for x in re.split(r"[、,，]", v) if x.strip()]
+        for n in names:
+            if n not in tags.get(g, set()):
+                err(f"标签组“{g}”里没有“{n}”")
+        if g in SINGLE and len(names) != 1:
+            err(f"标签组“{g}”只能单选，现在有 {len(names)} 个")
+        if g == "材质质感" and not 1 <= len(names) <= 3:
+            err("材质质感应为 1–3 个")
+        if g == "应用场景" and len(names) > 2:
+            err("应用场景最多 2 个")
+    for g in sorted(ALL_GROUPS - seen):
+        err(f"标签表缺少“{g}”这一组（选填组不填时写“不填”）")
+    if not 1 <= n_beh <= 4:
+        err(f"动画行为应为 1–4 个，现在有 {n_beh} 个")
+    if n_main != 1:
+        err(f"必须有且只有 1 个主行为，现在有 {n_main} 个")
 
 
 HARD_COMMON = ["结构分件", "递进阶段", "布光层次"]
