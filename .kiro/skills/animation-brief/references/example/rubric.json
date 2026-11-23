@@ -11,7 +11,7 @@
       "criterion_id": "R01",
       "dimension": "主体与目标",
       "criterion": "巨鲲从海中冲出并化为大鹏；结尾出现化形完成的完整大鹏，具有展开的双翼、十二根尾羽、钩喙和两根长须。",
-      "weight": 9,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "binary",
@@ -50,7 +50,7 @@
       "criterion_id": "R04",
       "dimension": "动作完整性",
       "criterion": "按海面鼓起 → 鲲头破水 → 化羽 → 第一次扇翅 → 爬升入光 → 展翼滑翔的顺序完整呈现，结尾留出约 1 秒展示化形完成的大鹏。",
-      "weight": 11,
+      "weight": 10,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -64,7 +64,7 @@
       "criterion_id": "R05",
       "dimension": "形变与附属部位",
       "criterion": "胸鳍一节节伸长成翼、鳍膜裂成飞羽并像折扇一样展开；鳞片从头顶向尾根依次翻起化为覆羽；尾鳍分成十二根尾羽；鱼吻变成钩喙；过程连续，体积看起来守恒。",
-      "weight": 12,
+      "weight": 10,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -78,7 +78,7 @@
       "criterion_id": "R06",
       "dimension": "轨迹与姿态",
       "criterion": "鲲以约 35° 仰角冲出水面，沿上弯弧线抬起，头始终顺着前进方向；振翅后前进方向先放平再抬起，最后向右上爬升并滑翔；翼尖、长须和尾羽滞后于身体。",
-      "weight": 10,
+      "weight": 9,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -92,7 +92,7 @@
       "criterion_id": "R07",
       "dimension": "水体与环境响应",
       "criterion": "海面先鼓起，破水时翻起水幕、水丝和水雾，翅膀上泼下水帘；第一次扇翅在海面压出带白沫的环形波纹；浪先推动近处冰块，再抬起帆船。",
-      "weight": 8,
+      "weight": 7,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -134,7 +134,7 @@
       "criterion_id": "R10",
       "dimension": "造型及视觉一致性",
       "criterion": "鲲鹏的造型、配色和识别特征全程连续一致；湿鳞变干羽的材质变化跟随形变进度发生，没有无故的部件消失、材质突变或亮度跳变。",
-      "weight": 7,
+      "weight": 6,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -148,7 +148,7 @@
       "criterion_id": "R11",
       "dimension": "画面完整与清晰",
       "criterion": "画面无明显破面、闪烁和影响辨认的噪点或模糊，鳞纹和羽枝在当前景别下可辨。",
-      "weight": 5,
+      "weight": 4,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -162,7 +162,7 @@
       "criterion_id": "R12",
       "dimension": "构图与镜头",
       "criterion": "一镜到底，鲲鹏全程在画面内，形变过程和结尾的完整大鹏清楚可见，翼尖和尾羽不碰画面边缘，镜头不碰浪和冰。",
-      "weight": 7,
+      "weight": 6,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -225,6 +225,45 @@
       "score_anchors": {
         "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
         "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "结构分件",
+      "criterion": "鲲鹏有头颈、左翼、右翼、躯干、尾羽组和两根长须共 6 个独立分件（要求不少于 4 个），每个分件都有各自可见的运动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件没有各自的运动、像一整块一起动。",
+        "100": "头颈、左右翼、躯干、尾羽组和长须都能分辨，且各自有可见的运动。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "递进阶段",
+      "criterion": "全片有海面鼓起、破水、化羽、第一次扇翅、入光、展翼滑翔等可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "布光层次",
+      "criterion": "画面有环境天光、晨光主光和帆船油灯三层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用：环境天光交代夜色，晨光主光勾出羽缘，油灯给出暗处的点光。"
       }
     }
   ]

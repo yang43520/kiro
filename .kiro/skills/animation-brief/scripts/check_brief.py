@@ -155,20 +155,23 @@ def check_tp_section(sec, tp_path):
     return tp, ids
 
 
-def check_tp_file(main_path):
+def check_tp_file(main_path, require_cat=False):
     """检查和主文件同目录的 <标题>考点说明.md（内部校验用，不交给制作方）。"""
     folder = os.path.dirname(main_path)
     title = os.path.basename(main_path)[:-3]
     name = f"{title}考点说明.md"
     path = os.path.join(folder, name)
     if not os.path.exists(path):
-        warn(f"缺少考点说明文件 {name}（已有任务可以忽略；新任务必须有）")
-        return
+        if require_cat:
+            err(f"缺少考点说明文件 {name}")
+        else:
+            warn(f"缺少考点说明文件 {name}（已有任务可以忽略；新任务必须有）")
+        return None
     tp_path = find_up(folder, ".kiro/steering/animation-test-points.md") \
         or os.path.join(HERE, "..", "references", "test-points.md")
     if not os.path.exists(tp_path):
         warn("找不到考点表，跳过考点说明检查")
-        return
+        return None
     e0, w0 = len(ERR), len(WARN)
     t = read(path)
     if not t.lstrip().startswith(f"# {title}考点说明"):
@@ -184,8 +187,33 @@ def check_tp_file(main_path):
                 "并写“档位来源：用户指定”")
         else:
             warn("本题是基准档（用户指定），请确认用户确实明确提到了基准档")
+    cat = None
+    mc = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", t)
+    if mc:
+        cat = mc.group(1)
+        tax = find_up(folder, ".kiro/steering/animation-taxonomy.md") \
+            or os.path.join(HERE, "..", "references", "animation-taxonomy.md")
+        if os.path.exists(tax):
+            cats, _, _ = load_taxonomy(tax)
+            if cat not in cats:
+                err(f"主类目“{cat}”不在类目表中")
+    elif require_cat:
+        err("缺少“主类目”（一级/二级/三级）")
     ERR[e0:] = [f"{name}：{m}" for m in ERR[e0:]]
     WARN[w0:] = [f"{name}：{m}" for m in WARN[w0:]]
+    return cat
+
+
+HARD_COMMON = ["结构分件", "递进阶段", "布光层次"]
+HARD_BY_TOP = {
+    "产品动画": ["产品行为", "卖点细节", "组件数量", "材质种类"],
+    "场景动画": ["资产种类", "环境动态源", "三层空间"],
+    "载具动画": ["状态转换"],
+    "图形动画": ["组织状态", "元素关系"],
+    "现象动画": ["触发与交互"],
+    "科教演示": ["观察方法"],
+    "角色动画": [],
+}
 
 
 V3_HEADS = ["## 场景和主体", "## 动作和镜头", "## 关键效果和做法", "## 灯光和画面", "## 底线和限制"]
@@ -198,7 +226,7 @@ def fmt_num(x):
     return f"{x:g}"
 
 
-def check_rubric(folder, rng):
+def check_rubric(folder, rng, cat=None):
     """检查任务文件夹里的 rubric.json。rng 是主文件里的允许时长区间 (A, B)。"""
     import json
     path = os.path.join(folder, "rubric.json")
@@ -228,8 +256,8 @@ def check_rubric(folder, rng):
         if not isinstance(crit, list) or not crit:
             err("criteria 为空")
             crit = []
-        if crit and not 10 <= len(crit) <= 20:
-            warn(f"评价项有 {len(crit)} 项，一般为 12–16 项")
+        if crit and not 12 <= len(crit) <= 22:
+            warn(f"评价项有 {len(crit)} 项，一般为 15–20 项")
         total, n_crit, dur_ok = 0, 0, False
         for i, c in enumerate(crit, 1):
             tag = f"第 {i} 项"
@@ -273,6 +301,25 @@ def check_rubric(folder, rng):
                     dur_ok = True
                 if st != "binary":
                     warn(f"{tag}（时长）一般用 binary")
+        need = list(HARD_COMMON)
+        if cat:
+            top = cat.split("/")[0]
+            if top in HARD_BY_TOP:
+                need += HARD_BY_TOP[top]
+            else:
+                warn(f"不认识主类目的一级类目“{top}”，只检查通用硬指标")
+        else:
+            warn("没有主类目，只检查通用硬指标")
+        by_dim = {str(c.get("dimension", "")).strip(): c for c in crit if isinstance(c, dict)}
+        for d in need:
+            c = by_dim.get(d)
+            if not c:
+                err(f"缺少数量硬指标项“{d}”（dimension 要和 SKILL.md 3.7 的维度名一致）")
+                continue
+            if c.get("critical") is not True:
+                err(f"数量硬指标项“{d}”应为关键项")
+            if not re.search(r"\d", str(c.get("criterion", ""))):
+                err(f"数量硬指标项“{d}”的 criterion 里没有写出数量")
         if abs(total - 100) > 1e-9:
             err(f"权重合计应为 100，现在是 {fmt_num(total)}")
         if not n_crit:
@@ -397,8 +444,11 @@ def check_v3(path):
     folder = os.path.dirname(path)
     if os.path.exists(os.path.join(folder, f"{title}剧本.md")):
         warn("3.0 格式不再需要单独的剧本文件")
-    check_tp_file(path)
-    check_rubric(folder, rng)
+    light = section(t, "## 灯光和画面", "## 底线和限制")
+    if not re.search(r"[两三四五2-5]\s*层", light):
+        warn("“灯光和画面”没有写明分几层光（布光层次 ≥ 2 层）")
+    cat = check_tp_file(path, require_cat=True)
+    check_rubric(folder, rng, cat)
     report()
 
 
