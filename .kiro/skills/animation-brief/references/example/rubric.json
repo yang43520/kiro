@@ -64,7 +64,7 @@
       "criterion_id": "R05",
       "dimension": "形变与附属部位",
       "criterion": "胸鳍一节节伸长成翼、鳍膜裂成飞羽并像折扇一样展开；鳞片从头顶向尾根依次翻起化为覆羽；尾鳍分成十二根尾羽；鱼吻变成钩喙；过程连续，体积看起来守恒。",
-      "weight": 10,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -78,7 +78,7 @@
       "criterion_id": "R06",
       "dimension": "轨迹与姿态",
       "criterion": "鲲以约 35° 仰角冲出水面，沿上弯弧线抬起，头始终顺着前进方向；振翅后前进方向先放平再抬起，最后向右上爬升并滑翔；翼尖、长须和尾羽滞后于身体。",
-      "weight": 9,
+      "weight": 7,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -92,7 +92,7 @@
       "criterion_id": "R07",
       "dimension": "水体与环境响应",
       "criterion": "海面先鼓起，破水时翻起水幕、水丝和水雾，翅膀上泼下水帘；第一次扇翅在海面压出带白沫的环形波纹；浪先推动近处冰块，再抬起帆船。",
-      "weight": 7,
+      "weight": 5,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -204,7 +204,7 @@
       "criterion_id": "R15",
       "dimension": "节奏与有效时长",
       "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂化形过程。",
-      "weight": 2,
+      "weight": 1,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -264,6 +264,20 @@
       "score_anchors": {
         "0": "有效布光少于 2 层，或光照平铺看不出层次。",
         "100": "至少 2 层光都能看出作用：环境天光交代夜色，晨光主光勾出羽缘，油灯给出暗处的点光。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "材质与制作底线",
+      "criterion": "湿鳞低粗糙度有镜面反光、化羽后带绒感；鳍膜和翼膜有次表面散射透光；海水由液体模拟生成，水幕撕开成水丝、水珠和白沫来自二次粒子；碎冰有折射和接触阴影；帆船木构硬边有倒角。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "鳞羽像塑料、海水像贴图，或主要材质看不出区别。",
+        "50": "主要质感成立，但有一处明显的材质雷同、海水细节不足或缺少接触阴影，且未达到 0 分状态。",
+        "100": "鳞羽、海水、冰和木构的质感都做到，近景经得起观察。"
       }
     }
   ]

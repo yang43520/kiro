@@ -155,7 +155,7 @@
       "criterion_id": "R12",
       "dimension": "多关节接住与拧入",
       "criterion": "指示灯变绿后，六个关节协同转身，夹爪迎上自由下落的螺栓，三指真正合拢夹住六角头；螺栓由下落 → 跟随夹爪 → 拧入锁定，拧入时每转一圈进一个螺距；夹爪不隔空抓取，螺栓不穿过手指和底座。",
-      "weight": 12,
+      "weight": 10,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -169,7 +169,7 @@
       "criterion_id": "R13",
       "dimension": "瀑布式落位",
       "criterion": "零件从画面上缘外不断落下，空中始终有 2–6 件，按装配顺序从下往上装好，后一件只落在已装好的件上；落位带缓入缓出和小回弹，装好后不漂移、不悬空、不互穿。",
-      "weight": 11,
+      "weight": 9,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -183,7 +183,7 @@
       "criterion_id": "R14",
       "dimension": "苏醒的先后",
       "criterion": "所有组件装好后指示灯才由红转绿，灯变绿后机械臂才动；螺栓先落下机械臂才去接；拧紧以后夹爪才张开，回到待机后才静止。",
-      "weight": 7,
+      "weight": 5,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -280,7 +280,7 @@
       "criterion_id": "R21",
       "dimension": "节奏与有效时长",
       "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
-      "weight": 2,
+      "weight": 1,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -288,6 +288,20 @@
         "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
         "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
         "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    },
+    {
+      "criterion_id": "R22",
+      "dimension": "材质与制作底线",
+      "criterion": "外壳是硬表面建模，硬边有倒角并接住细高光；喷涂铸铝、带加工纹的钢、哑光橡胶和亮铜四种材质的粗糙度和反射明显不同；铸铝有橘皮纹，边缘有曲率遮罩磨损，缝里有积灰；近景细节清晰。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "外壳像没有倒角的方块或塑料，或所有材质看起来一样。",
+        "50": "材质基本可辨，但有一处明显的材质雷同、锋利直角或近景细节模糊，且未达到 0 分状态。",
+        "100": "硬表面建模、倒角、四种材质和磨损积灰都做到，近景经得起观察。"
       }
     }
   ]

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """检查一个动画任务是否符合 animation-brief 规则。
 
-3.0 格式（默认）：主文件 <标题>.md（含“## 场景和主体”等五节），同时核对 <标题>考点说明.md 和 rubric.json。
+3.x 格式（默认）：主文件 <标题>.md（含“## 场景和主体”等五节），同时核对 <标题>考点说明.md 和 rubric.json；
+3.3 起还按主类目检查制作底线、专业术语、推荐插件、材质做法和重模拟数量。
 2.x 格式：主文件 <标题>.md（含“## Prompt 与剧本”），同时核对 <标题>剧本.md 和 <标题>考点说明.md。
 1.x 格式：<标题>_制作需求.md 和对应剧本。
 
@@ -265,6 +266,94 @@ def check_tags(text, tax_path):
         err(f"必须有且只有 1 个主行为，现在有 {n_main} 个")
 
 
+GENERAL_BASELINE = {"PBR 贴图或程序化纹理": r"PBR|程序化纹理", "倒角": r"倒角", "接触阴影": r"接触阴影",
+                    "AgX 色彩管理": r"AgX", "采样": r"采样", "100% 查看细节": r"100%", "尺度参照": r"尺度参照",
+                    "防重复": r"重复"}
+HEAVY_SIMS = {"液体模拟": r"液体模拟|FLIP", "烟雾模拟": r"烟雾模拟|烟火模拟", "布料模拟": r"布料模拟",
+              "刚体模拟": r"刚体模拟"}
+METHOD_WORDS = r"模拟|绑定|修改器|几何节点|驱动器|形态键|置换|散布|实例化|动态绘画|反向动力学|硬表面|程序化|体积|粒子|路径跟随|材质|遮罩|贴图|骨骼|自发光|建模"
+
+
+def _clean_terms(s):
+    s = re.sub(r"（[^）]*）|\([^)]*\)", "", s)
+    return [x.strip(" 。") for x in re.split(r"[、，,]", s) if x.strip(" 。")]
+
+
+def _plugin_key(name):
+    n = re.sub(r"（[^）]*）|\([^)]*\)", "", name).strip()
+    n = re.sub(r"^内置", "", n)
+    m = re.match(r"[A-Za-z][\w.\-]*(?: [A-Z][\w.\-]*)*", n)
+    return m.group(0) if m else n
+
+
+def load_baseline(path):
+    t = open(path, encoding="utf-8-sig").read()
+    rows, mods = {}, {}
+    for line in t.splitlines():
+        c = [x.strip() for x in line.strip().strip("|").split("|")]
+        if line.startswith("|") and len(c) == 6 and c[0] not in ("二级类目",) and not c[0].startswith("-"):
+            rows[c[0]] = {"terms": _clean_terms(c[3]), "plugins": [_plugin_key(p) for p in re.split(r"[、，,]", c[4]) if p.strip()],
+                          "mods": re.findall(r"T\d+", c[5])}
+    for m in re.finditer(r"## 技术模块 (T\d+)：.+?\n(.+?)(?=\n## 技术模块|\Z)", t, re.S):
+        body = m.group(2)
+        mt = re.search(r"\*\*专业术语\*\*：(.+)", body)
+        plugs = [_plugin_key(r[0]) for r in table_rows(body)[1:] if r and r[0] != "插件"]
+        mods[m.group(1)] = {"terms": _clean_terms(mt.group(1)) if mt else [], "plugins": plugs}
+    return rows, mods
+
+
+def check_baseline(t, tp_text, folder, cat):
+    """3.3 起：按主类目检查主文件是否写进了制作底线、专业术语和推荐插件。"""
+    base = find_up(folder, ".kiro/skills/animation-brief/references/production-baseline.md") \
+        or os.path.join(HERE, "..", "references", "production-baseline.md")
+    if not cat or not os.path.exists(base):
+        warn("找不到主类目或 production-baseline.md，跳过制作底线检查")
+        return
+    rows, mods = load_baseline(base)
+    parts = cat.split("/")
+    second = parts[1] if len(parts) > 1 else ""
+    if second not in rows:
+        warn(f"production-baseline.md 里没有二级类目“{second}”，跳过类目底线检查")
+        return
+    row = rows[second]
+    terms = list(dict.fromkeys(row["terms"] + [x for m in row["mods"] for x in mods.get(m, {}).get("terms", [])]))
+    hit = [x for x in terms if x in t]
+    need = max(5, -(-len(terms) * 3 // 10))
+    if len(hit) < need:
+        miss = [x for x in terms if x not in t]
+        err(f"类目“{second}”和技术模块 {'、'.join(row['mods']) or '无'} 的专业术语只写进了 {len(hit)} 个，"
+            f"至少要 {need} 个（还没用的有：{'、'.join(miss[:12])}）")
+    plugs = list(dict.fromkeys(row["plugins"] + [x for m in row["mods"] for x in mods.get(m, {}).get("plugins", [])]))
+    ms = re.search(r"可借助(.+?)(这些|等)插件", section(t, "## 底线和限制"), re.S)
+    sentence = ms.group(1) if ms else ""
+    ph = [p for p in plugs if p and p in sentence]
+    if plugs and len(ph) < min(2, len(plugs)):
+        err(f"插件建议里只写了 {len(ph)} 个类目推荐插件，至少要 2 个（可选：{'、'.join(plugs)}）")
+    if parts[0] != "图形动画":
+        for k, pat in GENERAL_BASELINE.items():
+            if not re.search(pat, t):
+                err(f"主文件缺少通用底线“{k}”")
+    eff = section(t, "## 关键效果和做法", "## 灯光和画面")
+    items = re.findall(r"^\d+\.\s*(.+)$", eff, re.M)
+    for it in items:
+        if not re.search(r"一镜到底|运镜|镜头", it.split("：", 1)[0]) and not re.search(METHOD_WORDS, it):
+            warn(f"关键效果“{it[:12]}…”没有写用什么方法做（专业术语）")
+    if items and not any(re.search(r"材质|质感", it.split("：", 1)[0]) for it in items):
+        err("“关键效果和做法”里至少要有 1 条专门写材质和建模做法（标题里带“材质”或“质感”）")
+    heavy = [k for k, pat in HEAVY_SIMS.items() if re.search(pat, t)]
+    if len(heavy) > 2:
+        err(f"重模拟有 {len(heavy)} 种（{'、'.join(heavy)}），最多 2 种，其余动态改用骨骼、驱动器、形态键等轻量做法")
+    sec = section(tp_text, "## 制作底线清单", "## 类目与标签")
+    if not sec:
+        err("考点说明缺少“## 制作底线清单”一节（3.3 起必填）")
+    else:
+        m2 = re.search(r"\*\*二级类目\*\*[：:]\s*(\S+)", sec)
+        if not m2 or m2.group(1) != second:
+            err(f"制作底线清单的“二级类目”应为“{second}”")
+        if "**技术模块**" not in sec:
+            err("制作底线清单缺少“技术模块”")
+
+
 HARD_COMMON = ["结构分件", "递进阶段", "布光层次"]
 HARD_BY_TOP = {
     "产品动画": ["产品行为", "卖点细节", "组件数量", "材质种类"],
@@ -381,6 +470,11 @@ def check_rubric(folder, rng, cat=None):
                 err(f"数量硬指标项“{d}”应为关键项")
             if not re.search(r"\d", str(c.get("criterion", ""))):
                 err(f"数量硬指标项“{d}”的 criterion 里没有写出数量")
+        mq = by_dim.get("材质与制作底线")
+        if not mq:
+            err("缺少关键项“材质与制作底线”（3.3 起必填）")
+        elif mq.get("critical") is not True:
+            err("“材质与制作底线”应为关键项")
         if abs(total - 100) > 1e-9:
             err(f"权重合计应为 100，现在是 {fmt_num(total)}")
         if not n_crit:
@@ -509,6 +603,11 @@ def check_v3(path):
     if not re.search(r"[两三四五2-5]\s*层", light):
         warn("“灯光和画面”没有写明分几层光（布光层次 ≥ 2 层）")
     cat = check_tp_file(path, require_cat=True)
+    tpp = os.path.join(folder, f"{title}考点说明.md")
+    tp_text = open(tpp, encoding="utf-8-sig").read() if os.path.exists(tpp) else ""
+    e0 = len(ERR)
+    check_baseline(t, tp_text, folder, cat)
+    ERR[e0:] = [f"制作底线：{m}" for m in ERR[e0:]]
     check_rubric(folder, rng, cat)
     report()
 

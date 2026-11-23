@@ -142,7 +142,7 @@
       "criterion_id": "R11",
       "dimension": "田面留痕",
       "criterion": "水的前沿漫过的地方，龟裂干泥先被浸湿变深、裂缝灌满，再被水盖住成为平静的水镜；漫过的地方一直保持湿的状态，不恢复成干的，不整层一下子变色。",
-      "weight": 12,
+      "weight": 10,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -156,7 +156,7 @@
       "criterion_id": "R12",
       "dimension": "逐层注满",
       "criterion": "每层在上一层漫满、从缺口溢出后才开始进水，水的前沿沿弧线从缺口一端往另一端推进；缺口处有小瀑布；水不往高处流，不同时注满几层。",
-      "weight": 11,
+      "weight": 9,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -170,7 +170,7 @@
       "criterion_id": "R13",
       "dimension": "开闸机关与延时",
       "criterion": "竹筒接满水后变重下沉，竹竿绕支架转动，麻绳拉紧把木闸板拉起约 20 厘米；第 2 秒后播放速度平滑加快，延时下云、太阳、炊烟和水按同一速度变化，水镜倒影随天空同步变化。",
-      "weight": 10,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -267,7 +267,7 @@
       "criterion_id": "R20",
       "dimension": "节奏与有效时长",
       "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
-      "weight": 2,
+      "weight": 1,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -275,6 +275,20 @@
         "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
         "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
         "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "材质与制作底线",
+      "criterion": "山坡和梯田有侵蚀和置换做出的起伏，泥地用三平面投影贴图不拉伸；干泥粗糙发浅、湿泥发深发亮、水面有正确的折射和平静的倒影，三者明显不同；草和稻草有随机变化，竹木有竹节和倒角，远山有空气透视。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "地形平滑像塑料，或干泥、湿泥和水面看不出区别。",
+        "50": "主要材质可辨，但有一处明显拉伸、材质雷同或水面像镜面塑料，且未达到 0 分状态。",
+        "100": "地形、泥地、水面和竹木的质感都做到，近景经得起观察。"
       }
     }
   ]
