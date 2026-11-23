@@ -1,0 +1,294 @@
+{
+  "task": "六轴机械臂苏醒",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一台原创的六轴机械臂和检测台；机械臂经瀑布式组装完成，苏醒后在半空接住最后一颗螺栓并拧进底座的空孔，结尾底座 6 颗螺栓装满，机械臂停在待机姿势，指示灯为绿色。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "机械臂缺失或被替代，或没有接住螺栓、没有拧进空孔，或结尾螺栓没有装满。",
+        "100": "机械臂完成组装、接住并拧入螺栓，结尾 6 颗螺栓装满、待机姿势、指示灯绿色。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "组件自身发生落位，机械臂关节自身发生转动，夹爪开合，螺栓旋入。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "没有组件和关节的自身运动，动态只靠镜头或剪辑。",
+        "100": "组件落位、关节转动、夹爪开合和螺栓旋入都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按底座落位 → 转台与大臂 → 小臂与腕部 → 苏醒接螺栓 → 拧入与待机的顺序完整呈现，结尾约 1.2 秒展示待机姿势和装满的底座。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有底座、转台、肩座、大臂、肘关节、小臂、腕部关节、夹爪、电机盖、线缆束共 10 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有底座落位、转台与大臂、小臂与腕部、苏醒接螺栓、拧入与待机共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有检测台上方工作灯主光、右后方轮廓光、指示灯和远处车间的实用光源共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "产品行为",
+      "criterion": "片中有瀑布式组装、苏醒后接住螺栓并拧入、指示灯由红转绿共 3 种非运镜类产品行为（要求不少于 2 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "非运镜类产品行为少于 2 种。",
+        "100": "至少 2 种非运镜类产品行为完整可见。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "卖点细节",
+      "criterion": "至少 2 处卖点细节各连续可辨 1 秒以上：电机盖盖上前关节里的铜绕组和谐波减速器约 1.2 秒，夹爪三指夹住螺栓并拧入约 2.5 秒。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "卖点细节少于 2 处，或每处连续可辨不足 1 秒。",
+        "100": "两处细节都连续可辨 1 秒以上。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "组件数量",
+      "criterion": "机械臂由 12 个独立建模的组件组成（要求不少于 8 个），组装时逐个可辨。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "独立建模组件少于 8 个，或组装时无法逐个分辨。",
+        "100": "不少于 8 个独立组件，落位时逐个清楚可辨。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "材质种类",
+      "criterion": "画面有喷涂铸铝、亮钢、黑橡胶和铜绕组共 4 种物理属性截然不同的材质（要求不少于 3 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "物理属性截然不同的材质少于 3 种，或不同材质看起来一样。",
+        "100": "至少 3 种材质清楚可辨。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "多关节接住与拧入",
+      "criterion": "指示灯变绿后，六个关节协同转身，夹爪迎上自由下落的螺栓，三指真正合拢夹住六角头；螺栓由下落 → 跟随夹爪 → 拧入锁定，拧入时每转一圈进一个螺距；夹爪不隔空抓取，螺栓不穿过手指和底座。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "没有接住螺栓的过程，或隔空抓住、螺栓穿过手指，或螺栓自己飘进孔里。",
+        "50": "接住和拧入基本成立，但有一处关节单独机械转动、时机对不上或局部穿插，且未达到 0 分状态。",
+        "100": "接住时机准确、关节协调，拧入匹配螺距，没有穿插。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "瀑布式落位",
+      "criterion": "零件从画面上缘外不断落下，空中始终有 2–6 件，按装配顺序从下往上装好，后一件只落在已装好的件上；落位带缓入缓出和小回弹，装好后不漂移、不悬空、不互穿。",
+      "weight": 11,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "零件同时出现、顺序混乱，或大面积悬空、互穿。",
+        "50": "落位基本成立，但瀑布中断明显、有一处顺序颠倒或局部错位，且未达到 0 分状态。",
+        "100": "瀑布连续，顺序正确，落位准确锁定，没有悬空和穿插。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "苏醒的先后",
+      "criterion": "所有组件装好后指示灯才由红转绿，灯变绿后机械臂才动；螺栓先落下机械臂才去接；拧紧以后夹爪才张开，回到待机后才静止。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "机械臂在组装完成或灯变绿之前就动，或先后关系混乱。",
+        "50": "先后基本成立，但有一处颠倒，且未达到 0 分状态。",
+        "100": "先后关系全部正确，因果清楚。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "造型及视觉一致性",
+      "criterion": "机械臂的造型、白色外壳和深灰关节盖全程一致，指示灯的变化有依据，没有无故的部件消失或亮度跳变。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，螺栓六角孔、减速器齿和线缆卡扣在当前景别下可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；底座空孔、零件瀑布、关节内部、接螺栓和拧入都在画面里看得清，接螺栓和拧入时镜头推近，螺栓在 720p 下清楚可见；结尾整台机械臂约占画面高度七成。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "灯光材质与氛围",
+      "criterion": "工作灯在白色外壳上拉出长条高光，轮廓光分开机械臂和暗车间；铸铝、钢、橡胶和铜的材质差异清楚；焊光克制，没有镜头光晕，外壳不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "场景丰富度",
+      "criterion": "前景有零件盒、扭矩扳手和扎带，中景有检测台和安全光栅，远景有钢屋架、天车和运转中的装配线。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
