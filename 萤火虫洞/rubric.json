@@ -1,0 +1,295 @@
+{
+  "task": "萤火虫洞",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一个带暗河的石灰岩溶洞和洞顶约 3,000 只带丝线的萤火虫幼虫；云遮月后萤光从洞深处往洞口依次亮起，结尾整个洞顶布满蓝绿色萤光并倒映在暗河里。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "溶洞、暗河或萤火虫缺失，或萤光没有依次亮起，或结尾没有形成洞顶和倒影两片星空。",
+        "100": "溶洞、暗河和萤火虫都在，萤光依次亮满，结尾两片星空清楚可见。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "萤光自身由暗变亮，丝线自身摆动，水滴自身落下。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "萤光、丝线和水滴没有自身变化，动态只靠镜头或剪辑。",
+        "100": "萤光亮起、丝线摆动和水滴落下都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按月光退去 → 深处先亮 → 夜风入洞 → 星空铺满 → 双重星空的顺序完整呈现，结尾约 2 秒展示两片星空。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有幼虫的光点、丝线、黏珠、洞顶岩石、暗河倒影共 5 个独立部分（要求不少于 4 个），各自有可见的变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立部分少于 4 个，或像一整块没有变化。",
+        "100": "各部分清楚可辨，各自有可见的变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有月光退去、深处先亮、夜风入洞、星空铺满、双重星空共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有萤光、洞口月光、暗河反光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，冷暖和明暗层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有石灰岩洞壁和洞顶、钟乳石、石幔、暗河、平石、落叶、萤火虫幼虫、丝线和黏珠、洞口蕨叶、月光照到的洞口共 10 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在夜风（吹动蕨叶和丝线）、月光的明暗变化、萤光的依次亮起和水滴涟漪等不少于 3 类环境动态源，月光变暗引出萤光亮起、夜风带动丝线。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或动态之间没有呼应。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出彼此带动。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的洞壁、钟乳石、平石和落叶，中景的洞顶萤光、丝线和暗河，远景的洞深处拐弯和洞口月光共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景引导视线、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "材质与制作底线",
+      "criterion": "石灰岩有溶蚀凹槽、细颗粒和水膜，陡壁贴图不拉伸，滴水处更湿更深；钟乳石半透明、尖端透光；丝线透明，黏珠折射背后的萤光、每颗里有小亮点；暗河平处像镜子、深处有蓝绿色体积吸收；平石上的落叶有接触阴影。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "岩石像光滑塑料，或黏珠像实心白点，或水面没有倒影。",
+        "50": "主要质感成立，但有一处明显的材质雷同、黏珠不折射或贴图拉伸，且未达到 0 分状态。",
+        "100": "岩石、钟乳石、丝线、黏珠和水面的质感都做到，近景经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "丝线摆动",
+      "criterion": "丝线顶端钉在幼虫身上，被夜风吹得往洞深处摆，长的摆得慢、晃得久，短的快；相邻丝线摆动先后不同，偶尔轻碰又分开、不缠绕、不穿过岩石；风弱后带余摆慢慢停住。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "丝线像僵直的棍子不动，或全部同步摆动，或大面积缠绕穿透。",
+        "50": "摆动基本成立，但有一段明显同步、穿插或停得太突然，且未达到 0 分状态。",
+        "100": "丝线摆动长短有别、先后错落、余摆自然。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "萤光依次亮起",
+      "criterion": "云遮月、洞里变暗以后，萤光从洞最深处开始，以约每秒 3 米往洞口方向依次亮起；每只亮度略有不同，分布像真实星空一样有疏有密。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "整个洞顶一下子全亮，或亮起顺序和洞的深浅无关，或排成整齐的网格。",
+        "50": "顺序基本正确，但有一段明显跳变或分布过于均匀，且未达到 0 分状态。",
+        "100": "亮起顺序清楚自然，分布疏密真实。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "月光和倒影",
+      "criterion": "洞口的月光被云遮住时从边缘开始变暗缩小，结尾重新透进一线；水滴落下激起涟漪，把萤光倒影打碎再慢慢拼回。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "月光一下子关掉，或没有涟漪和倒影变化。",
+        "50": "基本成立，但有一处变化突兀，且未达到 0 分状态。",
+        "100": "月光的退去和回来平滑，涟漪和倒影变化自然。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "造型及视觉一致性",
+      "criterion": "溶洞和萤火虫的造型全程一致，光的变化都由月光和萤光引起，没有无故的亮度跳变。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，溶蚀纹理、钟乳石水滴和丝线上的黏珠在当前景别下可辨，萤光和暗部没有闪烁噪点。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；月光退去、深处先亮、夜风入洞、星空铺满和双重星空都在画面里看得清；近景能看出一颗颗黏珠；结尾洞顶萤光和倒影在画面中间的水面线上相接。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "灯光材质与氛围",
+      "criterion": "萤光、月光和水面反光层次清楚，冷暖对比自然；萤光不爆白、不糊成光雾，暗部干净不发灰，没有镜头光晕。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和氛围都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和氛围基本成立，但有一处明显过曝、眩光或颜色失真，且未达到 0 分状态。",
+        "100": "灯光层次清楚，氛围明确，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "场景丰富度",
+      "criterion": "前景有洞壁、钟乳石、平石和落叶，中景有洞顶萤光、丝线和暗河，远景有洞深处和洞口的月光与蕨叶。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

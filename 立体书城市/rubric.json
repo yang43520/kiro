@@ -1,0 +1,295 @@
+{
+  "task": "立体书里的城市",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一本旧立体书和书页上的纸城市（河、桥、两排房子、钟楼、树、环形轨道和纸火车、纸云和纸月亮）；风翻开书页后纸城市一层层立起，结尾书页摊平、纸火车绕城转。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "立体书或纸城市缺失，或纸结构没有立起，或结尾纸火车没有开动。",
+        "100": "立体书和纸城市都在，纸结构依次立起，结尾书页摊平、纸火车绕城转。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "书页自身翻动，纸结构自身沿折痕立起，纸火车自身沿轨道移动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "书和纸结构没有自身运动，动态只靠镜头或剪辑。",
+        "100": "书页翻动、纸结构立起和纸火车移动都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按风翻书页 → 河与桥 → 城市立起 → 云月升起 → 纸城夜色的顺序完整呈现，结尾约 2 秒展示完整的纸城市和绕城的纸火车。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有封面、翻动的书页、中页底板、立起的纸结构、托云月的纸条、纸转盘和纸火车共 6 个独立部分（要求不少于 4 个），各自有可见的变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立部分少于 4 个，或像一整块没有变化。",
+        "100": "各部分清楚可辨，各自有可见的变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有风翻书页、河与桥、城市立起、云月升起、纸城夜色共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有台灯主光、窗外冷光、纸的透光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，冷暖和明暗层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有书桌、立体书、纸房子、纸钟楼、纸桥和纸河、纸树、纸轨道和纸火车、纸云和纸月亮、铅笔、剪刀、黄铜台灯、窗户和窗帘共 12 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在窗外吹进的风（翻动书页、吹动窗帘和纸屑）、台灯在纸房子之间的光影和绕城的纸火车等不少于 3 类环境动态源，风引起书页翻开、书页摊平引起火车开动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或动态之间没有呼应。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出彼此带动。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的铅笔、剪刀、纸屑和纸胶带，中景的立体书和纸城市，远景的书架、窗户、窗帘和台灯共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景引导视线、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "材质与制作底线",
+      "criterion": "纸有纤维凹凸、印刷网点颜色和轻微发黄，折痕有白色压痕，边角磨损起毛，纸片截面看得出约 0.3 毫米厚度，薄处被台灯照透；布面封面有织纹、边角磨白，烫金花纹反光；胡桃木书桌有木纹和清漆；黄铜台灯凸起磨亮；纸结构与书页、铅笔与书桌之间有接触阴影。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "纸像没有厚度的塑料片，或主要材质看不出区别。",
+        "50": "主要质感成立，但有一处纸片没有厚度、缺少透光或缺少接触阴影，且未达到 0 分状态。",
+        "100": "纸、布、木和黄铜的质感都做到，近景经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "纸页弯折与展开",
+      "criterion": "封面和书页被风翻动时弯成弧、翻过后轻轻一弹，像硬纸而不是布；纸结构沿每条折痕转动，折痕锐利、平面平整，纸片之间不穿过彼此；纸云和纸月亮在纸条上轻轻摇晃。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "书页像布一样软塌，或纸结构整体平移飘起，或大面积穿插。",
+        "50": "弯折基本成立，但有一处折痕变软、局部穿插或翻页弹动缺失，且未达到 0 分状态。",
+        "100": "书页和纸结构的弯折、展开都像真纸，没有穿插。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "立起顺序与机关",
+      "criterion": "纸结构立起的角度跟着书页张开的角度，按河和桥 → 房子和树 → 钟楼 → 云和月亮的顺序；V 形折沿中缝立起、平行折平平抬起；相连的纸片互相带动；立到底时轻轻一顿。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "纸结构和书页张开角度无关，或顺序混乱、自己飘起来。",
+        "50": "顺序基本正确，但有一处和书页角度对不上或顺序颠倒，且未达到 0 分状态。",
+        "100": "立起顺序和机关关系清楚，像���实立体书。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "纸火车与拉条",
+      "criterion": "书页完全摊平后纸拉条才被拉直，带动纸转盘让纸火车沿环形轨道绕城转，车轮转动和前进距离匹配，过接缝时轻轻一颠；书页摊平之前火车不动。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "火车在书页摊平之前就开动，或车轮不转、打滑。",
+        "50": "基本成立，但有一处先后或车轮匹配不对，且未达到 0 分状态。",
+        "100": "拉条、转盘和火车的先后与联动都正确。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "造型及视觉一致性",
+      "criterion": "立体书、纸城市和书桌的造型全程一致，纸结构的变化都由书页张开引起，没有无故的亮度跳变或纸片凭空出现。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，纸纤维、网点颜色、折痕和纸片截面在当前景别下可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；风翻书页、河与桥、城市立起、云月升起和纸城夜色都在画面里看得清；纸结构立起不被书页挡住；结尾纸城市约占画面宽度七成，焦点在纸城市上。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "灯光材质与氛围",
+      "criterion": "台灯暖光、窗外冷光和纸的透光层次清楚，冷暖对比自然；白纸和黄纸不过曝，没有镜头光晕和光雾，景深虚化自然。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和氛围都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和氛围基本成立，但有一处明显过曝、眩光或颜色失真，且未达到 0 分状态。",
+        "100": "灯光层次清楚，氛围明确，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "场景丰富度",
+      "criterion": "前景有铅笔、剪刀、纸屑和纸胶带，中景有立体书和纸城市，远景有书架、开着缝的窗、被吹动的窗帘和黄铜台灯。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
