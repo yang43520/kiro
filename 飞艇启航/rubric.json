@@ -1,0 +1,255 @@
+{
+  "task": "海边小镇的飞艇启航",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一座海边山坡小镇和一艘原创的鱼形飞艇；飞艇解开缆绳起飞、绕过钟楼、掠过屋顶，结尾收好缆绳，在海面上空平稳地飞向远方。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "小镇或飞艇缺失、被替代，或飞艇没有起飞，或结尾没有飞到海面上空。",
+        "100": "小镇和飞艇都在，飞艇完成起飞、绕塔和掠过屋顶，结尾收好缆绳飞向海面。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "飞艇自身发生起飞、转弯和航行，螺旋桨转动，缆绳解开和收回。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "飞艇没有自身运动，动态只靠镜头或剪辑。",
+        "100": "飞艇的起飞、转弯、航行和螺旋桨、缆绳的运动都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按钟响解缆 → 螺旋桨起转 → 绕过钟楼 → 掠过屋顶 → 驶向海面的顺序完整呈现，结尾约 2 秒展示飞向海面的飞艇。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少解缆、起飞、绕塔或出海中的任一阶段，或飞艇没有飞出小镇就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾约 2 秒清楚展示飞向海面的飞艇。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "飞艇有气囊、吊舱、左右螺旋桨组、尾舵、4 根系留缆和绞盘共 6 个独立分件（要求不少于 4 个），各自有可见的运动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或飞艇像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有钟响解缆、螺旋桨起转、绕过钟楼、掠过屋顶、驶向海面共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有午后阳光主光、蓝色天光、白墙和海面的反射补光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，亮面、阴影和补光层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "状态转换",
+      "criterion": "飞艇完成系留 → 起飞离开码头 → 转弯绕塔 → 平飞出海共 3 次明确的状态转换（要求至少 2 次）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "状态转换少于 2 次，或跳过离开码头的过程。",
+        "100": "至少 2 次状态转换都清楚可见。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "缆绳与布的柔性",
+      "criterion": "系留缆解开后松垂成悬链线、随飞艇和风甩动并被绞盘收回；床单、衬衫和三角旗被风鼓起、翻卷，夹子弹开后衬衫挂在绳上飘，风过后慢慢落回；布不像硬板整体转动，不穿过晾衣绳和彼此。",
+      "weight": 14,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缆绳和布没有柔性运动，或像硬板整体移动，或大面积穿透。",
+        "50": "柔性运动基本成立，但有一处缆绳收回和绞盘对不上、布局部穿插或风过后瞬间复原，且未达到 0 分状态。",
+        "100": "缆绳和布的垂荡、翻飞、收回和落回都自然连续，没有穿透。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "飞行轨迹与姿态",
+      "criterion": "飞艇离开码头后升高转向，以约 40 米半径绕过钟楼时向弯里侧倾约 8°，船头顺着前进方向，掠过屋顶后在海面上空回正；速度从约 2 米/秒平滑加到约 12 米/秒；不横移、不急停、不碰钟楼和屋顶。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "飞艇横向平移、朝向和运动方向矛盾，或穿过钟楼和屋顶。",
+        "50": "轨迹基本成立，但有一处转向或速度突变，或侧倾和转弯不匹配，且未达到 0 分状态。",
+        "100": "轨迹、朝向、侧倾和速度变化都平滑一致，和建筑保持距离。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "螺旋桨风的因果",
+      "criterion": "螺旋桨从慢到快转起来后才产生风；风跟着飞艇移动，衣物、旗子、花和海鸥被惊动的先后和飞艇经过的先后一致；海鸥被惊起后跟着飞艇飞，彼此不重叠。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "衣物和海鸥的动态和飞艇无关，或在飞艇经过前就被吹动。",
+        "50": "因果基本成立，但有一段先后颠倒，或海鸥群明显重叠、动作一致，且未达到 0 分状态。",
+        "100": "风的来源和先后清楚，衣物、旗子和海鸥都按飞艇经过的顺序被惊动。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "造型及视觉一致性",
+      "criterion": "飞艇、小镇和所有物体的造型、配色和手绘质感全程统一，没有有的像照片、有的像卡通的割裂，也没有无故的部件消失或亮度跳变。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "风格明显割裂，或出现无故换形、部件消失、材质突变。",
+        "50": "整体统一，但局部有明显的风格不一致或亮度跳变，且未达到 0 分状态。",
+        "100": "造型和手绘质感全程统一，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，帆布缝线、瓦片和衣物褶皱在当前景别下可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；缆绳解开、螺旋桨起转、绕过钟楼、掠过屋顶和驶向海面都在画面里看得清；飞艇掠过头顶时不出画；结尾飞艇约占画面宽度三成多；镜头不穿过晾衣绳和床单。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或飞艇的关键过程出画、被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段被前景床单明显遮挡或飞艇局部出画，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1920×1080、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "灯光材质与氛围",
+      "criterion": "午后阳光明亮温暖、阴影带蓝紫色冷调；帆布、木头、红瓦、石墙、铜和海面的材质差异清楚；颜色明亮通透不刺眼，没有镜头光晕和大面积光雾，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次不存在，或强光、眩光、过曝遮住飞艇。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或颜色刺眼，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，氛围明亮通透。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "场景丰富度",
+      "criterion": "每栋房子的高度、颜色、窗户和屋顶各不相同，有晾晒的衣物、花盆、花猫、海鸥、港口、灯塔和积云，场景有足够的东西可看。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "场景空泛，房子是重复的盒子，缺少大部分细节。",
+        "50": "主要细节出现，但房子明显重复或局部空泛，且未达到 0 分状态。",
+        "100": "房子错落各异，小物件和细节齐全，生活感明确。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂飞艇从解缆到出海的过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
