@@ -1,0 +1,281 @@
+{
+  "task": "戴森镜阵点火",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一颗红巨星、一座约 20 公里宽的环形镜阵和中心的接收站；镜片依次展开转向，接收站点火，结尾一道光束从接收站射向远处的行星，整座镜阵亮成光环。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "镜阵、接收站或红巨星缺失，或镜片没有展开转向，或结尾没有射出光束。",
+        "100": "镜阵、接收站和红巨星都在，镜片全部展开转向，结尾光束稳定地连到行星。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "镜片自身发生展开、转向，接收站和散热鳍发生亮度变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "镜片没有自身运动，动态只靠镜头或亮灭制造。",
+        "100": "镜片的展开、转向和接收站的点火都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按启动信号 → 镜片展开 → 转向聚光 → 焦点点火 → 光束射出的顺序完整呈现，结尾约 2 秒展示亮成光环的镜阵和连到行星的光束。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有六片花瓣镜面、中心毂、伸缩支架、姿态推进器、散热鳍共 5 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有启动信号、镜片展开、转向聚光、焦点点火、光束射出共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有红巨星主光、镜面反射光、设备的指示灯信号光和光束共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有镜片、环形轨道桁架、接收站、控制站、维护无人机、红巨星、行星、卫星、尘埃云、星空共 10 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在沿圆环传开的信号光、汇聚到接收站的反射光、镜片散热的热胀颤动和红巨星表面的日珥翻涌等不少于 3 类环境动态源，彼此随镜阵启动而变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或环境变化和镜阵启动没有关系。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出都随镜阵启动变化。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的近处镜片、桁架和维护无人机，中景的环形镜阵和接收站，远景的红巨星、行星、卫星和星空共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景给出尺度、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "镜片展开结构",
+      "criterion": "每面镜片按支架伸长、外壳退开、六片花瓣绕中心毂依次打开、散热鳍张开的顺序展开，拼成平整的镜面，花瓣不互穿，不直接替换成展开状态。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "镜片直接替换成展开状态，或花瓣大面积互穿。",
+        "50": "展开基本成立，但有一处顺序混乱、局部穿插或镜面没有拼平，且未达到 0 分状态。",
+        "100": "展开顺序清楚，花瓣拼成平整镜面，没有穿插。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "依次展开与转向",
+      "criterion": "信号沿圆环传开，镜片按离控制站的弧长依次展开，展开后约 0.8 秒依次转向，两道波浪绕圆环推进并在四个点汇合；转向由姿态推进器喷气引起，到位后停住。",
+      "weight": 11,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "一大段镜片同时动，或顺序和信号无关。",
+        "50": "顺序基本正确，但有一段明显乱序、跳过，或转向没有推进器依据，且未达到 0 分状态。",
+        "100": "展开和转向都按弧长依次推进，波浪清楚，转向有依据。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "光的汇聚与点火",
+      "criterion": "接收站的亮度随转好的镜片数量逐渐增加，颜色从暗红到橙色再到橙白色；散热鳍从深灰烧成暗红；发射管里的亮环加速推进后才射出光束，光束只在尘埃云里显出细线。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "接收站一下子全亮，或光束凭空出现，或整片太空被照成光雾。",
+        "50": "汇聚和点火基本成立，但有一处亮度跳变或先后颠倒，且未达到 0 分状态。",
+        "100": "亮度逐步增加，点火先后清楚，光束克制可见。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "造型及视觉一致性",
+      "criterion": "镜片、桁架和接收站的造型和材质全程一致，亮度变化都由反射光汇聚引起，没有无故的亮度跳变或镜片消失。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，镜面倒影、隔热膜褶皱和桁架螺栓在当前景别下可辨，星空不闪烁。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；前景镜片的展开细节、绕圆环推进的波浪、接收站点火和光束射向行星都在画面里看得清；结尾整个圆环和光束都在画面里，圆环约占画面宽度一半。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1920×1080、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "灯光材质与氛围",
+      "criterion": "红巨星主光的硬阴影、镜面反射光和设备光层次清楚；镀铝镜面、金色隔热膜和碳纤维的材质差异可辨；接收站不过曝，没有镜头光晕和大面积光雾。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "场景丰富度",
+      "criterion": "前景有近处镜片和维护无人机，中景有圆环和接收站，远景有红巨星、行星、卫星和星空；控制站、散热鳍等细节齐全。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

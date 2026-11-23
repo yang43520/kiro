@@ -1,0 +1,255 @@
+{
+  "task": "六足城跨越裂谷",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一座驮着楼群的六足移动城镇和一道裂谷；城镇用六条腿跨过裂谷，结尾六条腿都站在北岸、平台压低、城底警示灯由红转绿。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "城镇或裂谷缺失、被替代，或城镇没有跨过裂谷，或结尾警示灯没有转绿。",
+        "100": "城镇和裂谷都在，城镇完成跨越，结尾六条腿站在北岸、平台压低、警示灯转绿。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "城镇的腿自身发生抬起、迈步、落脚，液压缸伸缩，平台起伏。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "城镇没有自身的腿部运动，只是整体平移或靠镜头制造动态。",
+        "100": "腿的迈步、液压缸伸缩和平台起伏都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按崖边探腿 → 前腿跨越 → 中腿跨越 → 后腿跨越 → 站稳的顺序完整呈现，结尾约 2 秒展示站稳的城镇和转绿的警示灯。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有平台、楼群上层（吊塔和缆车）、六条腿、液压缸组、脚掌、城底灯组共 6 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有崖边探腿、前腿跨越、中腿跨越、后腿跨越、站稳共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有大太阳的白色主光、小太阳的橙色补光和天光、城底警示灯和窗灯共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "状态转换",
+      "criterion": "城镇完成行进 → 跨越裂谷 → 停步站稳共 2 次明确的状态转换（要求至少 2 次），停步时速度逐渐慢下来、平台压低。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "状态转换少于 2 次，或停步没有减速过程。",
+        "100": "2 次状态转换都清楚可见，停步有减速和压低过程。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "六足步态与支撑",
+      "criterion": "三角步态交替，三条支撑腿的脚掌在着地期间不滑动、不穿进地面；腿按前、中、后的顺序跨过裂谷，落点都在崖边 5 米以外；平台高度和倾斜随支撑腿变化。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "腿不交替迈步，或脚掌明显滑动、穿地、落进裂谷，或城镇像漂浮一样平移。",
+        "50": "步态基本成立，但有一段明显滑步、踩空或跨越顺序颠倒，且未达到 0 分状态。",
+        "100": "步态交替清楚，支撑脚踩实不滑，跨越顺序正确，重心变化可信。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "液压与关节联动",
+      "criterion": "每根液压缸的伸缩和它两端关节的转角一致，缸体和活塞杆始终连在铰点上；落脚时缸被压短、平台微倾约 1°；站稳时所有缸一起收缩、平台压低约 2 米。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "液压缸和关节不联动，或缸体脱开、穿进腿里。",
+        "50": "联动基本成立，但有一处伸缩和转角对不上，或局部穿插，且未达到 0 分状态。",
+        "100": "液压缸始终跟着关节伸缩，连接稳定，落脚和站稳的响应清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "落脚冲击与次级晃动",
+      "criterion": "每次落脚都砸碎崖边岩块，碎块翻滚掉进裂谷，沙尘从脚掌周围推开并被风吹向东边；吊塔、缆车和帆布跟着平台起伏慢半拍晃动，逐渐停下。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "落脚没有任何冲击反应，或碎石、沙尘凭空出现，或吊塔缆车和平台焊死一起动。",
+        "50": "冲击和晃动出现，但有一处来源不合理或晃动和平台同步不滞后，且未达到 0 分状态。",
+        "100": "每次落脚都有碎石和沙尘，次级晃动滞后、衰减自然。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "造型及视觉一致性",
+      "criterion": "城镇的造型、锈迹、楼群和警示灯全程一致，警示灯的颜色变化有依据，没有无故的部件消失或亮度跳变。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，铆钉、锈迹、砂岩层理和沙粒在当前景别下可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；每条腿跨过裂谷的那一步都在画面里看得清，沙尘不挡住脚掌落地；结尾整座城镇、六条腿和裂谷都在画面里，城镇约占画面宽度一半。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1920×1080、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "灯光材质与氛围",
+      "criterion": "主光的长影、补光的暖色轮廓和城底的警示灯层次清楚；锈钢、镀铬活塞杆、混凝土和砂岩的材质差异可辨；没有镜头光晕，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "场景丰富度",
+      "criterion": "前景有岩柱、碎石和测绘杆，中景有城镇和裂谷，远景有沙丘、台地和两颗太阳；楼群有吊塔、缆车、帆布等细节。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
