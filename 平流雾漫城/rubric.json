@@ -1,0 +1,281 @@
+{
+  "task": "平流雾漫城",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一座原创滨江城市和一层平流雾；雾从江面漫上岸、淹没城区，结尾城市沉在被灯光照亮的雾海下面，14 座超高层和斜拉桥的桥塔露出雾面，航空障碍灯闪烁。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "城市或平流雾缺失，或雾没有漫进城区，或结尾没有形成露出超高层的雾海。",
+        "100": "城市和雾都在，雾完成漫城，结尾雾海成形、超高层和桥塔露出雾面。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "平流雾自身发生流动、绕流和上涨，车流自身发生行驶、减速和亮双闪。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "雾和车流没有自身运动，动态只靠镜头或剪辑。",
+        "100": "雾的流动、绕流、上涨和车流的变化都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按江雾 → 漫上岸 → 淹没街区 → 雾海成形 → 雾海的顺序完整呈现，结尾约 1.5 秒展示露出超高层的雾海。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少漫上岸、淹没街区或雾海成形中的任一阶段，或雾海没有成形就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾约 1.5 秒清楚展示雾海。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "城市有超高层群、低层街区、斜拉桥、道路车流和江面共 5 个独立部分（要求不少于 4 个），各自有可见的变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立部分少于 4 个，或城市像一整块没有变化的背景。",
+        "100": "5 个部分清楚可辨，各自有可见的变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有江雾、漫上岸、淹没街区、雾海成形、雾海共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有城市灯光主光、月光补光和夜空城市辉光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，雾面上下的冷暖区别清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有超高层、写字楼、住宅楼、江堤、滨江大道、街道和路口、路灯、信号灯、车辆、斜拉桥、立交桥、楼顶设备共 12 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和城市主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在平流雾、江风、车流和航空障碍灯等不少于 3 类环境动态源，雾被江风推动、车流随雾到达而变化，彼此呼应。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或车流变化和雾没有关系。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出江风推雾、雾带动车流变化。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的超高层楼顶（停机坪边缘、避雷针、障碍灯）、中景的城区、大桥和雾、远景的远城灯火、山脊和夜空共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景给出视差、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "雾的阻挡与绕流",
+      "criterion": "雾在楼的迎风面堆高约 30 米，从楼两侧和楼缝绕过去，背风面留下薄雾区；超高层背风面拉出带交替涡旋的尾迹；雾有厚度和内部明暗层次，不像平面贴图或均匀灰雾，不穿过楼体。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "雾像平面贴图或均匀灰雾，或直接穿过楼体，没有阻挡和绕流。",
+        "50": "阻挡和绕流基本成立，但有一处明显穿过楼体、背风面没有尾迹，或模拟和远处体积衔接生硬，且未达到 0 分状态。",
+        "100": "雾的堆高、绕流和涡旋尾迹都自然可信，没有穿透。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "车流的依次响应",
+      "criterion": "雾的前沿到达哪一段道路，那段车流才减速、亮双闪，从滨江大道一段段往北传到三条主干道和立交桥；减速平滑，双闪节奏一致但每辆车相位略有不同。",
+      "weight": 11,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "车流和雾的到达无关，或全城同时变化。",
+        "50": "顺序基本跟着雾走，但有一段明显乱序，或减速突变、双闪完全同步，且未达到 0 分状态。",
+        "100": "车流响应严格跟着雾的前沿依次传开，减速平滑，双闪自然。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "灯光在雾中的变化",
+      "criterion": "路灯、车灯和窗灯被雾包住后化成和雾浓度一致的光晕，被吞没的街区变柔变暖；雾面被下方灯光照亮，亮度随下面灯的疏密变化；障碍灯在延时下仍看得出闪烁。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光不受雾影响，或光晕像后期糊上去的一层，或雾面亮成一片白。",
+        "50": "光晕和雾面照明基本成立，但有一处亮度和雾浓度不符，或障碍灯一直亮着不闪，且未达到 0 分状态。",
+        "100": "光晕、雾面照明和障碍灯闪烁都自然真实。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "造型及视觉一致性",
+      "criterion": "城市的楼群、桥和灯光全程一致，延时下所有东西按同一速度播放，没有无故的亮度跳变或楼、车消失。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、楼或车凭空消失、亮度跳变，或不同物体按不同速度播放。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或速度不一致，且未达到 0 分状态。",
+        "100": "造型和速度全程一致，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "画面完整与清晰",
+      "criterion": "2560×1440 下画面无明显破面、闪烁和噪点，楼的窗格、车灯和雾的纹理清楚可辨，雾里和暗部没有闪烁噪点。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或楼和雾的细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或雾里噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，细节配得上 2K 分辨率。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；雾漫上岸、绕流、淹没街区和雾海成形都在画面里看得清；结尾超高层群在画面中央约占画面宽度六成；镜头不穿过避雷针和楼顶设备。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结尾的雾海出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段被前景明显遮挡或构图明显偏出，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、2560×1440、60 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "灯光材质与氛围",
+      "criterion": "钠灯橙光和 LED 冷白光区分清楚，月光给雾面顶部补上冷色；玻璃幕墙、混凝土、金属、江面和雾的材质差异清楚；天空城市辉光很淡，没有镜头光晕和光污染，雾面不过曝，颜色饱和度真实偏低。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次不存在，或光污染、眩光、过曝遮住城市。",
+        "50": "灯光和材质基本成立，但有一处明显的过曝、天空发橙或颜色过艳，且未达到 0 分状态。",
+        "100": "灯光层次真实，材质差异可辨，没有光污染和眩光。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "场景丰富度",
+      "criterion": "每栋楼的高度、立面和亮灯窗户都不同，有坏掉的路灯、疏密不均的车流、江上的货船和游船、楼顶的冷却塔和停机坪，场景有足够的东西可看。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "场景空泛，楼群明显重复，缺少大部分细节。",
+        "50": "主要细节出现，但楼群或窗灯明显重复，且未达到 0 分状态。",
+        "100": "细节齐全且各不相同，城市感真实。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂雾从江面漫成雾海的过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
