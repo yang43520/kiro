@@ -1,0 +1,281 @@
+{
+  "task": "舰队跃迁抵达",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一颗带光环的巨行星和 40 艘原创战舰（28 艘护卫舰、11 艘巡洋舰、1 艘约 2 公里长的旗舰）；舰队依次跃迁抵达，结尾旗舰收起跃迁翼停在前方，舰队在它身后排成弧形阵列，行星环上留下扩散的缺口。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "巨行星、行星环或舰队缺失、被替代，或旗舰没有出现，或结尾没有形成弧形阵列和环带缺口。",
+        "100": "巨行星、行星环和三种舰船都在，结尾旗舰停在前方、舰队成弧形阵列、环带缺口清楚可见。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "舰船自身发生跃迁冲出、减速滑行、微调和收翼，冰块自身发生推开、翻滚和碎裂。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "舰船和冰块没有自身运动，动态只靠镜头或剪辑。",
+        "100": "舰船的冲出、减速、微调、收翼和冰块的推开、碎裂都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按裂隙 → 编队抵达 → 旗舰降临 → 收翼列阵 → 舰队就位的顺序完整呈现，结尾约 2 秒展示列阵的舰队和扩散的环带缺口。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少编队抵达、旗舰降临或收翼列阵中的任一阶段，或阵列没有排好就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾约 2 秒清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "旗舰有舰首装甲、中段舰体、左跃迁翼、右跃迁翼、舰桥塔和尾部推进器组共 6 个独立分件（要求不少于 4 个），导流口合拢、跃迁翼折叠、推进器亮起各自可见。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或旗舰像一整块一起动。",
+        "100": "分件清楚可辨，各自的运动或变化可见。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有裂隙、编队抵达、旗舰降临、收翼列阵、舰队就位共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有恒星主光、巨行星的反射补光、舰船自身的光痕推进器和航行灯共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，亮面和暗面的层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有护卫舰、巡洋舰、旗舰、巨行星、行星环带、冰块、碎石、卫星、导航信标、星云共 10 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在跃迁冲击波、行星环冰块的波纹和碰撞、巨行星云带的流动和信标的闪灯等不少于 3 类环境动态源，冰环的变化由冲击波带动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或冰环的变化和冲击波没有关系。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出冲击波带动冰环。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的冰块和导航信标、中景的舰队和旗舰、远景的巨行星、卫星和星云共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景给出尺度和视差、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "冰环的推开与碎裂",
+      "criterion": "冲击波经过时冰块和碎石被向外推开形成扩散的波纹；冰块互相碰撞，大冰块崩下锋利碎片、小冰块碎成冰晶，碎片翻滚减速后继续漂散；冰块不互穿、不穿过信标和舰船；环带留下持续扩散的缺口。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "冰块不受冲击波影响，或碎裂凭空发生，或冰块大面积穿透。",
+        "50": "推开和碎裂基本成立，但有一处没碰撞就碎、碎片悬停或局部穿透，且未达到 0 分状态。",
+        "100": "推开、碰撞、碎裂和漂散都由冲击波和碰撞引起，连续可信，没有穿透。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "编队依次抵达",
+      "criterion": "40 艘舰船按弧线上离第一艘的距离依次跃迁，相邻约 0.1 秒，护卫舰先到、巡洋舰在后，旗舰最后出现；每艘都经过光痕、冲出、减速、推出冲击波四步；最后排成整齐的弧形阵列。",
+      "weight": 11,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "舰船成片同时出现，或不经过光痕凭空出现，或没有排成阵列。",
+        "50": "顺序基本正确，但有一段明显乱序、跳过，或阵列明显不整齐，且未达到 0 分状态。",
+        "100": "按顺序逐艘抵达，四步完整，阵列整齐。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "减速与收翼",
+      "criterion": "舰船冲出后由减速推进器点火平稳减速停下（护卫舰约 0.8 秒、旗舰约 1.5 秒），沿运动方向滑行不横移；旗舰停下后跃迁翼分三段绕铰链依次折叠贴合舰体，导流口装甲合拢，不穿进舰体。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "舰船凭空急停或横向平移，或跃迁翼一下子消失、穿进舰体。",
+        "50": "减速和收翼基本成立，但有一处速度突变、减速没有推进器依据，或折叠顺序混乱、局部穿插，且未达到 0 分状态。",
+        "100": "减速平稳有依据，收翼按顺序完成并贴合舰体，没有穿插。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "造型及视觉一致性",
+      "criterion": "三种舰船的造型、装甲颜色和细节全程一致；光痕、冲击波和推进器的亮度变化都有依据，没有无故的亮度跳变或物体消失。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、舰船或冰块凭空消失、材质突变。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或个别物体闪变，且未达到 0 分状态。",
+        "100": "造型和材质全程一致，变化都有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，装甲接缝、铆钉、冰块的霜和裂纹在当前景别下可辨，星空不闪烁。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或舰船和冰块细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或暗部噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；第一艘舰抵达、编队依次抵达、冰环被推开、旗舰掠过、收翼和列阵都在画面里看得清；擦过镜头的冰块不挡住旗舰出现；结尾旗舰约占画面宽度三成，舰队阵列和环带缺口都在画面里；镜头不穿过冰块和舰船。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或旗舰出现、收翼或结尾的阵列出画、被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段被冰块或运动模糊明显遮挡，或结尾构图明显偏出画面，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1920×1080、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "灯光材质与氛围",
+      "criterion": "恒星主光阴影锋利，巨行星反射光补出暗面轮廓；装甲、冰块、碎石和玻璃的材质差异清楚；光痕和推进器亮度克制，没有镜头光晕和大面积光雾，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次不存在，或强光、眩光、过曝遮住舰船。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "场景丰富度",
+      "criterion": "冰块大小形状各异，同型舰船的磨损和姿态略有不同，巨行星云带有涡旋，卫星有陨石坑，星空星点大小亮度不一，场景有足够的东西可看。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "场景空泛，只有舰船和纯黑背景，缺少大部分细节。",
+        "50": "主要细节出现，但舰船或冰块明显重复或局部空泛，且未达到 0 分状态。",
+        "100": "细节齐全、各不相同，史诗感和尺度感明确。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂舰队从抵达到列阵的过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
