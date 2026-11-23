@@ -1,0 +1,295 @@
+{
+  "task": "倒悬瀑布",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一面悬崖、一道瀑布、谷底的深潭和崖顶的石门；石门亮纹后瀑布停住再倒流，穿过石门拧成水柱升进云洞，结尾一道倒流的瀑布从深潭连到云洞，深潭变浅露出卵石。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "悬崖、瀑布或石门缺失，或瀑布没有倒流，或结尾没有形成连到云洞的水柱。",
+        "100": "悬崖、瀑布、深潭和石门都在，瀑布完成倒流，结尾水柱连到云洞、深潭变浅。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "瀑布的水自身发生减速、悬停、倒流和旋转上升，石门刻纹自身亮起。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "水和石门没有自身变化，动态只靠镜头或剪辑。",
+        "100": "瀑布的减速、悬停、倒流和水柱旋转都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按石门亮纹 → 瀑布停滞 → 逆流爬崖 → 穿门成柱 → 天河的顺序完整呈现，结尾约 2 秒展示连到云洞的水柱和变浅的深潭。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有石门的刻纹、瀑布水幕、绕过石柱的水流、空中的旋转水柱、被甩出的水珠共 5 个独立部分（要求不少于 4 个），各自有可见的变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立部分少于 4 个，或像一整块没有变化。",
+        "100": "各部分清楚可辨，各自有可见的变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有石门亮纹、瀑布停滞、逆流爬崖、穿门成柱、天河共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有黄昏太阳主光、蓝紫色天光、石门刻纹的自发光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，冷暖和明暗层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有砂岩悬崖、瀑布、深潭和卵石、风化石柱、石门、石阶、藤蔓、老松、苔藓和岩缝植物、远处山脊、云洞共 11 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在倒流的瀑布、谷底上升的水雾、被水流气流吹动的老松和藤蔓，以及旋转的云洞等不少于 3 类环境动态源，都随瀑布倒流而变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或动态之间没有呼应。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出彼此带动。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的岩台、藤蔓、碎石和石阶，中景的悬崖、瀑布、深潭、石柱和石门，远景的山脊、黄昏天空和云洞共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景引导视线、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "材质与制作底线",
+      "criterion": "砂岩有岩层纹理、颗粒和岩石节理，陡壁上的贴图不拉伸；被水冲到的岩石变深发亮、水离开后慢慢变干；潭水有正确的折射和蓝绿色的体积吸收，浅处看得见卵石；石门风化，凹处有苔藓和积尘，石门和石阶边角磨圆；崖壁凹槽和石柱背面有接触阴影。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "岩石像光滑塑料、水面像镜子，或主要材质看不出区别。",
+        "50": "主要质感成立，但有一处明显拉伸、湿岩变化缺失或水面材质失真，且未达到 0 分状态。",
+        "100": "岩石、湿岩、潭水、石门和苔藓的质感都做到，近景经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "倒流与绕流",
+      "criterion": "瀑布先减速、悬停，再从最底下那一段开始倒流，速度变化平滑；水顺崖壁往上爬时被凹槽和突岩分开再合拢；在三根石柱迎水面堆高约 1 米后从两侧绕过，背面留下水少的地方；水不穿过岩石，也不是简单倒放。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "瀑布直接倒放，或水穿过岩石，或没有绕过石柱的过程。",
+        "50": "倒流和绕流基本成立，但有一处速度突变、局部穿透或背面没有水少的区域，且未达到 0 分状态。",
+        "100": "减速、悬停、倒流和绕流都自然可信，没有穿透。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "水柱与甩出的水珠",
+      "criterion": "水穿过石门后拧成直径约 6 米、旋转上升的水柱；外圈的水珠和水沫由液面断开，沿螺旋被甩出，带细细的拖尾，越飞越小越淡，大小和方向各不相同，不凭空出现。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "没有旋转水柱，或水珠凭空出现、大小一致排成整齐的圈。",
+        "50": "水柱和水珠基本成立，但有一处水珠来源不合理或排列明显规整，且未达到 0 分状态。",
+        "100": "水柱旋转上升清楚，水珠从液面断开、随机自然。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "开门的因果与水潭",
+      "criterion": "石门刻纹从柱脚亮到横梁之后瀑布才开始变慢；水往上流走以后深潭的水位才下降约 2 米，露出卵石；谷底水雾随后被气流带着上升。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "水流在刻纹亮起之前就变化，或深潭水位不随水流变化。",
+        "50": "因果基本成立，但有一处先后颠倒，且未达到 0 分状态。",
+        "100": "刻纹、瀑布、水潭和水雾的先后都正确。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "造型及视觉一致性",
+      "criterion": "悬崖、石门、石柱和深潭的造型全程一致，水和光的变化都由石门引起，没有无故的亮度跳变或水凭空出现。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，岩层纹理、石门刻纹、卵石和水珠在当前景别下可辨，水雾和云里没有闪烁噪点。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；石门亮纹、瀑布停滞、逆流爬崖、穿门成柱和天河都在画面里看得清；水雾不挡住水绕过石柱的过程；结尾水柱约占画面高度八成。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "灯光材质与氛围",
+      "criterion": "黄昏橙金色的主光、蓝紫色天光和石门淡金色的刻纹层次清楚；水珠和水柱边缘不过曝，刻纹不比夕阳更亮，没有镜头光晕和铺满画面的雾。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和氛围都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和氛围基本成立，但有一处明显过曝、眩光或颜色失真，且未达到 0 分状态。",
+        "100": "灯光层次清楚，氛围明确，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "场景丰富度",
+      "criterion": "前景有岩台、藤蔓和石阶，中景有悬崖、深潭、石柱、石门和老松，远景有层层山脊、黄昏天空和云洞。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "task": "冬夜壁炉",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一间原木小屋、一座花岗岩壁炉和一扇结着冰花的窗；余烬复燃后炉火燃起照亮屋子，冰花从靠近壁炉的角落化开，结尾屋里一片暖橙色，窗上约六成冰花化开、留着水痕。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "壁炉或窗缺失，或炉火没有燃起，或冰花没有融化、没有水痕。",
+        "100": "壁炉和窗都在，炉火燃起，冰花化开并留下水痕，结尾屋里变暖。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "火焰自身发生燃起和翻卷，冰花自身发生融化，水珠往下流。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "火、冰花和水珠没有自身变化，动态只靠镜头或剪辑。",
+        "100": "火焰燃起、冰花融化和水珠流下都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按余烬复燃 → 引火 → 炉火旺起 → 冰花融化 → 暖屋的顺序完整呈现，结尾约 2 秒展示暖屋和窗上的水痕。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有余烬和炉灰、柴堆、火焰和烟、窗上的冰花、被照亮的屋内陈设共 5 个独立部分（要求不少于 4 个），各自有可见的变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立部分少于 4 个，或像一整块没有变化。",
+        "100": "各部分清楚可辨，各自有可见的变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有余烬复燃、引火、炉火旺起、冰花融化、暖屋共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有炉火主光、窗外冷光、壁炉架上的油灯共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，冷暖和明暗层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有原木墙和木梁、花岗岩壁炉、铁柴架和火钳、木柴、油灯和陶罐、窗户和冰花、摇椅、羊毛毯、皮靴、木架子和旧书、雪鞋和斧头、窗外的冷杉共 12 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在炉火、上升的热气（吹动草药束和毛毯流苏）、窗外的风雪和窗上流下的水珠等不少于 3 类环境动态源，热气和水珠都由炉火引起。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或动态之间没有呼应。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出彼此带动。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的摇椅、毛毯、皮靴和火钳，中景的壁炉、窗户和屋内陈设，远景的窗外雪林和远处的灯共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景引导视线、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "材质与制作底线",
+      "criterion": "原木有年轮、节疤和手斧痕，靠近壁炉的原木被熏得更深；花岗岩有颗粒，炉口上方有从下往上加深的烟熏过渡，石缝积灰；锻铁带锈、烧过处发蓝；羊毛毯有短绒和毛球；冰花有羽毛状的立体冰晶并半透明；木构硬边有倒角；屋里的东西都有接触阴影。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "木头、石头和铁看起来是同一种光滑塑料，或冰花像一张白色贴图。",
+        "50": "主要质感成立，但有一处明显的材质雷同、缺少烟熏过渡或缺少接触阴影，且未达到 0 分状态。",
+        "100": "原木、花岗岩、锻铁、羊毛和冰花的质感都做到，近景经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "冰花融化留痕",
+      "criterion": "冰花从靠近壁炉的右下角开始融化，边缘往左上方推开，经过处变成透明玻璃加水雾；水珠顺玻璃往下流并留下不会消失的水痕，窗台汇成一小摊水；化开的地方不会冻回去。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "冰花整块一下子消失，或没有水痕，或融化方向和壁炉位置无关。",
+        "50": "融化基本成立，但有一段跳变、水痕消失或方向不对，且未达到 0 分状态。",
+        "100": "融化方向、过程和水痕都自然连续。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "炉火燃起与照明",
+      "criterion": "余烬被风吹红后火从松针传到细柴再到大柴，火焰按温度着色，木柴由树皮到焦黑再到发红的炭；暖光用全局光照在原木之间反弹，影子随火光自然跳动，窗户的冷光干净地进来。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "火一下子烧满，或像循环贴图，或屋里的光不随火变化。",
+        "50": "燃起和照明基本成立，但有一处燃烧顺序颠倒或影子频闪，且未达到 0 分状态。",
+        "100": "燃烧顺序清楚，火焰真实，屋里的光随火自然变化。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "热气与环境响应",
+      "criterion": "炉火的热气让房梁上的草药束轻轻转动、毛毯流苏微微飘起；火星溅出后落在炉灰上变暗；大柴烧断塌下时溅起火星、火焰一窜。",
+      "weight": 7,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "热气没有带动任何东西，或环境变化和炉火无关。",
+        "50": "环境响应基本成立，但有一处来源不合理或和炉火不同步，且未达到 0 分状态。",
+        "100": "热气、火星和柴塌的响应都由炉火引起，自然可信。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "造型及视觉一致性",
+      "criterion": "木屋、壁炉和陈设的造型全程一致，光和冰花的变化都由炉火引起，没有无故的亮度跳变。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，木纹、石头颗粒、毛线和冰晶在当前景别下可辨，暗部和火焰里没有闪烁噪点。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；余烬复燃、引火、炉火旺起、冰花融化和暖屋都在画面里看得清；冰花化开的过程不被摇椅或毛毯挡住；结尾壁炉和窗各占画面约三分之一。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "灯光材质与氛围",
+      "criterion": "炉火暖光、窗外冷光和油灯的小火苗层次清楚，冷暖对比自然；火焰芯不过曝，没有镜头光晕和光雾，暖色不发红发艳。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和氛围都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和氛围基本成立，但有一处明显过曝、眩光或颜色失真，且未达到 0 分状态。",
+        "100": "灯光层次清楚，氛围明确，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "场景丰富度",
+      "criterion": "前景有摇椅、毛毯、皮靴和火钳，中景有壁炉、窗户、木架、雪鞋和斧头，远景有窗外的雪林和远处的灯。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
