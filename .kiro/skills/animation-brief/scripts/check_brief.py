@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """检查一个动画任务是否符合 animation-brief 规则。
 
-新格式：主文件 <标题>.md，同时核对 <标题>剧本.md 和 <标题>考点说明.md（含档位下限：默认至少进阶档）。
-旧格式：<标题>_制作需求.md 和对应剧本。
+3.0 格式（默认）：主文件 <标题>.md（含“## 场景和主体”等五节），同时核对 <标题>考点说明.md 和 rubric.json。
+2.x 格式：主文件 <标题>.md（含“## Prompt 与剧本”），同时核对 <标题>剧本.md 和 <标题>考点说明.md。
+1.x 格式：<标题>_制作需求.md 和对应剧本。
 
 用法：python3 check_brief.py <任务文件夹>/<标题>.md [--taxonomy 路径]
       python3 check_brief.py <任务文件夹>/<标题>_制作需求.md [--taxonomy 路径]
@@ -187,6 +188,220 @@ def check_tp_file(main_path):
     WARN[w0:] = [f"{name}：{m}" for m in WARN[w0:]]
 
 
+V3_HEADS = ["## 场景和主体", "## 动作和镜头", "## 关键效果和做法", "## 灯光和画面", "## 底线和限制"]
+NEGATION = r"(不使用|不能使用|不能用|不用|不能出现|禁止使用|禁止|不导入|不能导入|别用|别)[^；。]*"
+COMMERCIAL = (r"Hard ?Ops|Boxcutter|Launch Control|Auto-Rig Pro|The Grove|Geo-Scatter|RBDLab|Simply Cloth|"
+              r"Physical Starlight|SceneCity|Photographer|Gaffer|FLIP Fluids|Botaniq|DECALmachine|KitOps")
+
+
+def fmt_num(x):
+    return f"{x:g}"
+
+
+def check_rubric(folder, rng):
+    """检查任务文件夹里的 rubric.json。rng 是主文件里的允许时长区间 (A, B)。"""
+    import json
+    path = os.path.join(folder, "rubric.json")
+    if not os.path.exists(path):
+        err("缺少 rubric.json")
+        return
+    e0, w0 = len(ERR), len(WARN)
+    raw = open(path, "rb").read()
+    if raw.startswith(b"\xef\xbb\xbf"):
+        err("应为不带 BOM 的 UTF-8")
+        raw = raw[3:]
+    try:
+        data = json.loads(raw.decode("utf-8"))
+    except Exception as e:
+        err(f"不是合法的 JSON：{e}")
+        data = None
+    if isinstance(data, dict):
+        sp = data.get("scoring_policy", {})
+        want = {"aggregation": "weighted_sum", "total_weight": 100, "total_threshold": 85,
+                "require_all_critical_pass": True}
+        for k, v in want.items():
+            if sp.get(k) != v:
+                err(f"scoring_policy.{k} 应为 {json.dumps(v)}")
+        if not str(data.get("task", "")).strip():
+            err("缺少 task")
+        crit = data.get("criteria")
+        if not isinstance(crit, list) or not crit:
+            err("criteria 为空")
+            crit = []
+        if crit and not 10 <= len(crit) <= 20:
+            warn(f"评价项有 {len(crit)} 项，一般为 12–16 项")
+        total, n_crit, dur_ok = 0, 0, False
+        for i, c in enumerate(crit, 1):
+            tag = f"第 {i} 项"
+            if not isinstance(c, dict):
+                err(f"{tag} 不是对象"); continue
+            cid = c.get("criterion_id")
+            if cid != f"R{i:02d}":
+                err(f"{tag} 的编号应为 R{i:02d}，现在是 {cid}")
+            tag = cid or tag
+            for k in ("dimension", "criterion"):
+                if not str(c.get(k, "")).strip():
+                    err(f"{tag} 缺少 {k}")
+            w = c.get("weight")
+            if not isinstance(w, (int, float)) or isinstance(w, bool) or w <= 0:
+                err(f"{tag} 的 weight 应为正数")
+            else:
+                total += w
+            cr = c.get("critical")
+            if cr is True:
+                n_crit += 1
+                if c.get("pass_threshold") != 100:
+                    err(f"{tag} 是关键项，pass_threshold 应为 100")
+            elif cr is False:
+                if c.get("pass_threshold") is not None:
+                    err(f"{tag} 不是关键项，pass_threshold 应为 null")
+            else:
+                err(f"{tag} 的 critical 应为 true 或 false")
+            st = c.get("scoring_type")
+            keys = {"binary": {"0", "100"}, "discrete": {"0", "50", "100"}}.get(st)
+            if keys is None:
+                err(f"{tag} 的 scoring_type 只能是 binary 或 discrete")
+            else:
+                an = c.get("score_anchors", {})
+                if not isinstance(an, dict) or set(an) != keys:
+                    err(f"{tag} 的 score_anchors 应正好包含 {sorted(keys, key=int)}")
+                elif any(not str(v).strip() or "……" in str(v) or "..." in str(v) for v in an.values()):
+                    err(f"{tag} 的锚点有空白或省略号")
+            if str(c.get("dimension", "")).strip() == "时长":
+                text = str(c.get("criterion", "")) + "".join(str(v) for v in c.get("score_anchors", {}).values())
+                if rng and fmt_num(rng[0]) in text and fmt_num(rng[1]) in text:
+                    dur_ok = True
+                if st != "binary":
+                    warn(f"{tag}（时长）一般用 binary")
+        if abs(total - 100) > 1e-9:
+            err(f"权重合计应为 100，现在是 {fmt_num(total)}")
+        if not n_crit:
+            err("没有关键项")
+        if rng and not dur_ok:
+            err(f"时长项没有写出主文件的允许区间 {fmt_num(rng[0])}–{fmt_num(rng[1])} 秒")
+        if re.search(r"考点|L[1-4]\b|进阶档|上限档|基准档", raw.decode("utf-8", "ignore")):
+            err("rubric 里不应写考点、分级或档位")
+    elif data is not None:
+        err("顶层应为对象")
+    ERR[e0:] = [f"rubric.json：{m}" for m in ERR[e0:]]
+    WARN[w0:] = [f"rubric.json：{m}" for m in WARN[w0:]]
+
+
+def check_v3(path):
+    t = read(path)
+    title = os.path.basename(path)[:-3]
+    if re.search(r"(v\d|版本|新版|修订|样稿|_\d+$)", title, re.I):
+        err("标题里带有版本号")
+    if not t.lstrip().startswith(f"# {title}\n"):
+        err(f"第一行应为“# {title}”")
+    pos = [t.find(h) for h in V3_HEADS]
+    for h, p in zip(V3_HEADS, pos):
+        if p < 0:
+            err(f"缺少“{h}”一节")
+    if all(p >= 0 for p in pos) and pos != sorted(pos):
+        err("五个二级标题的顺序应为：" + " → ".join(h[3:] for h in V3_HEADS))
+    first = t.split("\n## ", 1)[0].split("\n", 1)[-1].strip()
+    if not first.startswith("用 Blender 5.0.0 做一条"):
+        err("开头应写成“用 Blender 5.0.0 做一条……”")
+    mt = re.search(r"做一条\s*约?\s*([\d.]+)\s*秒", first)
+    mr = re.search(r"时长允许\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*秒", first)
+    T = float(mt.group(1)) if mt else None
+    rng = (float(mr.group(1)), float(mr.group(2))) if mr else None
+    if T is None:
+        err("开头没有写目标时长（“做一条 T 秒的……”）")
+    if not rng:
+        err("开头没有写允许区间（“时长允许 A–B 秒”）")
+    else:
+        a, b = rng
+        if a < 8 or b > 15.6 or a > b:
+            err(f"允许区间 {fmt_num(a)}–{fmt_num(b)} 秒应在 8–15.6 秒以内")
+        elif b > 12:
+            warn(f"允许区间上限 {fmt_num(b)} 秒超过 12 秒，需确认用户已同意")
+        if T is not None and not a <= T <= b:
+            err(f"目标时长 {fmt_num(T)} 秒不在允许区间内")
+    res = set(re.findall(r"(\d{3,4})×(\d{3,4})", t))
+    fps = set(re.findall(r"(\d+)\s*帧/秒", t))
+    if len(res) != 1 or len(fps) != 1:
+        err(f"分辨率或帧率不一致或缺失：{res or '无'} / {fps or '无'}")
+    mf = re.search(r"共\s*(\d+)\s*帧", first)
+    if not mf:
+        err("开头没有写总帧数")
+    elif T and len(fps) == 1 and int(mf.group(1)) != round(T * int(next(iter(fps)))):
+        err(f"总帧数 {mf.group(1)} 和目标时长×帧率不一致")
+    if "没有声音" not in first and "无声音" not in first:
+        err("开头没有写“没有声音”")
+    out_spec = find_up(os.path.dirname(path), ".kiro/steering/animation-output-spec.md")
+    if out_spec and len(res) == 1 and len(fps) == 1:
+        o = open(out_spec, encoding="utf-8-sig").read()
+        orr = re.search(r"(\d{3,4})×(\d{3,4})", o); ofr = re.search(r"(\d+)\s*帧/秒", o)
+        if orr and ofr and ((orr.group(1), orr.group(2)) not in res or ofr.group(1) not in fps):
+            warn("分辨率/帧率与 animation-output-spec.md 的默认值不同，需确认是用户要求的")
+    act = section(t, "## 动作和镜头", "## 关键效果和做法")
+    segs = re.findall(r"^第\s*([\d.]+)\s*–\s*([\d.]+)\s*秒（([^）]+)）", act, re.M)
+    if len(segs) < 4:
+        err(f"“动作和镜头”应至少有 4 个“第 X–Y 秒（段落名）”段落，现在有 {len(segs)} 个")
+    if segs:
+        prev = 0.0
+        for s, e, name in segs:
+            s, e = float(s), float(e)
+            if abs(s - prev) > 1e-6:
+                err(f"段落“{name}”从第 {fmt_num(s)} 秒开始，应接在第 {fmt_num(prev)} 秒")
+            if e <= s:
+                err(f"段落“{name}”的时间范围不对")
+            prev = e
+        if T and abs(prev - T) > 1e-6:
+            err(f"最后一段结束于 {fmt_num(prev)} 秒，和目标时长 {fmt_num(T)} 秒不一致")
+        if T and len(segs) >= 1:
+            last_len = float(segs[-1][1]) - float(segs[-1][0])
+            if last_len < 1:
+                warn("最后一段不到 1 秒，结果可能看不清")
+        lens = [float(e) - float(s) for s, e, _ in segs]
+        if max(lens) > 3.5:
+            warn(f"有段落长达 {fmt_num(max(lens))} 秒，确认每 2–3 秒都有新变化")
+    if not re.search(r"画面(停|在)[^。]*(结束|那一刻)", act):
+        warn("最后一段没有写画面在什么时刻结束")
+    eff = section(t, "## 关键效果和做法", "## 灯光和画面")
+    items = re.findall(r"^\d+\.\s*(.+)$", eff, re.M)
+    if len(items) < 4:
+        warn(f"“关键效果和做法”只有 {len(items)} 条，一般不少于 4 条")
+    for it in items:
+        if not re.search(r"（(第\s*[\d.]+\s*[–-]\s*[\d.]+\s*秒|全片)", it[:40]):
+            warn(f"关键效果“{it[:12]}…”没有在标题后标出时段")
+    scene = section(t, "## 场景和主体", "## 动作和镜头")
+    if len(scene) < 800:
+        warn("“场景和主体”内容偏少，确认三层空间、8 类元素和尺度参照都已写出")
+    for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
+                       (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
+                       (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
+                       (r"`", "代码格式的反引号")):
+        mm = re.search(pat, t)
+        if mm:
+            err(f"正文里出现了{label}：“{mm.group(0)}”")
+    for pat, label in ((r"考点|考题|考察", "“考点/考题/考察”字样"), (r"\bL[1-4]\b", "L1–L4 分级"),
+                       (r"题目档位|基准档|进阶档|上限档", "题目档位"), (r"耦合链", "耦合链"),
+                       (r"\*\*类目\*\*", "类目")):
+        mm = re.search(pat, t)
+        if mm:
+            err(f"文件里出现了{label}：“{mm.group(0)}”（考点、分级、档位和类目不写进主文件）")
+    positive = re.sub(NEGATION, "", t)
+    mm = re.search(r"BlenderKit|Sketchfab|KitBash|素材库|HDRI|环境贴图|扫描模型|现成的?模型|模型资产", positive)
+    if mm:
+        err(f"正文里出现了外部素材：“{mm.group(0)}”（只允许插件和贴图）")
+    mm = re.search(COMMERCIAL, t)
+    if mm:
+        err(f"正文里出现了商业插件：“{mm.group(0)}”")
+    if "可借助" not in section(t, "## 底线和限制"):
+        warn("“底线和限制”里没有插件建议（“可借助……等插件”）")
+    if not re.search(r"立方体|基本几何体", t):
+        warn("没有写“别用基本几何体拼凑主体”这条底线")
+    folder = os.path.dirname(path)
+    if os.path.exists(os.path.join(folder, f"{title}剧本.md")):
+        warn("3.0 格式不再需要单独的剧本文件")
+    check_tp_file(path)
+    check_rubric(folder, rng)
+    report()
+
+
 def check_single(path, tax_path):
     t = read(path)
     if TOPIC_H not in t:
@@ -282,7 +497,17 @@ def main():
                 warn(f"请检查主文件（<标题>.md），{label}会随主文件一起核对")
                 brief_path = main_path
                 break
-        check_single(brief_path, tax_path)
+        if base == "rubric.json":
+            mains = [f for f in os.listdir(os.path.dirname(brief_path) or ".")
+                     if f.endswith(".md") and not f.endswith(("剧本.md", "考点说明.md"))]
+            if len(mains) == 1:
+                warn("请检查主文件（<标题>.md），rubric.json 会随主文件一起核对")
+                brief_path = os.path.join(os.path.dirname(brief_path), mains[0])
+        head = open(brief_path, encoding="utf-8-sig", errors="ignore").read()
+        if "## 场景和主体" in head:
+            check_v3(brief_path)
+        else:
+            check_single(brief_path, tax_path)
         return
     if not base.endswith("_制作需求.md"):
         err("制作需求文件名应为 <标题>_制作需求.md")

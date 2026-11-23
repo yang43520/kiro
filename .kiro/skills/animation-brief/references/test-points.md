@@ -52,7 +52,7 @@
 
 ## 说明格式（回复里和 `<标题>考点说明.md` 里都用这套写法，不写进主文件和剧本文件）
 
-考点说明文件的完整模板见 skill 的 `references/single-file-template.md` 末尾。旧格式任务的「五、考点与分级」不需要"档位来源"一行。
+考点说明文件的完整模板见 skill 的 `references/brief-template-v3.md` 末尾。旧格式任务的「五、考点与分级」不需要"档位来源"一行。
 
 ```markdown
 ## 五、考点与分级
