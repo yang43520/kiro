@@ -1,0 +1,294 @@
+{
+  "task": "香水泵的秘密",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一瓶原创的琥珀色香水和黄铜压杆；香水瓶完成旋盖、拆解、复位、泵运作和喷雾，结尾整瓶完整、细雾在条形光里散开。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "香水瓶或压杆缺失、被替代，或没有喷出细雾，或结尾香水瓶不完整。",
+        "100": "香水瓶和压杆都在，完成全部展示，结尾整瓶完整、细雾清楚可见。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "香水瓶的组件和压杆自身发生旋转、平移、压下和回弹运动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "组件和压杆没有自身运动，动态只靠镜头或剪辑。",
+        "100": "瓶盖旋转、组件移动、压杆压下和弹簧回弹都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按旋盖 → 拆解 → 复位 → 泵运作 → 喷雾的顺序完整呈现，结尾约 2 秒展示整瓶和散开的细雾。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有瓶盖、喷头、喷嘴镶件、铝颈圈、密封圈、泵体、弹簧、活塞杆、吸管、瓶身共 10 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有旋盖、拆解、复位、泵运作、喷雾共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有两条条形主光、后上方轮廓光、展台底部背光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "产品行为",
+      "criterion": "片中有旋盖、沿中轴拆解后复位、泵运作喷雾共 3 种非运镜类产品行为（要求不少于 2 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "非运镜类产品行为少于 2 种，产品主要只是旋转或靠镜头展示。",
+        "100": "至少 2 种非运镜类产品行为完整可见。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "卖点细节",
+      "criterion": "至少 2 处卖点细节各连续可辨 1 秒以上：透明泵体里弹簧和活塞的运作约 2 秒，瓶身切面的亮线约 1 秒。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "卖点细节少于 2 处，或每处连续可辨不足 1 秒。",
+        "100": "泵体内部运作和瓶身切面两处细节都连续可辨 1 秒以上。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "组件数量",
+      "criterion": "香水瓶有 10 个独立建模组件（要求不少于 8 个），拆解时逐个可辨。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "独立建模组件少于 8 个，或拆解时组件无法逐个分辨。",
+        "100": "不少于 8 个独立组件，拆解时逐个清楚可辨。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "材质种类",
+      "criterion": "画面有玻璃、黄铜、阳极氧化铝、橡胶、聚碳酸酯、不锈钢和琥珀色液体等材质，其中至少 3 种物理属性截然不同（要求不少于 3 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "物理属性截然不同的材质少于 3 种，或不同材质看起来一样。",
+        "100": "至少 3 种物理属性截然不同的材质清楚可辨。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "拆解与复位",
+      "criterion": "喷头、镶件、颈圈、密封圈、泵体、弹簧、活塞杆、吸管按装配顺序沿中轴依次拆开，再按相反顺序落回并锁定；零件不互穿、不漂移。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "零件随意散开、明显互穿，或靠整体替换跳过拆装过程。",
+        "50": "拆装顺序基本正确，但有一处零件互穿、错位或复位后漂移，且未达到 0 分状态。",
+        "100": "按装配顺序沿中轴拆开、按相反顺序复位，落位锁定，没有互穿和漂移。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "螺纹与压杆联动",
+      "criterion": "瓶盖转一圈正好升一个螺距；压杆压下的深度和喷头下沉、活塞下行、弹簧压缩一致，抬起后弹簧推回活塞。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "瓶盖只转不升或只升不转，或压杆压下时喷头、活塞、弹簧没有联动。",
+        "50": "联动基本成立，但有一处转动和上升不匹配，或弹簧、活塞的运动和压杆对不上，且未达到 0 分状态。",
+        "100": "螺纹转动和上升匹配，压杆、喷头、活塞和弹簧联动一致。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "香水与喷雾",
+      "criterion": "压杆压下后香水从喷口喷出细雾，抬起后香水顺着吸管往上爬、液面晃动后平静；喷雾锥形扩散、越远越淡，雾滴打湿展台。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "没有喷雾，或香水的流动和泵的动作没有关系。",
+        "50": "喷雾和液体流动出现，但有一处来源或先后不合理，或喷雾糊成一团，且未达到 0 分状态。",
+        "100": "喷雾和液体流动都由泵的动作引起，扩散自然、层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "造型及视觉一致性",
+      "criterion": "香水瓶的造型、切面、配色和材质全程连续一致，零件在拆装中不无故消失或换形。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，玻璃折射、焦散和泵体内部细节清楚可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底，旋盖、整列零件、泵体内部和喷雾都完整地在画面里，结尾整瓶位于画面中央。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被景深、运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "灯光材质与氛围",
+      "criterion": "条形光在玻璃和黄铜上拉出连续高光，香水透出琥珀色层次；没有镜头光晕和光雾，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "场景丰富度",
+      "criterion": "前景有展台水珠和干橙花，中景有香水瓶、压杆和铜托盘，远景有柔焦的柑橘、雪松木块和烧杯，展示氛围统一精致。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R21",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

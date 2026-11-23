@@ -1,0 +1,255 @@
+{
+  "task": "河流切开峡谷",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一块带剖切面的台地；河流把台地切成一条台阶状的深峡谷，并裁弯取直留下废弃的古河道和孤立山丘。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "没有剖切的台地，或没有形成峡谷，或没有裁弯取直的结果。",
+        "100": "剖切台地、深峡谷、古河道和孤立山丘都清楚可见。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "台地地形和河流自身发生可见的下切、流动和改道。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "地形和河流没有可见的变化，动态只靠镜头或剪辑。",
+        "100": "河床下切、河水流动和改道都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按降雨成河 → 切过砂岩 → 深切曲流 → 裁弯取直 → 峡谷成形的顺序完整呈现，结尾约 2 秒展示完整的峡谷剖面和古河道。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有砂岩层、页岩层、石灰岩层、花岗岩基底、河道、冲积扇、孤立山丘共 7 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有降雨成河、切过砂岩、深切曲流、裁弯取直、峡谷成形共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有斜照的暖白色阳光、冷蓝色天光、移动的云影共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "观察方法",
+      "criterion": "用正面剖切面展示河床切过各岩层，剖面上的 V 形缺口从第 2 秒到第 10 秒连续可见约 8 秒（要求不少于 2 秒）；另用一条淡蓝色细线标出最早的河道位置作对比。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "没有剖切或其他帮助理解的观察方法，或下切和岩层的关系连续可见不足 2 秒。",
+        "100": "剖切面清楚展示下切穿过岩层，关键关系连续可见 2 秒以上。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "河床下切留痕",
+      "criterion": "河流经过的地方被持续刻深，剖面缺口依次切过砂岩、页岩、石灰岩，最后露出花岗岩顶面；刻出的形状一直保留。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "峡谷一下子出现，或下切顺序错误，或剖面缺口和顶面河道对不上。",
+        "50": "下切基本成立，但有一段跳变、局部恢复原状，或剖面和顶面有明显不一致，且未达到 0 分状态。",
+        "100": "下切连续，顺序正确，剖面和顶面一致，刻出的形状持续保留。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "科学准确性",
+      "criterion": "河流只从高往低流；软的页岩下切快成缓坡，硬的砂岩和石灰岩成陡崖，谷壁呈台阶状；裁弯只发生在弯道颈部最窄处，孤立山丘是原弯道中间的地块。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现河水往高处流、岩性和谷坡形态颠倒等核心错误。",
+        "50": "主要规律正确，但有一处示意不准确，例如台阶状谷壁不明显或裁弯位置不合理，且未达到 0 分状态。",
+        "100": "流向、差异侵蚀和裁弯取直都符合地貌规律。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "河水与泥沙",
+      "criterion": "河水从北向南流，流急处翻白浪；崩落的岩块落进河里被冲走；泥沙在剖面脚下堆出冲积扇。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "没有河水流动或泥沙搬运，或水穿过岩壁。",
+        "50": "河水和泥沙出现，但有一处来源或去向不合理，且未达到 0 分状态。",
+        "100": "河水、崩落岩块和冲积扇的来源和去向都合理连续。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "造型及视觉一致性",
+      "criterion": "台地的岩层颜色、厚度和质感全程一致，地形变化只由河流引起，没有无故的跳变或闪烁。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，岩层颗粒、层理和节理清楚可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底，正面剖面和台地顶面始终同时在画面里，结尾地块约占画面宽度七成。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被景深、运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "灯光材质与氛围",
+      "criterion": "斜照阳光让陡崖和缓坡的明暗清楚，岩层颜色可辨；光影变化平滑，没有镜头光晕和闪烁。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "场景丰富度",
+      "criterion": "前景有剖面边角和崩落碎石，中景有台地、河道和植被，远景有积云和雨幕，矮松林给出尺度对比。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

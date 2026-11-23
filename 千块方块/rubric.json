@@ -1,0 +1,268 @@
+{
+  "task": "千块方块的三次重组",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有约 1,000 块倒角方块、一颗钢珠、小台阶和陶瓷小碗；方块经历散布、色带、拱桥三种组织状态，结尾钢珠停在小碗里、拱桥完整。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "方块、钢珠或小碗缺失，或拱桥没有形成，或钢珠没有落进小碗。",
+        "100": "方块、钢珠和小碗都在，拱桥完整，钢珠停在小碗里。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "方块和钢珠自身发生移动、翻滚、下沉回弹和滚动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "方块和钢珠没有自身运动，动态只靠镜头或剪辑。",
+        "100": "方块的移动、翻滚、下沉回弹和钢珠的滚动都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按落珠 → 涟漪排序 → 色带波浪 → 翻滚成桥 → 珠过拱桥的顺序完整呈现，结尾约 1.5 秒展示完整的拱桥和停在小碗里的钢珠。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有彩色方块组、深灰色结构方块、钢珠、小台阶、陶瓷小碗共 5 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有落珠、涟漪排序、色带波浪、翻滚成桥、珠过拱桥共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有左上方主光、右后方轮廓光、背景光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "组织状态",
+      "criterion": "方块形成散布、色带、拱桥共 3 个有区别的组织状态（要求不少于 3 个），经过排序和翻滚堆叠 2 次不同类型的转换（要求不少于 2 次）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "组织状态少于 3 个，或两次转换属于同一类型、只改变了速度。",
+        "100": "3 个组织状态清楚可辨，2 次转换类型不同。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "元素关系",
+      "criterion": "至少 1 组可追踪的触发关系：钢珠撞击触发涟漪排序，色带最后一列碰下钢珠，钢珠压过的方块下沉回弹。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "元素之间没有可追踪的触发关系，各动各的。",
+        "100": "至少 1 组触发关系清楚可追踪。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "翻滚连锁与堆叠",
+      "criterion": "末端方块越过重心翻倒，一块碰倒下一块地翻滚过去，被挡住后一层层叠成拱桥，拱心最后落下合拢；方块之间贴住、不穿透、不悬空。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "方块没有连锁翻滚，或大面积穿透、悬空、整体一下子出现。",
+        "50": "连锁和堆叠基本成立，但局部有穿插、没被碰到就倒，或拱心不是最后合拢，且未达到 0 分状态。",
+        "100": "每块都由前一块碰倒，逐层堆成拱桥，拱心最后合拢，没有穿透和悬空。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "涟漪与波浪相位",
+      "criterion": "方块按到撞击点的距离依次染色和落位；色带波浪逐列延迟约 0.04 秒从砖红端传到雾蓝端，延迟均匀。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "方块成片同时动，或波浪没有逐列延迟。",
+        "50": "传播顺序基本正确，但有一段明显乱序、延迟忽快忽慢，且未达到 0 分状态。",
+        "100": "涟漪和波浪都按距离逐个传开，延迟均匀，节奏清楚。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "钢珠轨迹",
+      "criterion": "钢珠落下加速、撞击后按真实方向弹开停在台阶上；过桥时上坡减速、下坡加速，滚动不打滑，落进小碗绕圈后停下。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "钢珠的轨迹不符合重力，或原地打转、穿过方块。",
+        "50": "轨迹基本成立，但有一处速度变化不合理或滚动和前进不匹配，且未达到 0 分状态。",
+        "100": "钢珠的下落、弹开、过桥和绕圈停下都符合重力，滚动不打滑。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "造型及视觉一致性",
+      "criterion": "方块的倒角、尺寸和颜色全程一致，染色只在涟漪经过时发生，没有无故的颜色跳变或方块消失。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，倒角高光、磨砂颗粒和钢珠倒影清楚可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底，落珠、排序、波浪、翻滚成桥和珠过拱桥都在画面里，结尾拱桥、钢珠和小碗都在画面中间。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被景深、运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "灯光材质与氛围",
+      "criterion": "主光、轮廓光和背景光层次清楚，五组颜色柔和过渡，没有色带断层；没有镜头光晕，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "场景丰富度",
+      "criterion": "主图形、辅助图形和背景网格三级层次清楚，前景散落方块引导视线，画面构图统一有重点。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

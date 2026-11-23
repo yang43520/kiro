@@ -1,0 +1,256 @@
+{
+  "task": "甲虫登茎起飞",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一只原创的甲虫和一根弯曲的草茎；甲虫从落叶下钻出、攀上草茎并展翅飞走，结尾甲虫在飞行中、草茎在颤动。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "甲虫或草茎缺失、被替代，或甲虫没有飞起。",
+        "100": "甲虫和草茎都在，甲虫完成钻出、攀茎和起飞。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "甲虫自身发生行走、攀爬、开翅和飞行。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "甲虫没有自身运动，只是整体平移或靠镜头制造动态。",
+        "100": "甲虫的行走、攀爬、开翅和飞行都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按露落 → 钻出 → 攀茎 → 展翅 → 起飞的顺序完整呈现，结尾约 1.5 秒展示飞行中的甲虫和颤动的草茎。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有头部、触角、前胸背板、鞘翅、膜翅、六条腿共 6 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有露落、钻出、攀茎、展翅、起飞共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有右后方低角度晨光、冷绿色天光、移动的光斑共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "六足步态",
+      "criterion": "甲虫用三角步态交替迈步，每步约 6 毫米，支撑腿着地期间不滑、不踩空、不穿进苔藓和草茎；身体随步伐起伏和左右平衡。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "腿没有交替迈步，或明显滑步、穿地，或身体像被拖着平移。",
+        "50": "步态基本成立，但有明显的一段滑步、踩空或节奏错乱，且未达到 0 分状态。",
+        "100": "三角步态交替清楚，支撑腿踩实不滑，重心随步伐自然变化。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "攀茎姿态",
+      "criterion": "甲虫沿草茎从竖直段爬到弯曲段，身体朝向、俯仰和侧倾跟着茎的切线方向转过去，始终贴着茎。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "甲虫横着平移，或离开草茎悬在空中，或朝向和茎的方向矛盾。",
+        "50": "姿态基本跟着茎变化，但有一段明显没贴住茎或转向突变，且未达到 0 分状态。",
+        "100": "身体始终贴着茎，姿态随茎的弧度平滑变化。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "草茎弯曲与回弹",
+      "criterion": "草茎随甲虫往上爬越压越弯，茎尖被压低约 2 厘米；甲虫起飞后草茎弹回、越过、再来回颤动，逐渐停下，露珠被震落。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "草茎不受甲虫重量影响，或起飞后不弹回。",
+        "50": "弯曲和回弹出现，但幅度和甲虫的位置对不上，或回弹没有衰减，且未达到 0 分状态。",
+        "100": "弯曲随甲虫位置变化，回弹有过冲和衰减，露珠随之震落。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "开翅与起飞",
+      "criterion": "鞘翅绕翅根张开约 70°，膜翅沿翅脉一折一折展开约 7 厘米宽，试扇两下后加速扇动，腿松开后才起飞；翅膀不穿进身体。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "没有开翅过程就飞起，或翅膀穿进身体、凭空出现。",
+        "50": "开翅和起飞基本成立，但展开过程不清楚，或腿还抓着茎就离开，且未达到 0 分状态。",
+        "100": "鞘翅先开、膜翅后展、扇起来后才松腿起飞，过程清楚无穿插。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "造型及视觉一致性",
+      "criterion": "甲虫的造型、颜色、刻点和部件全程连续一致，翅膀和腿不无故消失或穿插。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，鞘翅刻点、触角分节和翅脉清楚可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底，钻出、步态、攀茎、展翅和起飞都在画面里，甲虫全程在焦点内，脚踩下的位置不被虚化。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被景深、运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "灯光材质与氛围",
+      "criterion": "晨光给鞘翅、触角、草茎和露珠打出逆光亮边，膜翅被照透；光柱稀薄，没有镜头光晕，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "场景丰富度",
+      "criterion": "前景有苔藓、露珠和小蘑菇，中景有落叶、草丛、蜗牛壳和橡子，远景有虚化的树干、蕨类和光斑，尺度对比清楚。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}

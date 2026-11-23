@@ -1,0 +1,255 @@
+{
+  "task": "熔岩入海",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一股从岩壳下涌出的熔岩；熔岩被巨石分成两股、流进海里喷出蒸汽，结尾形成一片冒着蒸汽的黑色新岩台，边缘被浪打碎成黑沙。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "熔岩缺失，或没有入海，或没有形成新岩台和黑沙。",
+        "100": "熔岩涌出、分流、入海，结尾新岩台和黑沙都清楚可见。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "熔岩自身发生可见的流淌、起皱、开裂和冷却变色。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "熔岩没有可见的流动或变化，动态只靠镜头或剪辑。",
+        "100": "熔岩的流淌、起皱、开裂和冷却都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按破壳 → 分流 → 结壳 → 入海 → 新岩台的顺序完整呈现，结尾约 2 秒展示新岩台被浪打碎成黑沙。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少关键阶段，或主要动作没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾清楚展示结果。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "核心主体有熔融核心、冷却外壳、前端熔岩舌、熔岩滴和火星、新岩台共 5 个独立分件（要求不少于 4 个），各自有可见的运动或变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或分件像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动或变化。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有破壳、分流、结壳、入海、新岩台共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有熔岩自发光、暮色天光、晚霞余晖共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，明暗和色彩层次清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "触发与交互",
+      "criterion": "熔岩由岩壳被顶破触发，经过流淌、分流、入海发展，结果是新岩台和黑沙；其间和玄武岩巨石、海水共有 2 次交互（要求至少 1 次），分别产生分流和蒸汽这两个可追踪的变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少触发或结果，或没有和巨石、海水的交互。",
+        "100": "触发、发展和结果完整，与巨石和海水的交互都产生可追踪的变化。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "冷却留痕与新岩台",
+      "criterion": "熔岩流过的地方留下持续存在的黑色新熔岩带；入海处堆出约 4 米宽、伸进海里约 3 米的黑色新岩台；浪把岩台边缘打碎成碎块和黑沙。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "熔岩流过后不留痕迹，或新岩台一下子出现。",
+        "50": "留痕和新岩台出现，但有一段颜色跳变、痕迹消失，或碎块悬空、穿进岩台，且未达到 0 分状态。",
+        "100": "新熔岩带、新岩台和黑沙都持续保留，形成过程连续。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "巨石阻挡与分流",
+      "criterion": "熔岩在巨石上坡一侧堆高约半米后从两侧绕开，不穿进石头和地面；越过 3 米岩台边缘落进浪里。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "熔岩穿过巨石或地面，或没有分流。",
+        "50": "分流基本成立，但局部穿进石头，或堆高和绕流不明显，且未达到 0 分状态。",
+        "100": "熔岩被巨石挡住、堆高、从两侧绕开，越过岩台落海，没有穿透。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "黏稠质感与蒸汽",
+      "criterion": "熔岩像很稠的蜂蜜一样一层层推进，表面结出起皱的绳状薄壳并开裂露出亮橙色；入海处蒸汽从熔岩与海水的接触面喷出成柱，被风吹向东边。",
+      "weight": 13,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "熔岩像水一样稀或像硬块一样滑动，或蒸汽凭空出现。",
+        "50": "黏稠和蒸汽基本成立，但起皱开裂不明显，或蒸汽来源有一处不合理，且未达到 0 分状态。",
+        "100": "黏稠推进、绳状起皱开裂和蒸汽来源都清楚可信。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "造型及视觉一致性",
+      "criterion": "熔岩的颜色变化只由温度和冷却时间决定，岩石和海岸的造型全程一致，熔岩不无故整块消失或突然冒出。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、部件消失或材质突变，破坏主体识别。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或部件闪变，且未达到 0 分状态。",
+        "100": "造型、配色和材质全程连续一致，设计性变化有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，绳状纹理、气孔、裂纹和黑沙颗粒清楚可辨，蒸汽和暗部没有闪烁噪点。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或关键细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，关键细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底，破壳、分流、结壳、入海和新岩台都在画面里，蒸汽和烟不挡住熔岩碰巨石、落海和浪打碎岩台的过程。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结果出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段明显被遮挡、出画或被景深、运动模糊掩盖，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚可见，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1280×720、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "灯光材质与氛围",
+      "criterion": "熔岩是主光并照亮岩石、巨石底部、蒸汽和浪尖，暮色天光补出暗部；熔岩核心不过曝，没有镜头光晕和铺满画面的烟雾。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次和材质差异都不成立，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、过曝或眩光，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，亮部不过曝，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "场景丰富度",
+      "criterion": "前景有玄武岩块、火山渣和烤焦的灌木，中景有熔岩流、巨石和海岸，远景有火山口烟、晚霞和海鸟，尺度对比清楚。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "画面只有主体，缺少大部分前中远景元素和细节。",
+        "50": "大部分元素出现，但空间层次不清或细节明显空泛，且未达到 0 分状态。",
+        "100": "前中远景元素齐全，层次清楚，细节经得起观察。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
