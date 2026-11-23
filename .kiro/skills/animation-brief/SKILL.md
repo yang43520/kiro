@@ -31,7 +31,7 @@ metadata:
 | `.kiro/steering/animation-test-points.md`（没有时读 `references/test-points.md`） | 考点名称、分级和档位配方的执行口径 |
 | `references/production-baseline.md` | 制作方法底线、专业术语、推荐插件（33 个二级类目 + 技术模块 T1–T10） |
 | `references/realism-checklist.md` | 写实细节清单 |
-| `.kiro/steering/animation-output-spec.md` | 输出规格，默认 1280×720、30 帧/秒 |
+| `.kiro/steering/animation-output-spec.md`（没有时读 `references/animation-output-spec.md`） | 输出规格，默认 1280×720、30 帧/秒 |
 
 ## 1. 第一步：创意建议
 
