@@ -1,0 +1,281 @@
+{
+  "task": "天空变成海",
+  "scoring_policy": {
+    "aggregation": "weighted_sum",
+    "total_weight": 100,
+    "total_threshold": 85,
+    "require_all_critical_pass": true
+  },
+  "criteria": [
+    {
+      "criterion_id": "R01",
+      "dimension": "主体与目标",
+      "criterion": "画面中有一座带钟楼和运河的老城和一头座头鲸；鲸鱼游过时城里出现焦散、气泡和出窗的鱼群，结尾鱼群回到窗里、城市恢复夜景，夜空留下一条沿鲸鱼路线的星带，鲸鱼朝月亮游去。",
+      "weight": 8,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "老城或鲸鱼缺失、被替代，或没有出现天空化海的变化，或结尾没有星带、城市没有恢复。",
+        "100": "老城、鲸鱼和天空化海的变化都在，结尾城市恢复夜景、星带清楚可见、鲸鱼朝月亮游去。"
+      }
+    },
+    {
+      "criterion_id": "R02",
+      "dimension": "时长",
+      "criterion": "动画时长处于 10–12 秒区间，含边界。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "动画时长小于 10 秒或大于 12 秒。",
+        "100": "动画时长不小于 10 秒且不大于 12 秒。"
+      }
+    },
+    {
+      "criterion_id": "R03",
+      "dimension": "主体自身运动",
+      "criterion": "鲸鱼自身发生游动、摆尾、转弯，鱼群和气泡自身发生游动和上浮。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "鲸鱼和鱼群没有自身运动，动态只靠镜头或剪辑。",
+        "100": "鲸鱼的游动、摆尾、转弯和鱼群、气泡的运动都真实可见。"
+      }
+    },
+    {
+      "criterion_id": "R04",
+      "dimension": "动作完整性",
+      "criterion": "按鲸入城 → 化海 → 鱼群出窗 → 绕塔 → 海退成星的顺序完整呈现，结尾约 1.5 秒展示恢复的夜景和星带。",
+      "weight": 9,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "缺少化海、鱼群出窗、绕塔或海退成星中的任一阶段，或结果没有完成就结束。",
+        "50": "各阶段都出现，但有一处顺序颠倒，或结尾展示结果的时间明显不足，且未达到 0 分状态。",
+        "100": "5 个阶段按顺序完整呈现，结尾约 1.5 秒清楚展示恢复的夜景和星带。"
+      }
+    },
+    {
+      "criterion_id": "R05",
+      "dimension": "结构分件",
+      "criterion": "鲸鱼有头部、躯干、左胸鳍、右胸鳍、尾鳍和三缕海藻共 6 个独立分件（要求不少于 4 个），各自有可见的运动。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能分辨的独立分件少于 4 个，或鲸鱼像一整块一起动。",
+        "100": "分件清楚可辨，各自有可见的运动。"
+      }
+    },
+    {
+      "criterion_id": "R06",
+      "dimension": "递进阶段",
+      "criterion": "全片有鲸入城、化海、鱼群出窗、绕塔、海退成星共 5 个可识别的递进阶段（要求不少于 3 个），前一阶段的结果引出后一阶段。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的递进阶段少于 3 个，或阶段之间没有先后因果。",
+        "100": "至少 3 个阶段清楚可辨，且前一阶段的结果引出后一阶段。"
+      }
+    },
+    {
+      "criterion_id": "R07",
+      "dimension": "布光层次",
+      "criterion": "画面有月光主光（化海处变成焦散）、窗灯路灯的暖光、鲸鱼光斑和星点的微光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "有效布光少于 2 层，或光照平铺看不出层次。",
+        "100": "至少 2 层光都能看出作用，冷蓝和暖黄的对比清楚。"
+      }
+    },
+    {
+      "criterion_id": "R08",
+      "dimension": "资产种类",
+      "criterion": "场景里有石砌老房、石板瓦屋顶、烟囱、木框窗、花箱、天线、石桥、路灯、钟楼、铜皮尖顶、教堂尖顶、小鱼、鲸鱼共 13 种独立造型资产（要求不少于 8 种）。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "能识别的独立造型资产少于 8 种。",
+        "100": "能识别的独立造型资产不少于 8 种，且都和老城主题相关。"
+      }
+    },
+    {
+      "criterion_id": "R09",
+      "dimension": "环境动态源",
+      "criterion": "场景里同时存在扩开和退去的\"海\"（焦散与花的摆动）、烟囱气泡、鱼群和运河水面倒影等不少于 3 类环境动态源，并都随鲸鱼的游动而变化。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "环境动态源少于 3 类，或环境变化和鲸鱼的游动没有关系。",
+        "100": "不少于 3 类环境动态源同时存在，并能看出都由鲸鱼的游动带动。"
+      }
+    },
+    {
+      "criterion_id": "R10",
+      "dimension": "三层空间",
+      "criterion": "画面有前景的屋顶（瓦片、天线、花箱、猫）、中景的运河两岸、钟楼和鲸鱼、远景的城市灯火、山影和月亮共 3 层空间。",
+      "weight": 3,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "缺少前景、中景、远景中的任一层，空间扁平。",
+        "100": "前景引导视线、中景放主体、远景交代环境，3 层清楚。"
+      }
+    },
+    {
+      "criterion_id": "R11",
+      "dimension": "鳍与海藻的滞后",
+      "criterion": "鲸鱼摆尾从躯干传到尾鳍、越往后越慢半拍；转弯时胸鳍一低一高；绕塔急转时尾鳍甩向外侧，三缕海藻先滞后、再甩出、最后荡回；海藻不穿进鲸鱼身体，身体弯曲时体积保持。",
+      "weight": 12,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "鳍和海藻与身体同步、像焊死一样，或海藻大面积穿进身体。",
+        "50": "滞后基本成立，但有一段明显同步、穿插，或身体弯曲时被明显拉细，且未达到 0 分状态。",
+        "100": "摆尾传递、胸鳍起伏和海藻的滞后、甩出、回荡都自然，没有穿插。"
+      }
+    },
+    {
+      "criterion_id": "R12",
+      "dimension": "化海与鱼群的相位",
+      "criterion": "\"海\"按到鲸鱼路线的距离依次扩开，边界先到的窗户先出鱼；约 800 条小鱼保持间距、不重叠地汇成鱼群绕塔；退去时边界从外往里收拢，每条鱼回到它出来的窗户。",
+      "weight": 11,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "一大片区域同时变化，或鱼群和边界的到达顺序无关，或鱼大面积重叠、穿墙。",
+        "50": "顺序基本正确，但有一段明显乱序，或鱼群局部重叠、有鱼回错窗或穿过窗框，且未达到 0 分状态。",
+        "100": "扩开和退去都按距离依次发生，鱼群间距自然，出窗回窗顺序正确，没有穿透。"
+      }
+    },
+    {
+      "criterion_id": "R13",
+      "dimension": "绕塔轨迹与空间关系",
+      "criterion": "鲸鱼从两座尖顶之间游进、绕钟楼尖顶半圈后朝月亮游去，朝向顺着路线、转弯时向弯内侧倾斜，加速前先用力摆尾；全程和尖顶、钟楼留出 3 米以上距离，不碰撞、不穿过。",
+      "weight": 10,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "鲸鱼穿过尖顶或钟楼，或横着平移、朝向和运动方向矛盾。",
+        "50": "轨迹基本成立，但有一处离建筑明显过近、几乎擦碰，或转向、加速突变，且未达到 0 分状态。",
+        "100": "轨迹平滑，朝向和倾斜跟着路线，和建筑始终保持距离。"
+      }
+    },
+    {
+      "criterion_id": "R14",
+      "dimension": "造型及视觉一致性",
+      "criterion": "鲸鱼、老城和鱼群的造型、配色和材质全程一致；焦散、气泡变星点等变化都由\"海\"的范围引起，没有无故的亮度跳变或物体消失。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "出现明显的无故换形、物体凭空消失或出现、材质突变。",
+        "50": "整体一致，但局部有明显的非设计性亮度跳变或个别物体闪变，且未达到 0 分状态。",
+        "100": "造型和材质全程一致，变化都有依据，没有非设计性突变。"
+      }
+    },
+    {
+      "criterion_id": "R15",
+      "dimension": "画面完整与清晰",
+      "criterion": "画面无明显破面、闪烁和噪点，石材凿痕、瓦片缺角、鲸鱼喉褶和藤壶在当前景别下可辨。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "核心轮廓破损、大面积闪烁，或鲸鱼和建筑细节无法辨认。",
+        "50": "主体可辨，但局部有明显破面、闪烁或暗部噪点，且未达到 0 分状态。",
+        "100": "画面干净清晰，没有明显破面、闪烁和噪点，细节可辨。"
+      }
+    },
+    {
+      "criterion_id": "R16",
+      "dimension": "构图与镜头",
+      "criterion": "一镜到底；鲸鱼入城、化海、鱼群出窗、绕塔和星带形成都在画面里看得清；结尾钟楼居中，星带和朝月亮游去的鲸鱼都清楚可见；镜头不穿过烟囱、天线和屋顶。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有剪辑，或关键过程、结尾的星带和鲸鱼出画或被遮挡而无法辨认。",
+        "50": "关键过程可见，但有一段被前景或运动模糊明显遮挡，或结尾鲸鱼、星带构图明显出画，且未达到 0 分状态。",
+        "100": "一镜到底，关键过程和结果都清楚，镜头不穿模。"
+      }
+    },
+    {
+      "criterion_id": "R17",
+      "dimension": "规格",
+      "criterion": "画面为 16:9、1920×1080、30 帧/秒，没有声音。",
+      "weight": 2,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "binary",
+      "score_anchors": {
+        "0": "画幅、分辨率、帧率中任一项不符，或带有声音。",
+        "100": "画幅、分辨率、帧率都符合，没有声音。"
+      }
+    },
+    {
+      "criterion_id": "R18",
+      "dimension": "灯光材质与氛围",
+      "criterion": "月光、焦散和暖色窗灯层次分明；石墙、瓦片、铜皮、鲸皮、鱼鳞和气泡的材质差异清楚；焦散柔和不晃眼，没有镜头光晕和大面积光雾，亮部不过曝。",
+      "weight": 5,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "灯光层次不存在，或强光、眩光、过曝遮住主体。",
+        "50": "灯光和材质基本成立，但有一处明显的材质雷同、焦散晃眼或过曝，且未达到 0 分状态。",
+        "100": "灯光层次清楚，材质差异可辨，没有眩光和光雾。"
+      }
+    },
+    {
+      "criterion_id": "R19",
+      "dimension": "场景丰富度",
+      "criterion": "每栋房子的高度、窗户和屋顶各不相同，屋顶上有猫、天线和花箱，运河里有小木船和倒影，场景有足够的东西可看。",
+      "weight": 3,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "场景空泛，房子是重复复制的盒子，缺少大部分细节。",
+        "50": "主要细节出现，但房子明显重复或局部空泛，且未达到 0 分状态。",
+        "100": "房子错落各异，小物件和细节齐全，场所感明确。"
+      }
+    },
+    {
+      "criterion_id": "R20",
+      "dimension": "节奏与有效时长",
+      "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂从鲸鱼入城到星带形成的过程。",
+      "weight": 2,
+      "critical": false,
+      "pass_threshold": null,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
+        "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
+        "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    }
+  ]
+}
