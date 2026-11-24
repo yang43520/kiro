@@ -2,7 +2,7 @@
 """检查一个动画任务是否符合“进阶版动画创意”（animation-brief-advanced）规则。
 
 进阶版 1.0（考点说明写了“**规范版本**：进阶版 1.0”）在 3.4 的全部检查之上，还检查：
-视觉基调（光比、焦距、运镜速度、AgX 观感是否在基调范围内）、关键机位表（坐标、对焦距离、
+视觉基调（光比、焦距、运镜速度、AgX 观感是否在基调范围内）、关键机位（逐行带标签的文字；坐标、对焦距离、
 按 36 毫米传感器重新投影主体位置）、海报帧、渲染设置、色值和光强、明暗分区、效果优先级和“退一步”做法，
 以及 rubric 的“海报帧与视觉基调”关键项。
 
@@ -468,29 +468,33 @@ def check_advanced(t, tp_text, T, fps, segs, folder):
             if lk not in tone["looks"]:
                 err(f"AgX 观感 {lk} 不在视觉基调允许的范围内（可选：{'、'.join(tone['looks'])}）")
 
-    # 二、关键机位表
+    # 二、关键机位（逐行带标签，不用表格）
     if "坐标：" not in scene and "坐标:" not in scene:
         err("“场景和主体”里没有写坐标系（“坐标：原点在……，x 朝……”）")
     cam_part = act.split("关键机位", 1)[1] if "关键机位" in act else ""
     if not cam_part:
-        err("“动作和镜头”末尾缺少关键机位表（“关键机位（传感器宽 36 毫米……）：”加表格）")
+        err("“动作和镜头”末尾缺少关键机位（“关键机位（传感器宽 36 毫米……）：”加逐行的机位）")
     else:
         if "36 毫米" not in cam_part.split("\n", 1)[0]:
-            err("关键机位表前的说明里要写“传感器宽 36 毫米”")
-        rows = [r for r in table_rows(cam_part) if r and re.match(r"^[\d.]+$", r[0])]
+            err("关键机位前的说明里要写“传感器宽 36 毫米”")
+        if re.search(r"^\|.*机位.*\|", cam_part, re.M):
+            err("关键机位要写成逐行带标签的文字，不用表格（复制粘贴时表格容易丢失列边界）")
+        # 每一条不依赖换行，换行被合并成一行也能逐条认出来
+        heads = list(re.finditer(r"第\s*([\d.]+)\s*秒[：:]\s*机位", cam_part))
         pts = []
-        for r in rows:
-            if len(r) < 8:
-                err(f"关键机位第 {r[0]} 秒这一行少于 8 列"); continue
-            try:
-                cam, aim, subj = [[float(x) for x in re.search(COORD, r[i]).groups()] for i in (1, 2, 3)]
-                focal, fd = float(r[4]), float(r[5])
-                sx, sy = [float(x) for x in re.search(r"\(\s*([\d.]+)\s*,\s*([\d.]+)\s*\)", r[6]).groups()]
-            except Exception:
-                err(f"关键机位第 {r[0]} 秒这一行的坐标或数字格式不对"); continue
-            if not r[7].strip():
-                err(f"关键机位第 {r[0]} 秒没有写运镜")
-            pts.append((float(r[0]), cam, aim, subj, focal, fd, sx, sy))
+        for i, h in enumerate(heads):
+            body = cam_part[h.start(): heads[i + 1].start() if i + 1 < len(heads) else len(cam_part)]
+            tm = h.group(1)
+            m = re.search(r"机位\s*" + COORD + r"\s*[，,]\s*看向\s*" + COORD + r"\s*[，,]\s*主体\s*" + COORD +
+                          r"\s*[，,]\s*焦距\s*([\d.]+)\s*毫米\s*[，,]\s*对焦距离\s*([\d.]+)\s*米\s*[，,]\s*"
+                          r"主体在画面横向\s*([\d.]+)\s*[、，,]\s*纵向\s*([\d.]+)\s*[；;]\s*运镜[：:]\s*(\S[^\n]*)", body)
+            if not m:
+                err(f"关键机位第 {tm} 秒这一条的格式不对，应为“第 T 秒：机位 (x, y, z)，看向 (x, y, z)，主体 (x, y, z)，"
+                    f"焦距 N 毫米，对焦距离 N 米，主体在画面横向 a、纵向 b；运镜：……”"); continue
+            g = [float(x) for x in m.groups()[:13]]
+            pts.append((float(tm), g[0:3], g[3:6], g[6:9], g[9], g[10], g[11], g[12]))
+        if not heads:
+            err("关键机位里没有认出任何一条（“第 T 秒：机位 (x, y, z)，……”）")
         times = [p[0] for p in pts]
         if times != sorted(times) or len(set(times)) != len(times):
             err("关键机位的时刻应从小到大、不重复")
@@ -506,7 +510,7 @@ def check_advanced(t, tp_text, T, fps, segs, folder):
             dist = _dot(_sub(subj, cam), _sub(subj, cam)) ** 0.5
             if abs(px - sx) > 0.07 or abs(py - sy) > 0.07:
                 err(f"第 {fmt_num(tm)} 秒：按坐标和 {fmt_num(focal)} 毫米焦距算，主体在画面 ({px:.2f}, {py:.2f})，"
-                    f"表里写的是 ({sx:.2f}, {sy:.2f})")
+                    f"机位里写的是 ({sx:.2f}, {sy:.2f})")
             if not (0.05 <= px <= 0.95 and 0.05 <= py <= 0.95):
                 err(f"第 {fmt_num(tm)} 秒：主体在画面边缘或画外 ({px:.2f}, {py:.2f})")
             if dist and abs(fd - dist) / dist > 0.2:
