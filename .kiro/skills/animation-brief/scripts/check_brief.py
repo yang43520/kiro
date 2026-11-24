@@ -2,7 +2,9 @@
 """检查一个动画任务是否符合 animation-brief 规则。
 
 3.x 格式（默认）：主文件 <标题>.md（含“## 场景和主体”等五节），同时核对 <标题>考点说明.md 和 rubric.json；
-3.3 起还按主类目检查制作底线、专业术语、推荐插件、材质做法和重模拟数量。
+3.3 起还按主类目检查制作底线、专业术语、推荐插件、材质做法和重模拟数量；
+3.4 起（考点说明写了“**规范版本**：3.4”）还检查动态总表、还原数值、光线色温光比、每段构图、配色和色彩脚本、三级细节和微细节，
+并要求 rubric 有“动态密度”“电影级画面”“细节精致度”三个关键项。
 2.x 格式：主文件 <标题>.md（含“## Prompt 与剧本”），同时核对 <标题>剧本.md 和 <标题>考点说明.md。
 1.x 格式：<标题>_制作需求.md 和对应剧本。
 
@@ -354,6 +356,116 @@ def check_baseline(t, tp_text, folder, cat):
             err("制作底线清单缺少“技术模块”")
 
 
+COMPOSITION = r"三分法|引导线|框景|负空间|对角线|对称|中心构图|S 形|S形|剪影|层次纵深"
+REAL_NUM = r"\d[\d.,]*\s*(秒|米|厘米|毫米|°|度|K|倍|%|赫兹|帧|克|千克|升|毫升|次|颗|条|只|根|段|层|处|个)|折射率\s*约?\s*\d"
+CINE_DIMS = ["动态密度", "电影级画面", "细节精致度"]
+
+
+def is_v34(tp_text):
+    m = re.search(r"\*\*规范版本\*\*[：:]\s*([\d.]+)", tp_text or "")
+    return bool(m) and tuple(int(x) for x in m.group(1).split(".")[:2]) >= (3, 4)
+
+
+def check_cinematic(t, T, segs):
+    """3.4 起：动态总表、还原数值、电影级光线/构图/色彩和细节精致度都要写进主文件。"""
+    scene = section(t, "## 场景和主体", "## 动作和镜头")
+    act = section(t, "## 动作和镜头", "## 关键效果和做法")
+    eff = section(t, "## 关键效果和做法", "## 灯光和画面")
+    light = section(t, "## 灯光和画面", "## 底线和限制")
+
+    # 一、动态总表
+    m = re.search(r"全片在动的东西共\s*(\d+)\s*类[：:](.+)", act)
+    if not m:
+        err("“动作和镜头”末尾缺少动态总表（“全片在动的东西共 N 类：……”）")
+    else:
+        n = int(m.group(1))
+        items = [x for x in re.split(r"[；;]", m.group(2).strip().rstrip("。")) if x.strip()]
+        if n < 8:
+            err(f"动态总表只有 {n} 类，至少要 8 类")
+        if len(items) != n:
+            err(f"动态总表写的是 {n} 类，实际列出 {len(items)} 类")
+        spans = []
+        for it in items:
+            mm = re.search(r"（第\s*([\d.]+)\s*[–-]\s*([\d.]+)\s*秒）", it)
+            if mm:
+                spans.append((float(mm.group(1)), float(mm.group(2))))
+            elif "（全片）" in it:
+                spans.append((0.0, T or 0.0))
+            else:
+                err(f"动态总表里“{it.strip()[:10]}…”没有标出时段（“（第 X–Y 秒）”或“（全片）”）")
+        if "远景" not in m.group(2):
+            err("动态总表里没有远景的动态（至少 1 类写明在远景）")
+        if T and spans:
+            w = 0.0
+            while w + 2 <= T + 1e-9:
+                c = sum(1 for s, e in spans if min(e, w + 2) - max(s, w) > 1e-6)
+                if c < 3:
+                    err(f"从第 {fmt_num(w)} 秒到第 {fmt_num(w + 2)} 秒只有 {c} 类动态，任意 2 秒至少要 3 类")
+                    break
+                w += 0.5
+        for s, e, name in segs:
+            s, e = float(s), float(e)
+            if not any(s - 1e-6 <= a < e for a, _ in spans):
+                err(f"段落“{name}”里没有新动态出场（动态总表里没有从这段开始的动态）")
+
+    # 四、每段构图、特写、焦点
+    blocks = re.split(r"^(?=第\s*[\d.]+\s*–\s*[\d.]+\s*秒（)", act, flags=re.M)
+    for b in blocks:
+        hm = re.match(r"第\s*[\d.]+\s*–\s*[\d.]+\s*秒（([^）]+)）", b)
+        if not hm:
+            continue
+        body = b.split("全片在动的东西共")[0]
+        if "构图" not in body or not re.search(COMPOSITION, body):
+            err(f"段落“{hm.group(1)}”没有写构图（要有“构图”二字和三分法、引导线、框景、负空间、对角线等方式）")
+    if "特写" not in act:
+        err("“动作和镜头”里没有安排近景特写")
+    if not re.search(r"\d+\s*毫米", act + light):
+        err("没有写镜头焦距（毫米）")
+    if not re.search(r"f/\s*\d", t):
+        err("没有写光圈（f/ 数值）")
+    if "焦点" not in act + light:
+        err("没有写焦点怎么安排（焦点转移，或说明不做焦点转移）")
+
+    # 二、还原数值
+    for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
+        head = it.split("：", 1)[0]
+        if re.search(r"一镜到底|运镜|镜头", head):
+            continue
+        if not re.search(REAL_NUM, it.split("：", 1)[-1]):
+            err(f"关键效果“{head[:12]}…”没有写真实世界的数值作还原依据")
+
+    # 三、五、光线、氛围和色彩
+    if not re.search(r"[三四五六3-6]\s*层", light):
+        err("“灯光和画面”至少要写 3 层光")
+    if not re.search(r"轮廓光|逆光|实用光", light):
+        err("“灯光和画面”没有轮廓光、逆光或实用光")
+    nk = len(re.findall(r"\d[\d,]{2,5}\s*K", light))
+    if nk < 3:
+        err(f"“灯光和画面”只写了 {nk} 个色温（K），至少要 3 个")
+    if "光比" not in light or not re.search(r"\d+(\.\d+)?\s*[:：]\s*1", light):
+        err("“灯光和画面”没有写主辅光比（例如“光比约 4:1”）")
+    if not re.search(r"体积光|空气透视|体积雾|微尘|水汽|体积散射", light):
+        err("“灯光和画面”没有大气效果（体积光、空气透视、局部体积雾、微尘或水汽）")
+    for k in ("主色", "辅色", "点缀色", "色彩脚本", "暗角", "颗粒"):
+        if k not in light:
+            err(f"“灯光和画面”缺少“{k}”")
+
+    # 六、细节精致
+    for k in ("大形", "中形", "小形"):
+        if k not in scene:
+            err(f"“场景和主体”没有按三级写细节（缺“{k}”）")
+    m = re.search(r"微细节共\s*(\d+)\s*处[：:]([^\n]+)", scene)
+    if not m:
+        err("“场景和主体”缺少微细节清单（“微细节共 N 处：……”）")
+    else:
+        n = int(m.group(1))
+        k = len([x for x in re.split(r"[；;]", m.group(2).rstrip("。")) if x.strip()])
+        if n < 6:
+            err(f"微细节只有 {n} 处，至少要 6 处")
+        if k != n:
+            err(f"微细节写的是 {n} 处，实际列出 {k} 处")
+
+
 HARD_COMMON = ["结构分件", "递进阶段", "布光层次"]
 HARD_BY_TOP = {
     "产品动画": ["产品行为", "卖点细节", "组件数量", "材质种类"],
@@ -376,7 +488,7 @@ def fmt_num(x):
     return f"{x:g}"
 
 
-def check_rubric(folder, rng, cat=None):
+def check_rubric(folder, rng, cat=None, v34=False):
     """检查任务文件夹里的 rubric.json。rng 是主文件里的允许时长区间 (A, B)。"""
     import json
     path = os.path.join(folder, "rubric.json")
@@ -406,8 +518,8 @@ def check_rubric(folder, rng, cat=None):
         if not isinstance(crit, list) or not crit:
             err("criteria 为空")
             crit = []
-        if crit and not 12 <= len(crit) <= 22:
-            warn(f"评价项有 {len(crit)} 项，一般为 15–20 项")
+        if crit and not 12 <= len(crit) <= (25 if v34 else 22):
+            warn(f"评价项有 {len(crit)} 项，一般为 {'19–25' if v34 else '15–22'} 项")
         total, n_crit, dur_ok = 0, 0, False
         for i, c in enumerate(crit, 1):
             tag = f"第 {i} 项"
@@ -475,6 +587,13 @@ def check_rubric(folder, rng, cat=None):
             err("缺少关键项“材质与制作底线”（3.3 起必填）")
         elif mq.get("critical") is not True:
             err("“材质与制作底线”应为关键项")
+        if v34:
+            for d in CINE_DIMS:
+                c = by_dim.get(d)
+                if not c:
+                    err(f"缺少关键项“{d}”（3.4 起必填）")
+                elif c.get("critical") is not True:
+                    err(f"“{d}”应为关键项")
         if abs(total - 100) > 1e-9:
             err(f"权重合计应为 100，现在是 {fmt_num(total)}")
         if not n_crit:
@@ -572,7 +691,7 @@ def check_v3(path):
     scene = section(t, "## 场景和主体", "## 动作和镜头")
     if len(scene) < 800:
         warn("“场景和主体”内容偏少，确认三层空间、8 类元素和尺度参照都已写出")
-    for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
+    for pat, label in ((r"bpy|\bAPI\b|Python|python|(?<!色彩)脚本|代码|函数", "代码或编程相关的词"),
                        (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
                        (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
                        (r"`", "代码格式的反引号")):
@@ -597,18 +716,26 @@ def check_v3(path):
     if not re.search(r"立方体|基本几何体", t):
         warn("没有写“别用基本几何体拼凑主体”这条底线")
     folder = os.path.dirname(path)
-    if os.path.exists(os.path.join(folder, f"{title}剧本.md")):
-        warn("3.0 格式不再需要单独的剧本文件")
     light = section(t, "## 灯光和画面", "## 底线和限制")
     if not re.search(r"[两三四五2-5]\s*层", light):
         warn("“灯光和画面”没有写明分几层光（布光层次 ≥ 2 层）")
     cat = check_tp_file(path, require_cat=True)
     tpp = os.path.join(folder, f"{title}考点说明.md")
     tp_text = open(tpp, encoding="utf-8-sig").read() if os.path.exists(tpp) else ""
+    v34 = is_v34(tp_text)
+    has_script = os.path.exists(os.path.join(folder, f"{title}剧本.md"))
+    if has_script:
+        (err if v34 else warn)("3.x 格式不再输出单独的剧本文件，所有内容都写进主文件")
     e0 = len(ERR)
     check_baseline(t, tp_text, folder, cat)
     ERR[e0:] = [f"制作底线：{m}" for m in ERR[e0:]]
-    check_rubric(folder, rng, cat)
+    if v34:
+        e0 = len(ERR)
+        check_cinematic(t, T, segs)
+        ERR[e0:] = [f"电影级画面：{m}" for m in ERR[e0:]]
+    else:
+        warn("考点说明没有“**规范版本**：3.4”，按 3.3 规则检查；新任务请按 3.4 写")
+    check_rubric(folder, rng, cat, v34)
     report()
 
 
@@ -636,7 +763,7 @@ def check_single(path, tax_path):
                 expect = f"# {m.group(1)}\n\n{body}"
                 if st.strip() != expect.strip():
                     err(f"{m.group(1)}.md 的内容和主文件里的剧本正文不一致，需要重新同步")
-    for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
+    for pat, label in ((r"bpy|\bAPI\b|Python|python|(?<!色彩)脚本|代码|函数", "代码或编程相关的词"),
                        (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
                        (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
                        (r"`", "代码格式的反引号")):
@@ -739,7 +866,7 @@ def main():
     p = b.split("```text", 1)[1].split("```", 1)[0].strip()
     if not p.startswith("使用 Blender 5.0.0"):
         err("Prompt 没有以“使用 Blender 5.0.0”开头")
-    for pat, label in ((r"bpy|\bAPI\b|Python|python|脚本|代码|函数", "代码或编程相关的词"),
+    for pat, label in ((r"bpy|\bAPI\b|Python|python|(?<!色彩)脚本|代码|函数", "代码或编程相关的词"),
                        (r"\b[a-z]+_[a-z_]+\b", "像属性变量名的英文"),
                        (r"\b[a-z]+\.[a-z_]+\(", "像函数调用的写法"),
                        (r"`", "代码格式的反引号")):

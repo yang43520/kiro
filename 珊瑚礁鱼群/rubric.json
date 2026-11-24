@@ -11,7 +11,7 @@
       "criterion_id": "R01",
       "dimension": "主体与目标",
       "criterion": "画面中有一片浅海珊瑚礁、约 600 条金黄色小笛鲷的鱼群、约 200 条蓝绿色雀鲷和一条银色珍鲹；珍鲹冲来时鱼群分成两股绕开、雀鲷钻进珊瑚，珍鲹走后鱼群重新聚拢，最后从镜头上方转身游过、射下光柱。",
-      "weight": 8,
+      "weight": 7,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "binary",
@@ -50,7 +50,7 @@
       "criterion_id": "R04",
       "dimension": "动作完整性",
       "criterion": "按涌浪与鱼群 → 捕食者出现 → 鱼群让道 → 重新聚拢 → 鱼群转身的顺序完整呈现，结尾约 2 秒展示鱼群和光柱。",
-      "weight": 9,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -156,7 +156,7 @@
       "criterion_id": "R12",
       "dimension": "鱼群让道与重聚",
       "criterion": "珍鲹冲来时离它近的鱼先转身，转身约 0.5 秒传过整个鱼群；鱼群分成两股绕开它，通道始终比它宽一圈，绕过后在身后重新接上；鱼与鱼不重叠，不穿过珍鲹和珊瑚。",
-      "weight": 10,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -170,7 +170,7 @@
       "criterion_id": "R13",
       "dimension": "雀鲷钻进珊瑚",
       "criterion": "雀鲷按离珍鲹路线的距离，从近到远一圈圈钻进鹿角珊瑚的枝杈缝，0.8 秒内钻完；珍鲹走后从远的一侧开始浮出来回到珊瑚上方；全程不穿过珊瑚枝。",
-      "weight": 9,
+      "weight": 7,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -184,7 +184,7 @@
       "criterion_id": "R14",
       "dimension": "涌浪、焦散与光柱",
       "criterion": "涌浪约每 4 秒一推，海扇、软珊瑚和海葵触手跟着倒过去再摆回来，越软越晚停；焦散光纹随水面一直晃动；结尾鱼群挡住太阳时射下晃动的光柱。",
-      "weight": 7,
+      "weight": 6,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -212,7 +212,7 @@
       "criterion_id": "R16",
       "dimension": "画面完整与清晰",
       "criterion": "画面无明显破面、闪烁和噪点，珊瑚分枝和沟纹、砗磲花纹、鱼鳞和细纹在当前景别下可辨，焦散和光柱里没有闪烁噪点。",
-      "weight": 4,
+      "weight": 3,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -225,8 +225,8 @@
     {
       "criterion_id": "R17",
       "dimension": "构图与镜头",
-      "criterion": "一镜到底；捕食者出现、鱼群让道、雀鲷钻进珊瑚、重新聚拢和鱼群转身都在画面里看得清；让出的通道看得出形状；结尾抬头看到鱼群和光柱。",
-      "weight": 5,
+      "criterion": "一镜到底，从海葵和小丑鱼的特写出发；捕食者出现、鱼群让道、雀鲷钻进珊瑚、重新聚拢和鱼群转身都在画面里看得清；让出的通道看得出形状；结尾抬头看到鱼群和光柱。",
+      "weight": 4,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -253,7 +253,7 @@
       "criterion_id": "R19",
       "dimension": "灯光材质与氛围",
       "criterion": "太阳光、蓝色天光和白沙反光层次清楚；颜色高饱和但不出现荧光色，鱼群闪光和水面亮圈不爆白，远处的水干净不发灰。",
-      "weight": 5,
+      "weight": 3,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -267,7 +267,7 @@
       "criterion_id": "R20",
       "dimension": "场景丰富度",
       "criterion": "前景有海扇、砗磲、海葵和沙纹，中景有礁坡、多种珊瑚和鱼群，远景有蓝色深水、远处礁影和水面。",
-      "weight": 3,
+      "weight": 2,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -281,7 +281,7 @@
       "criterion_id": "R21",
       "dimension": "节奏与有效时长",
       "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
-      "weight": 2,
+      "weight": 1,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -289,6 +289,48 @@
         "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
         "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
         "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    },
+    {
+      "criterion_id": "R22",
+      "dimension": "动态密度",
+      "criterion": "动态总表里的 12 类动态都看得见：鱼群群集、摆尾、涌浪摆动、焦散、悬浮颗粒、远景水面和鱼影、小丑鱼、珍鲹、雀鲷、沙雾、鱼球、光柱；任意 2 秒至少 3 类同时在动，远景也在动，画面没有静止的角落。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "动态明显少于总表，或有超过 2 秒只有 1–2 类在动，或远景完全静止。",
+        "50": "大部分动态都在，但有 1–2 类看不出来，或某一段明显变空，且未达到 0 分状态。",
+        "100": "总表里的动态都看得见，层次丰富，任何时刻画面都是活的。"
+      }
+    },
+    {
+      "criterion_id": "R23",
+      "dimension": "电影级画面",
+      "criterion": "太阳主光约 6,500 K、蓝色天光补光约 10,000 K、白沙反光三层光，主补光比约 3:1，结尾变成逆光并勾出金色轮廓光；稀薄的体积散射和空气透视；5 段构图依次是前景框景、对角线、引导线、中心构图和剪影；青蓝主色、紫粉辅色、金黄和橙色点缀，按色彩脚本从暖到冷再到冷暖各半；开场焦点从海葵移到鱼群；轻微暗角和极轻的胶片颗粒。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "光线平、没有层次，或构图随意、主体常被挤到边上，或颜色发灰、发脏或出现荧光色。",
+        "50": "光线和构图基本成立，但有 1–2 段构图不成立、色彩脚本没有变化，或暗角、颗粒过重，且未达到 0 分状态。",
+        "100": "光线、氛围、构图和色彩都像院线纪录片的剧照，按设计变化，处理克制。"
+      }
+    },
+    {
+      "criterion_id": "R24",
+      "dimension": "细节精致度",
+      "criterion": "大形、中形、小形三级细节都在；8 处微细节看得见：鹿角珊瑚的浅色生长边、脑珊瑚沟纹底部更深、海扇上挂的沙粒、砗磲外套膜的亮点、小丑鱼条纹的黑边、小笛鲷鳞片的斜纹、雀鲷尾鳍的半透明边、沙纹背风面的细白沙；开场特写里海葵触手和小丑鱼的细节经得起看。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "只有大形，珊瑚和鱼表面是平的，或特写里看不出细节。",
+        "50": "三级细节基本成立，但有 3 处以上微细节看不出来，或特写里有一处明显粗糙，且未达到 0 分状态。",
+        "100": "三级细节和微细节都在，特写经得起逐帧看。"
       }
     }
   ]

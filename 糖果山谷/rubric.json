@@ -11,7 +11,7 @@
       "criterion_id": "R01",
       "dimension": "主体与目标",
       "criterion": "画面中有一座真实糖果尺寸的糖果山谷；彩虹硬糖球在焦糖断开后滚下糖霜山、压出糖槽、撞开软糖、砸进果冻湖，晃动传到彩虹硬糖桥，糖粉一段段震落，硬糖被阳光照透、在地上投下彩色光斑。",
-      "weight": 8,
+      "weight": 7,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "binary",
@@ -50,7 +50,7 @@
       "criterion_id": "R04",
       "dimension": "动作完整性",
       "criterion": "按焦糖拉丝 → 滚下糖霜坡 → 撞开软糖林 → 砸进果冻湖 → 彩虹桥亮起的顺序完整呈现，结尾约 2 秒展示透亮的糖桥和彩色光斑。",
-      "weight": 9,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -89,7 +89,7 @@
     {
       "criterion_id": "R07",
       "dimension": "布光层次",
-      "criterion": "画面有太阳主光、物理天空的天光、糖果透过和反过来的彩色光共 3 层光（要求不少于 2 层），每层都有可见的作用。",
+      "criterion": "画面有太阳侧逆光主光、物理天空的天光、饼干地面的反光、糖果透过来的彩色光共 4 层光（要求不少于 2 层），每层都有可见的作用。",
       "weight": 3,
       "critical": true,
       "pass_threshold": 100,
@@ -156,7 +156,7 @@
       "criterion_id": "R12",
       "dimension": "糖槽与果冻波纹",
       "criterion": "糖球滚过的糖霜坡上留下一道由浅变深、由窄变宽的槽，坡底约 5 毫米深，槽边隆起、槽里有彩色印子，离开后仍然可见；糖球落进果冻湖时落点凹坑，波纹一圈圈往外推、碰到湖岸反弹叠加，结尾仍在轻晃。",
-      "weight": 10,
+      "weight": 8,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -170,7 +170,7 @@
       "criterion_id": "R13",
       "dimension": "撞开软糖与防穿模",
       "criterion": "糖球撞开约 40 颗软糖：被撞的软糖压扁一点再弹回、表面砂糖被震落，倒下、滚动或叠在一起；糖球和软糖、软糖和软糖、它们和地面之间都不穿透、不悬空、不隔空弹开；棒棒糖树被擦到后晃一下，糖盘比棍子晚一点回来。",
-      "weight": 9,
+      "weight": 7,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -184,7 +184,7 @@
       "criterion_id": "R14",
       "dimension": "焦糖拉丝与糖桥亮起",
       "criterion": "焦糖被拉成越来越细的糖丝，在最细处断开、两头回缩；结尾糖粉从桥脚那段开始约每 0.25 秒震落一段，像细雪落在果冻和湖岸上，露出的硬糖被阳光照透，在地上投下七种颜色的光斑。",
-      "weight": 7,
+      "weight": 6,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -212,7 +212,7 @@
       "criterion_id": "R16",
       "dimension": "画面完整与清晰",
       "criterion": "画面无明显破面、闪烁和噪点，糖霜纹路、砂糖颗粒、硬糖气泡和巧克力气孔在当前景别下可辨，焦散光斑和体积云里没有闪烁噪点。",
-      "weight": 4,
+      "weight": 3,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -225,8 +225,8 @@
     {
       "criterion_id": "R17",
       "dimension": "构图与镜头",
-      "criterion": "一镜到底；焦糖断开、压出糖槽、撞开软糖、砸进果冻和糖桥亮起都在画面里看得清；糖槽离开后仍可见；结尾看到整座透亮的糖桥和彩色光斑。",
-      "weight": 5,
+      "criterion": "一镜到底，从焦糖和糖球的特写出发；焦糖断开、压出糖槽、撞开软糖、砸进果冻和糖桥亮起都在画面里看得清；糖槽离开后仍可见；结尾看到整座透亮的糖桥和彩色光斑。",
+      "weight": 4,
       "critical": true,
       "pass_threshold": 100,
       "scoring_type": "discrete",
@@ -252,8 +252,8 @@
     {
       "criterion_id": "R19",
       "dimension": "灯光材质与氛围",
-      "criterion": "太阳光、天光和糖果的彩色透光层次清楚；颜色高饱和但不出现荧光色，硬糖和焦糖的高光不爆白，暗面不死黑。",
-      "weight": 5,
+      "criterion": "太阳侧逆光、天光、地面反光和糖果的彩色透光层次清楚；颜色高饱和但不出现荧光色，硬糖和焦糖的高光不爆白，暗面不死黑。",
+      "weight": 3,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -267,7 +267,7 @@
       "criterion_id": "R20",
       "dimension": "场景丰富度",
       "criterion": "前景有棒棒糖树、饼干地面、糖针和巧克力岩，中景有糖霜山、软糖林和果冻湖，远景有糖桥、远处的棒棒糖树和棉花糖云。",
-      "weight": 3,
+      "weight": 2,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -281,7 +281,7 @@
       "criterion_id": "R21",
       "dimension": "节奏与有效时长",
       "criterion": "每 2–3 秒都有新的变化，没有无意义的停帧或重复片段，节奏能看懂整个过程。",
-      "weight": 2,
+      "weight": 1,
       "critical": false,
       "pass_threshold": null,
       "scoring_type": "discrete",
@@ -289,6 +289,48 @@
         "0": "有长时间的停帧或重复片段，或节奏过快看不懂过程。",
         "50": "节奏基本合理，但有一段明显拖沓或过快，且未达到 0 分状态。",
         "100": "节奏推进清楚，没有无意义的停帧或重复。"
+      }
+    },
+    {
+      "criterion_id": "R22",
+      "dimension": "动态密度",
+      "criterion": "动态总表里的 12 类动态都看得见：焦糖拉丝、糖球滚动、糖粉微尘、远景棉花糖云和云影、糖霜槽、糖针弹跳和糖粉、软糖被撞开、棒棒糖树晃动、果冻晃动、湖底光纹、糖粉震落、彩色光斑；任意 2 秒至少 3 类同时在动，远景也在动，画面没有静止的角落。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "动态明显少于总表，或有超过 2 秒只有 1–2 类在动，或远景完全静止。",
+        "50": "大部分动态都在，但有 1–2 类看不出来，或某一段明显变空，且未达到 0 分状态。",
+        "100": "总表里的动态都看得见，层次丰富，任何时刻画面都是活的。"
+      }
+    },
+    {
+      "criterion_id": "R23",
+      "dimension": "电影级画面",
+      "criterion": "太阳侧逆光主光约 5,200 K、天光补光约 8,500 K、地面反光约 3,800 K 和糖果彩色透光四层光，主补光比约 4:1，糖果边缘有轮廓光、透光明显；阳光里有糖粉微尘，远景有空气透视；5 段构图依次是三分法、引导线、前景框景、中心构图和对称构图；暖色糖果主色、蓝绿辅色、彩虹和琥珀点缀，按色彩脚本变化；焦点跟着糖球，结尾移到糖桥；轻微暗角和极轻的胶片颗粒。",
+      "weight": 5,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "光线平、糖果不透光，或构图随意、主体常被挤到边上，或颜色发灰、发脏或出现荧光色。",
+        "50": "光线和构图基本成立，但有 1–2 段构图不成立、色彩脚本没有变化，或暗角、颗粒过重，且未达到 0 分状态。",
+        "100": "光线、氛围、构图和色彩都像院线电影的剧照，按设计变化，处理克制。"
+      }
+    },
+    {
+      "criterion_id": "R24",
+      "dimension": "细节精致度",
+      "criterion": "大形、中形、小形三级细节都在；8 处微细节看得见：硬糖里的小气泡、焦糖丝的纵纹、糖霜尖角的干裂纹、软糖掉了砂糖露出的亮面、巧克力断面的气孔、饼干上的烤斑和碎屑、棒棒糖螺旋交界的晕色、糖桥接缝处更厚更深的糖；开场特写里焦糖和糖球的细节经得起看。",
+      "weight": 4,
+      "critical": true,
+      "pass_threshold": 100,
+      "scoring_type": "discrete",
+      "score_anchors": {
+        "0": "只有大形，糖果表面是平的，或特写里看不出细节。",
+        "50": "三级细节基本成立，但有 3 处以上微细节看不出来，或特写里有一处明显粗糙，且未达到 0 分状态。",
+        "100": "三级细节和微细节都在，特写经得起逐帧看。"
       }
     }
   ]
