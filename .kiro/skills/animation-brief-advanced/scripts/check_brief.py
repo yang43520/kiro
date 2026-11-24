@@ -434,6 +434,11 @@ def check_adv(t, tp_text, T, segs, folder):
         warn(f"时间写得过细：第 {'、'.join(fine)} 秒，一般取到 0.5 秒")
     if re.search(r"0\.\d[1-46-9]\s*秒|0\.[1-46-9]\s*秒", t):
         warn("有零点几秒的间隔，人一般写“紧接着”“一个接一个”，或取到 0.5 秒")
+    for phrase in ("全片一直在动的有", "近看要看得到的小细节有", "这三个画面最该好看", "用的是三分法",
+                   "尺寸和时间都是参考，可以微调，但先后顺序不能动", "所有东西都在 Blender 里自己建，别用立方体、圆柱、球、圆锥加噪波凑主体",
+                   "别莫名其妙地卡一下", "画面要照片级写实，像", "一句话讲内容", "建模和材质的做法"):
+        if phrase in t:
+            warn(f"用了模板里的套话“{phrase}”，换成这条片子自己的说法")
     n_chars = len(t)
     if n_chars > 6500:
         warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
@@ -477,15 +482,15 @@ def check_adv(t, tp_text, T, segs, folder):
             err(f"焦距 {'、'.join(map(str, bad))} 毫米不在视觉基调的范围 {fmt_num(lo)}–{fmt_num(hi)} 毫米内")
     if not re.search(r"f/\s*\d", t):
         err("没有写光圈（f/ 数值）")
-    m = re.search(r"全片一直在动的有[：:]([^\n]+)", act)
+    m = re.search(r"(?:一直在动|始终在动|一直没停|没停过|一刻不停|从头到尾[^：:\n]{0,8}动)[^：:\n]{0,12}[：:]([^\n]+)", act)
     if not m:
-        err("“动作和镜头”末尾缺少一句“全片一直在动的有：……”")
+        err("“动作和镜头”末尾缺少一句总述全片一直在动的东西（例如“从头到尾都在动的有：……”）")
     else:
         it = _items(m.group(1))
         if len(it) < 8:
-            err(f"“全片一直在动的有”只列了 {len(it)} 样，至少 8 样")
-        if not re.search(r"远处|远景", m.group(1)):
-            err("“全片一直在动的有”里要有远处在动的东西")
+            err(f"一直在动的东西只列了 {len(it)} 样，至少 8 样")
+        if not re.search(r"远处|远景|最远|尽头|天边|对面", m.group(1)):
+            err("一直在动的东西里要有远处在动的")
 
     # 关键效果：还原数值；至少 2 条写了做不出来时怎么办
     for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
@@ -496,7 +501,7 @@ def check_adv(t, tp_text, T, segs, folder):
             err(f"关键效果“{head[:12]}…”没有写真实世界的数值作还原依据")
     if len(re.findall(r"退一步|实在做不出来|做不出来的话", eff)) < 2:
         err("关键效果里至少要有 2 条写明做不出来时的替代做法（“实在做不出来，可以……”）")
-    if not re.search(r"先保住|一定要保住", limit):
+    if not re.search(r"先保住|一定要保住|优先保证|先顾|最要紧的是|保不住", limit):
         err("“底线和限制”里要有一句做不完时先保住哪几条效果")
 
     # 灯光和画面
@@ -549,9 +554,9 @@ def check_adv(t, tp_text, T, segs, folder):
     for k in ("大形", "中形", "小形"):
         if k not in scene:
             err(f"“场景和主体”没有按三级写细节（缺“{k}”）")
-    m = re.search(r"近看要看得到的小细节[^：:]*[：:]([^\n]+)", scene)
+    m = re.search(r"(?:小细节|细节有|凑近|近看|特写里|离得近|走近)[^：:\n]{0,16}[：:]([^\n]+)", scene)
     if not m:
-        err("“场景和主体”缺少一句“近看要看得到的小细节有：……”")
+        err("“场景和主体”缺少一句列出近看要看得到的小细节（例如“凑近了要看得到：……”）")
     elif len(_items(m.group(1))) < 6:
         err("近看要看得到的小细节至少写 6 样")
 
