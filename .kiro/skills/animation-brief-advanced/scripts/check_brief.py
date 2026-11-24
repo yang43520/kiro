@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """检查一个动画任务是否符合“进阶版动画创意”（animation-brief-advanced）规则。
 
-进阶版 1.0（考点说明写了“**规范版本**：进阶版 1.0”）在 3.4 的全部检查之上，还检查：
-视觉基调（光比、焦距、运镜速度、AgX 观感是否在基调范围内）、关键机位（逐行带标签的文字；坐标、对焦距离、
-按 36 毫米传感器重新投影主体位置）、海报帧、渲染设置、色值和光强、明暗分区、效果优先级和“退一步”做法，
-以及 rubric 的“海报帧与视觉基调”关键项。
+进阶版 1.1（考点说明写了“**规范版本**：进阶版 1.1”）检查电影级要求是否用人能写出来的口语写法写进了主文件：
+视觉基调（光比、焦距、AgX 观感是否在基调范围内）、每段的镜头和构图、特写、焦点、“全片一直在动的有”、
+还原数值、替代做法、三层光和色温光比、配色和色彩脚本、海报帧、渲染那一句、三级细节和近看的小细节；
+同时禁止坐标、十六进制色值、三位以上小数这类像机器算出来的内容。rubric 要有四个电影级关键项。
 
 
 3.x 格式（默认）：主文件 <标题>.md（含“## 场景和主体”等五节），同时核对 <标题>考点说明.md 和 rubric.json；
@@ -363,7 +363,7 @@ def check_baseline(t, tp_text, folder, cat):
 
 
 COMPOSITION = r"三分法|引导线|框景|负空间|对角线|对称|中心构图|S 形|S形|剪影|层次纵深"
-REAL_NUM = r"\d[\d.,]*\s*(秒|米|厘米|毫米|°|度|K|倍|%|赫兹|帧|克|千克|升|毫升|次|颗|条|只|根|段|层|处|个)|折射率\s*约?\s*\d"
+REAL_NUM = r"\d[\d.,]*\s*(秒|公里|千米|米|厘米|毫米|°|度|K|倍|%|赫兹|帧|克|千克|升|毫升|次|颗|条|只|根|段|层|处|个)|折射率\s*约?\s*\d"
 CINE_DIMS = ["动态密度", "电影级画面", "细节精致度"]
 
 
@@ -398,212 +398,162 @@ def load_tones(folder):
     if not rows:
         return None
     head = rows[0]
-    col = {h: i for i, h in enumerate(head)}
     out = {}
     for r in rows[1:]:
         if len(r) != len(head):
             continue
-        g = lambda k: next((r[i] for h, i in col.items() if h.startswith(k)), "")
-        out[r[0]] = {
-            "ratio": _range(g("主辅光比")), "focal": _range(g("焦距")),
-            "turn": float(re.search(r"[\d.]+", g("镜头转动上限")).group(0)),
-            "move": float(re.search(r"[\d.]+", g("镜头移动上限")).group(0)) / 100,
-            "looks": [x.strip() for x in re.split(r"[、,，]", g("AgX 观感")) if x.strip()],
-        }
+        g = lambda k: next((r[i] for i, h in enumerate(head) if h.startswith(k)), "")
+        out[r[0]] = {"ratio": _range(g("主辅光比")), "focal": _range(g("焦距")),
+                     "looks": [x.strip() for x in re.split(r"[、,，]", g("AgX 观感")) if x.strip()]}
     return out
 
 
-def _sub(a, b): return [a[i] - b[i] for i in range(3)]
-def _dot(a, b): return sum(a[i] * b[i] for i in range(3))
-def _cross(a, b): return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]
-def _norm(a):
-    n = _dot(a, a) ** 0.5
-    return [x / n for x in a] if n else a
+def _items(text):
+    return [x for x in re.split(r"[、；;，,]", text.strip().rstrip("。")) if x.strip()]
 
 
-def project(cam, aim, subj, focal, sensor=36.0, aspect=16 / 9):
-    """按 Blender 默认（传感器宽 36 毫米、按宽适配、不侧倾）把主体投影到画面，返回 (横, 纵, 深度)。"""
-    f = _norm(_sub(aim, cam))
-    r = _norm(_cross(f, [0, 0, 1]))
-    u = _cross(r, f)
-    d = _sub(subj, cam)
-    zc = _dot(d, f)
-    if zc <= 0:
-        return None
-    x = 0.5 + focal * _dot(d, r) / zc / sensor
-    y = 0.5 - focal * _dot(d, u) / zc / (sensor / aspect)
-    return x, y, zc
-
-
-def check_advanced(t, tp_text, T, fps, segs, folder):
+def check_adv(t, tp_text, T, segs, folder):
+    """进阶版 1.1：电影级要求和可执行参数都用人能写出来的口语写法，专业术语照样要写。"""
     scene = section(t, "## 场景和主体", "## 动作和镜头")
     act = section(t, "## 动作和镜头", "## 关键效果和做法")
     eff = section(t, "## 关键效果和做法", "## 灯光和画面")
     light = section(t, "## 灯光和画面", "## 底线和限制")
+    limit = section(t, "## 底线和限制")
 
-    # 一、视觉基调
+    # 像人写的：不要坐标、色值和过细的小数
+    for pat, label in ((r"\(\s*-?[\d.]+\s*,\s*-?[\d.]+\s*,\s*-?[\d.]+\s*\)", "坐标"),
+                       (r"#[0-9A-Fa-f]{6}\b", "十六进制色值"),
+                       (r"\d+\.\d{3,}", "三位以上的小数"),
+                       (r"传感器宽", "传感器参数"),
+                       (r"坐标[：:]", "坐标系说明")):
+        mm = re.search(pat, t)
+        if mm:
+            err(f"主文件里出现了{label}：“{mm.group(0)}”，进阶版 1.1 起改成口语化的说法")
+    fine = sorted(set(re.findall(r"第\s*(\d+\.(?:[1-46-9]|\d\d+))\s*秒", t)))
+    if fine:
+        warn(f"时间写得过细：第 {'、'.join(fine)} 秒，一般取到 0.5 秒")
+    if re.search(r"0\.\d[1-46-9]\s*秒|0\.[1-46-9]\s*秒", t):
+        warn("有零点几秒的间隔，人一般写“紧接着”“一个接一个”，或取到 0.5 秒")
+    n_chars = len(t)
+    if n_chars > 6500:
+        warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
+
+    # 视觉基调
     tones = load_tones(folder)
     tone = None
     m = re.search(r"视觉基调[：:]\s*([^。，,\s（(]+)", light.strip().split("\n", 1)[0])
     mt = re.search(r"\*\*视觉基调\*\*[：:]\s*(\S+)", tp_text)
     if not m:
         err("“灯光和画面”第一句应写“视觉基调：<基调名>。”")
-    elif tones is None:
-        warn("找不到 visual-tones.md，跳过视觉基调检查")
-    elif m.group(1) not in tones:
+    elif tones and m.group(1) not in tones:
         err(f"视觉基调“{m.group(1)}”不在 visual-tones.md 里（可选：{'、'.join(tones)}）")
-    else:
+    elif tones:
         tone = tones[m.group(1)]
         if not mt or mt.group(1) != m.group(1):
             err(f"考点说明的“视觉基调”应为“{m.group(1)}”")
-    if tone:
-        for a in re.findall(r"光比约?\s*(\d+(?:\.\d+)?)\s*[:：]\s*1", light):
-            lo, hi = tone["ratio"]
+
+    # 动作和镜头：每段有镜头和构图，有特写、焦距、焦点，有一句“一直在动”的总述
+    blocks = re.split(r"^(?=第\s*[\d.]+\s*–\s*[\d.]+\s*秒（)", act, flags=re.M)
+    for b in blocks:
+        hm = re.match(r"第\s*[\d.]+\s*–\s*[\d.]+\s*秒（([^）]+)）", b)
+        if not hm:
+            continue
+        if not re.search(COMPOSITION, b):
+            err(f"段落“{hm.group(1)}”没有写构图方式（三分法、引导线、框景、负空间、对角线、对称、中心构图、S 形、剪影、层次纵深）")
+        if "镜头" not in b:
+            err(f"段落“{hm.group(1)}”没有交代镜头在哪、怎么动")
+    if "特写" not in act:
+        err("“动作和镜头”里没有安排近景特写")
+    if "焦点" not in act + light:
+        err("没有写焦点怎么安排")
+    focals = [int(x) for x in re.findall(r"(\d+)\s*毫米(?:的?微距)?(?:镜头|焦距)", t)] + \
+             [int(x) for x in re.findall(r"焦距[^。；，]{0,6}?(\d+)\s*毫米", t)]
+    if not focals:
+        err("没有写焦距（例如“用 35 毫米镜头”“焦距拉到 100 毫米”）")
+    elif tone:
+        lo, hi = tone["focal"]
+        bad = sorted({f for f in focals if not lo <= f <= hi})
+        if bad:
+            err(f"焦距 {'、'.join(map(str, bad))} 毫米不在视觉基调的范围 {fmt_num(lo)}–{fmt_num(hi)} 毫米内")
+    if not re.search(r"f/\s*\d", t):
+        err("没有写光圈（f/ 数值）")
+    m = re.search(r"全片一直在动的有[：:]([^\n]+)", act)
+    if not m:
+        err("“动作和镜头”末尾缺少一句“全片一直在动的有：……”")
+    else:
+        it = _items(m.group(1))
+        if len(it) < 8:
+            err(f"“全片一直在动的有”只列了 {len(it)} 样，至少 8 样")
+        if not re.search(r"远处|远景", m.group(1)):
+            err("“全片一直在动的有”里要有远处在动的东西")
+
+    # 关键效果：还原数值；至少 2 条写了做不出来时怎么办
+    for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
+        head = it.split("：", 1)[0]
+        if re.search(r"一镜到底|运镜|镜头", head):
+            continue
+        if not re.search(REAL_NUM, it.split("：", 1)[-1]):
+            err(f"关键效果“{head[:12]}…”没有写真实世界的数值作还原依据")
+    if len(re.findall(r"退一步|实在做不出来|做不出来的话", eff)) < 2:
+        err("关键效果里至少要有 2 条写明做不出来时的替代做法（“实在做不出来，可以……”）")
+    if not re.search(r"先保住|一定要保住", limit):
+        err("“底线和限制”里要有一句做不完时先保住哪几条效果")
+
+    # 灯光和画面
+    if not re.search(r"[三四五六3-6]\s*层", light):
+        err("“灯光和画面”至少要写 3 层光")
+    if not re.search(r"轮廓光|逆光|实用光", light):
+        err("“灯光和画面”没有轮廓光、逆光或实用光")
+    if not re.search(r"\d[\d,]{2,5}\s*K", light):
+        err("“灯光和画面”至少给主光写一个色温（K）")
+    ratios = re.findall(r"光比约?\s*(\d+(?:\.\d+)?)\s*[:：]\s*1", light)
+    if not ratios:
+        err("“灯光和画面”没有写主辅光比（例如“光比约 4:1”）")
+    elif tone:
+        lo, hi = tone["ratio"]
+        for a in ratios:
             if not lo - 1e-9 <= float(a) <= hi + 1e-9:
                 err(f"光比 {a}:1 不在视觉基调的范围 {fmt_num(lo)}–{fmt_num(hi)}:1 内")
-        looks = re.findall("|".join(AGX_LOOKS), light)
-        if not looks:
-            err("没有写 AgX 观感的名称（例如 Punchy、Base Contrast）")
+    if not re.search(r"体积光|空气透视|体积雾|微尘|水汽|体积散射", light):
+        err("“灯光和画面”没有大气效果（体积光、空气透视、局部体积雾、微尘或水汽）")
+    for k in ("主色", "辅色", "点缀色", "色彩脚本", "暗角", "颗粒", "最亮"):
+        if k not in light:
+            err(f"“灯光和画面”缺少“{k}”")
+    looks = re.findall("|".join(AGX_LOOKS), light)
+    if not looks:
+        err("没有写 AgX 观感的名称（例如 Punchy、Base Contrast）")
+    elif tone:
         for lk in set(looks):
             if lk not in tone["looks"]:
                 err(f"AgX 观感 {lk} 不在视觉基调允许的范围内（可选：{'、'.join(tone['looks'])}）")
-
-    # 二、关键机位（逐行带标签，不用表格）
-    if "坐标：" not in scene and "坐标:" not in scene:
-        err("“场景和主体”里没有写坐标系（“坐标：原点在……，x 朝……”）")
-    cam_part = act.split("关键机位", 1)[1] if "关键机位" in act else ""
-    if not cam_part:
-        err("“动作和镜头”末尾缺少关键机位（“关键机位（传感器宽 36 毫米……）：”加逐行的机位）")
-    else:
-        if "36 毫米" not in cam_part.split("\n", 1)[0]:
-            err("关键机位前的说明里要写“传感器宽 36 毫米”")
-        if re.search(r"^\|.*机位.*\|", cam_part, re.M):
-            err("关键机位要写成逐行带标签的文字，不用表格（复制粘贴时表格容易丢失列边界）")
-        # 每一条不依赖换行，换行被合并成一行也能逐条认出来
-        heads = list(re.finditer(r"第\s*([\d.]+)\s*秒[：:]\s*机位", cam_part))
-        pts = []
-        for i, h in enumerate(heads):
-            body = cam_part[h.start(): heads[i + 1].start() if i + 1 < len(heads) else len(cam_part)]
-            tm = h.group(1)
-            m = re.search(r"机位\s*" + COORD + r"\s*[，,]\s*看向\s*" + COORD + r"\s*[，,]\s*主体\s*" + COORD +
-                          r"\s*[，,]\s*焦距\s*([\d.]+)\s*毫米\s*[，,]\s*对焦距离\s*([\d.]+)\s*米\s*[，,]\s*"
-                          r"主体在画面横向\s*([\d.]+)\s*[、，,]\s*纵向\s*([\d.]+)\s*[；;]\s*运镜[：:]\s*(\S[^\n]*)", body)
-            if not m:
-                err(f"关键机位第 {tm} 秒这一条的格式不对，应为“第 T 秒：机位 (x, y, z)，看向 (x, y, z)，主体 (x, y, z)，"
-                    f"焦距 N 毫米，对焦距离 N 米，主体在画面横向 a、纵向 b；运镜：……”"); continue
-            g = [float(x) for x in m.groups()[:13]]
-            pts.append((float(tm), g[0:3], g[3:6], g[6:9], g[9], g[10], g[11], g[12]))
-        if not heads:
-            err("关键机位里没有认出任何一条（“第 T 秒：机位 (x, y, z)，……”）")
-        times = [p[0] for p in pts]
-        if times != sorted(times) or len(set(times)) != len(times):
-            err("关键机位的时刻应从小到大、不重复")
-        need = sorted({float(s) for s, _, _ in segs} | ({T} if T else set()))
-        miss = [fmt_num(x) for x in need if not any(abs(x - y) < 1e-6 for y in times)]
-        if miss:
-            err(f"关键机位缺少这些时刻：第 {'、'.join(miss)} 秒（每段的起点和结尾都要有）")
-        for tm, cam, aim, subj, focal, fd, sx, sy in pts:
-            pr = project(cam, aim, subj, focal)
-            if not pr:
-                err(f"第 {fmt_num(tm)} 秒：主体在镜头后面"); continue
-            px, py, _ = pr
-            dist = _dot(_sub(subj, cam), _sub(subj, cam)) ** 0.5
-            if abs(px - sx) > 0.07 or abs(py - sy) > 0.07:
-                err(f"第 {fmt_num(tm)} 秒：按坐标和 {fmt_num(focal)} 毫米焦距算，主体在画面 ({px:.2f}, {py:.2f})，"
-                    f"机位里写的是 ({sx:.2f}, {sy:.2f})")
-            if not (0.05 <= px <= 0.95 and 0.05 <= py <= 0.95):
-                err(f"第 {fmt_num(tm)} 秒：主体在画面边缘或画外 ({px:.2f}, {py:.2f})")
-            if dist and abs(fd - dist) / dist > 0.2:
-                err(f"第 {fmt_num(tm)} 秒：对焦距离 {fmt_num(fd)} 米和镜头到主体的距离约 {dist:.0f} 米差得太多")
-            if tone:
-                lo, hi = tone["focal"]
-                if not lo <= focal <= hi:
-                    err(f"第 {fmt_num(tm)} 秒：焦距 {fmt_num(focal)} 毫米不在视觉基调的范围 {fmt_num(lo)}–{fmt_num(hi)} 毫米内")
-        import math
-        for a, b in zip(pts, pts[1:]):
-            dt = b[0] - a[0]
-            if dt <= 0:
-                continue
-            fa, fb = _norm(_sub(a[2], a[1])), _norm(_sub(b[2], b[1]))
-            ang = math.degrees(math.acos(max(-1.0, min(1.0, _dot(fa, fb))))) / dt
-            mv = _dot(_sub(b[1], a[1]), _sub(b[1], a[1])) ** 0.5 / dt
-            da = _dot(_sub(a[3], a[1]), _sub(a[3], a[1])) ** 0.5
-            db = _dot(_sub(b[3], b[1]), _sub(b[3], b[1])) ** 0.5
-            rel = mv / max(1e-6, min(da, db))
-            if tone and ang > tone["turn"] + 1e-6:
-                err(f"第 {fmt_num(a[0])}–{fmt_num(b[0])} 秒：镜头每秒转 {ang:.1f}°，超过视觉基调的上限 {fmt_num(tone['turn'])}°/秒")
-            if tone and rel > tone["move"] + 1e-6:
-                err(f"第 {fmt_num(a[0])}–{fmt_num(b[0])} 秒：镜头每秒移动 {mv:.1f} 米，占主体距离 {rel:.0%}，"
-                    f"超过视觉基调的上限 {tone['move']:.0%}")
-        # 写了三分法的段落，主体要在三分线附近
-        for s, e, name in segs:
-            blk = re.search(r"^第\s*" + re.escape(s) + r"\s*–\s*" + re.escape(e) + r"\s*秒（[^）]+）(.+)$", act, re.M)
-            if not blk or "三分法" not in blk.group(1):
-                continue
-            row = next((p for p in pts if abs(p[0] - float(s)) < 1e-6), None)
-            if row and not any(min(abs(v - 1 / 3), abs(v - 2 / 3)) <= 0.08 for v in (row[6], row[7])):
-                err(f"段落“{name}”写了三分法，但第 {s} 秒主体在画面 ({row[6]:.2f}, {row[7]:.2f})，不在三分线附近")
-
-    # 三、海报帧
-    m = re.search(r"海报帧共\s*(\d+)\s*帧", light)
-    lines = re.findall(r"^-\s*第\s*(\d+)\s*帧（第\s*([\d.]+)\s*秒）[：:](.+)$", light, re.M)
+    m = re.search(r"海报帧([^\n]+)", light)
     if not m:
-        err("“灯光和画面”缺少海报帧（“海报帧共 N 帧……”）")
+        err("“灯光和画面”缺少海报帧（全片最好看的 2–3 个画面）")
     else:
-        n = int(m.group(1))
+        n = len(re.findall(r"第\s*[\d.]+\s*秒", m.group(1)))
         if not 2 <= n <= 3:
-            err(f"海报帧应为 2–3 帧，现在写的是 {n} 帧")
-        if len(lines) != n:
-            err(f"海报帧写的是 {n} 帧，实际列出 {len(lines)} 帧")
-        if "自查" not in light:
-            err("海报帧要写明先用低分辨率渲染出来自查")
-        for f, sec, body in lines:
-            if fps and int(f) != round(float(sec) * fps):
-                err(f"海报帧第 {f} 帧和第 {sec} 秒对不上（应为第 {round(float(sec) * fps)} 帧）")
-            if T and not 0 <= float(sec) <= T:
-                err(f"海报帧第 {sec} 秒超出片长")
-            for k in ("构图", "最亮", "焦点", "色"):
-                if k not in body:
-                    err(f"海报帧第 {f} 帧没有写“{k}”")
-
-    # 四、渲染设置
-    m = re.search(r"渲染设置[：:]([^\n]+)", light)
-    if not m:
-        err("“灯光和画面”缺少“渲染设置：……”")
+            err(f"海报帧应写 2–3 个时刻，现在写了 {n} 个")
+        if not re.search(r"自查|先.{0,6}渲", m.group(1)):
+            err("海报帧要写明先用低分辨率渲出来看看")
+    r = next((ln for ln in light.splitlines() if re.search(r"Cycles|EEVEE", ln)), "")
+    if not r:
+        err("“灯光和画面”没有写渲染引擎（Cycles 或 EEVEE）")
     else:
-        r = m.group(1)
-        for pat, label in ((r"Cycles|EEVEE", "渲染引擎"), (r"采样\s*\d+", "采样数"),
-                           (r"透射反弹\s*\d+\s*次", "透射反弹次数"), (r"焦散", "焦散开或关"),
-                           (r"曝光值?\s*[-+]?\d", "曝光值"), (r"快门", "运动模糊快门")):
+        for pat, label in ((r"采样", "采样"), (r"透射反弹", "透射反弹")):
             if not re.search(pat, r):
-                err(f"渲染设置里没有写{label}")
-        if re.search(r"体积", t) and not (re.search(r"体积反弹\s*\d+\s*次", r) and "体积步长" in r):
-            err("片子里有体积，渲染设置要写体积反弹次数和体积步长")
+                err(f"渲染那一句没有写{label}")
+        if re.search(r"体积", t) and "体积步长" not in r:
+            err("片子里有体积，渲染那一句要写体积步长")
 
-    # 五、色值和光强
-    if len(re.findall(r"#[0-9A-Fa-f]{6}\b", light)) < 3:
-        err("配色方案里至少要给主色、辅色和点缀色各一个十六进制色值")
-    if len(re.findall(r"强度约?\s*[\d.]+", light)) < 3:
-        err("“灯光和画面”至少要给 3 层光写出强度（“强度约 N 瓦”等）")
-
-    # 六、明暗分区
-    if not re.search(r"明暗分区[：:]", light) or "档" not in section(light, "明暗分区"):
-        err("“灯光和画面”缺少“明暗分区：……”，或没有写主体和背景差几档")
-
-    # 七、优先级和退一步
-    items = re.findall(r"^\d+\.\s*(.+)$", eff, re.M)
-    pri = []
-    for it in items:
-        head = it.split("：", 1)[0]
-        mm = re.search(r"必须|尽量|可省", head)
-        if not mm:
-            err(f"关键效果“{head[:12]}…”的标题没有注明优先级（必须、尽量或可省）")
-        else:
-            pri.append(mm.group(0))
-        if not re.search(r"一镜到底|运镜|镜头", head) and "退一步" not in it:
-            err(f"关键效果“{head[:12]}…”没有写“退一步可以……”的替代做法")
-    if items and "必须" not in pri:
-        err("关键效果里至少要有 1 条“必须”")
+    # 场景和主体：三级细节、近看的小细节
+    for k in ("大形", "中形", "小形"):
+        if k not in scene:
+            err(f"“场景和主体”没有按三级写细节（缺“{k}”）")
+    m = re.search(r"近看要看得到的小细节[^：:]*[：:]([^\n]+)", scene)
+    if not m:
+        err("“场景和主体”缺少一句“近看要看得到的小细节有：……”")
+    elif len(_items(m.group(1))) < 6:
+        err("近看要看得到的小细节至少写 6 样")
 
 
 def check_cinematic(t, T, segs):
@@ -978,17 +928,17 @@ def check_v3(path):
     check_baseline(t, tp_text, folder, cat)
     ERR[e0:] = [f"制作底线：{m}" for m in ERR[e0:]]
     adv = is_adv(tp_text)
-    if v34:
+    if adv:
+        e0 = len(ERR); w0 = len(WARN)
+        check_adv(t, tp_text, T, segs, folder)
+        ERR[e0:] = [f"进阶版：{m}" for m in ERR[e0:]]
+        WARN[w0:] = [f"进阶版：{m}" for m in WARN[w0:]]
+    elif v34:
         e0 = len(ERR)
         check_cinematic(t, T, segs)
         ERR[e0:] = [f"电影级画面：{m}" for m in ERR[e0:]]
-    if adv:
-        e0 = len(ERR)
-        fps_v = int(next(iter(fps))) if len(fps) == 1 else None
-        check_advanced(t, tp_text, T, fps_v, segs, folder)
-        ERR[e0:] = [f"可执行参数：{m}" for m in ERR[e0:]]
-    else:
-        warn("考点说明没有“**规范版本**：进阶版 1.0”，没有按进阶版规则检查")
+    if not adv:
+        warn("考点说明没有“**规范版本**：进阶版 1.1”，没有按进阶版规则检查")
     check_rubric(folder, rng, cat, v34, adv)
     report()
 
