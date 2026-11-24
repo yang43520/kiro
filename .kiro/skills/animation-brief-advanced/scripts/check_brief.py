@@ -332,6 +332,7 @@ def check_baseline(t, tp_text, folder, cat):
         err(f"类目“{second}”和技术模块 {'、'.join(row['mods']) or '无'} 的专业术语只写进了 {len(hit)} 个，"
             f"至少要 {need} 个（还没用的有：{'、'.join(miss[:12])}）")
     plugs = list(dict.fromkeys(row["plugins"] + [x for m in row["mods"] for x in mods.get(m, {}).get("plugins", [])]))
+    plugs = list(dict.fromkeys(y.strip() for x in plugs for y in re.split(r"[、，,]", x) if y.strip()))
     ms = re.search(r"可借助(.+?)(这些|等)插件", section(t, "## 底线和限制"), re.S)
     sentence = ms.group(1) if ms else ""
     ph = [p for p in plugs if p and p in sentence]
