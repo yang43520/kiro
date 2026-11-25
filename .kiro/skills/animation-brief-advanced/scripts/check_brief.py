@@ -523,6 +523,20 @@ def _check_organisms(t, tp_text):
             if not re.search(r"虚影|模糊|高速摄影|放慢", sent):
                 warn(f"写了每秒 {m.group(1)} 次的振翅，30 帧/秒拍不出来，写成运动模糊的虚影或按高速摄影放慢")
 
+PRIMS = r"立方体|正方体|长方体|圆柱体?|球体|UV 球|圆球|圆锥体?|圆环|三棱柱|胶囊体"
+
+
+def _check_primitive(t, tp_text):
+    """进阶版 1.4：要有灰模自查；正文不能正面写用基本几何体来做东西。1.3 及以下不查。"""
+    if adv_version(tp_text) < (1, 4):
+        return
+    if not re.search(r"灰模|白模", t):
+        err("缺少灰模自查（例如“开工前先渲两张灰模，一张侧面剪影、一张四分之三角度，看比例和有没有几何体拼出来的地方”）")
+    body = _neg_free(t)
+    m = re.search(rf"(?:用|拿|以|靠)[^。，；]{{0,8}}(?:{PRIMS})[^。；]{{0,12}}?(?:做|当|拼|堆|凑|搭|组成|代替)", body)
+    if m:
+        err(f"正文里正面写了用基本几何体做东西：“{m.group(0)}”，改写成真正的起形方法（见 references/anti-primitive.md）")
+
 
 def _clauses(text):
     body = text.split("\n", 3)[-1]
@@ -593,6 +607,7 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_reuse(t, folder)
     _check_term_list(t, tp_text)
     _check_organisms(t, tp_text)
+    _check_primitive(t, tp_text)
     n_chars = len(t)
     if n_chars > 6500:
         warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
