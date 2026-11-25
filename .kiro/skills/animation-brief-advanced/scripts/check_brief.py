@@ -483,7 +483,8 @@ def _check_style_mix(t, tp_text, light, limit):
         say("风格参照那句用了“又有/只是……一点/带一点……感”这类叠风格的句式，只写一个主风格")
     body = _neg_free(t.replace(limit, ""))
     m = re.search(PAINTERLY, body)
-    if m and re.search(r"写实|真实渲染", t + (tp_text or "")):
+    photoreal = _is_photoreal(t, tp_text)
+    if m and photoreal:
         say(f"写实渲染的片子里出现了“{m.group(0)}”，渲染风格只能二选一")
     if re.search(r"定格(?:动画|短片|片|跳帧)", body) and "运动模糊" in t:
         say("写了定格（动画/短片），又要运动模糊和流畅动作，两种节奏只能选一种")
@@ -491,6 +492,8 @@ def _check_style_mix(t, tp_text, light, limit):
     tone = tone_m.group(1) if tone_m else ""
     anchor_txt = "".join(anchors)
     bad_pairs = {"奇幻史诗": r"纪录片", "温馨童话": r"纪录片", "自然纪录": r"童话|绘本|动画|奇幻", "东方意境": r"山水画|水墨|霓虹", "产品广告": r"纪录片|灾难片", "夜景都市": r"黑色电影"}
+    if tone == "东方意境" and not photoreal:
+        bad_pairs["东方意境"] = r"霓虹"
     if tone in bad_pairs and re.search(bad_pairs[tone], anchor_txt):
         say(f"视觉基调是{tone}，风格参照却是“{anchors[0][:16]}…”，两者的运镜、调色或景深要求互相打架")
     if "Punchy" in light:
@@ -515,8 +518,8 @@ def _check_term_list(t, tp_text):
 def _check_organisms(t, tp_text):
     """动植物：比例要先用侧面剪影自查；拍不出来的高频振翅要写成虚影或放慢。只提醒。"""
     cat = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp_text or "")
-    if cat and cat.group(1).startswith("角色动画/动物") and not re.search(r"剪影[^。]{0,20}(比例|对一下|对照)|侧面[^。]{0,10}剪影", t):
-        warn("动物做主体时，写一句“开工前先渲一张主体的侧面剪影，和真实比例对一下”")
+    if cat and cat.group(1).startswith("角色动画/动物") and not re.search(r"灰模|剪影[^。]{0,20}(比例|对一下|对照)|侧面[^。]{0,10}剪影", t):
+        warn("动物做主体时，写一句灰模自查（侧面剪影加四分之三角度两张灰模，对比例）")
     for m in re.finditer(r"(?:振翅|扇翅|翅膀[^。]{0,12}?扇)[^。]{0,20}?每秒[^。]{0,6}?(\d+)", t):
         if int(m.group(1)) >= 15:
             sent = t[max(0, m.start() - 80): m.end() + 120]
@@ -536,6 +539,53 @@ def _check_primitive(t, tp_text):
     m = re.search(rf"(?:用|拿|以|靠)[^。，；]{{0,8}}(?:{PRIMS})[^。；]{{0,12}}?(?:做|当|拼|堆|凑|搭|组成|代替)", body)
     if m:
         err(f"正文里正面写了用基本几何体做东西：“{m.group(0)}”，改写成真正的起形方法（见 references/anti-primitive.md）")
+
+def _tag(tp_text, group):
+    m = re.search(rf"\|\s*{group}\s*\|\s*([^|]+?)\s*\|", tp_text or "")
+    return m.group(1) if m else ""
+
+
+def _is_photoreal(t, tp_text):
+    """按考点说明的标签判断是不是写实渲染：视觉造型是“写实”，渲染风格是“真实渲染”。没有标签时看主文件有没有“照片级写实”。"""
+    shape, render = _tag(tp_text, "视觉造型"), _tag(tp_text, "渲染风格")
+    if shape or render:
+        return shape.strip() == "写实" and ("真实渲染" in render or not render)
+    return "照片级写实" in t
+
+
+DYN_CLASSES = {
+    "A": r"冲出|爬|跑|游动|飞出|飞过|往前推|漂|驶|横穿|滑下|钻|下坠",
+    "B": r"形变|变形|形态键|展开|鼓起|缩回|卷曲|生长|化成|羽化|下凹|膨胀|弯下",
+    "C": r"齿轮|联动|铰链|传动|开合|擒纵|转盘|轮系|伸缩",
+    "D": r"余摆|二级摆动|滞后|慢半拍|跟着晃|轻颤|颤一下|弹回",
+    "E": r"液体|水冠|水珠|浪|涟漪|水流|洪流|溅|滴水|水帘|雨滴",
+    "F": r"烟|雾|蒸汽|水汽|沙尘|热气",
+    "G": r"粒子|火星|落叶|雪花|浮尘|灰尘|沙粒|种子|冰晶|孢子",
+    "H": r"布料|帆|绳|柔体|缆|电线|柳条|染布|床单|旗",
+    "I": r"刚体|碰撞|撞上|砸|滚|弹跳|碎块|碎成",
+    "J": r"群集|一排接一排|一层接一层|一座接一座|依次|鸟群|鱼群|鸽群|蚂蚁|Boids|一串串",
+    "K": r"闪电|扫过|光柱|亮起|熄灭|暗下去|光斑|日出|变暗",
+    "L": r"打湿|变湿|变干|发光|结冰|褪色|变深|变透明|亮痕|化开",
+    "M": r"被[^。]{0,6}(?:惊|吹|砸|冲|震|压|带|卷)|扬起|压弯|惊起|震落",
+    "N": r"远处[^。]{0,16}(?:动|飘|走|晃|闪|推|翻|点头)|云[^。]{0,4}(?:走|移)",
+}
+ANIMALS = r"甲虫|步甲|蚂蚁|蜻蜓|蝴蝶|蜜蜂|蜗牛|螃蟹|寄居蟹|海鸥|鸽子|鸽群|鸟|鱼|猫|狗|鹿|海龟|青蛙|鲲"
+
+
+def _check_dyn_cover(t, tp_text):
+    """进阶版 1.4：动态形式按 A–N 至少 10 类、四层齐全。按关键词估算，只提醒。"""
+    if adv_version(tp_text) < (1, 4):
+        return
+    body = _neg_free(section(t, "## 动作和镜头", "## 底线和限制"))
+    got = {k for k, pat in DYN_CLASSES.items() if re.search(pat, body)}
+    layers = {"主动作": "ABC", "次级": "DGE", "环境响应": "M", "氛围": "NK"}
+    miss = [n for n, ks in layers.items() if not any(k in got for k in ks)]
+    if len(got) < 10 or miss:
+        warn(f"动态形式大约覆盖了 {len(got)} 类（{''.join(sorted(got))}），要至少 10 类"
+             + (f"，缺少{'、'.join(miss)}层" if miss else "") + "（分类见 references/richness-dynamics.md）")
+    scene = section(t, "## 场景和主体", "## 动作和镜头")
+    if re.search(ANIMALS, scene) and not re.search(r"体长|翼展|身长|\d+\s*条腿|\d+\s*节|\d+\s*对", scene):
+        warn("场景里有动物，但没写结构拆解（体长比例、腿和节的数量等，见 references/organisms.md）")
 
 
 def _clauses(text):
@@ -608,9 +658,10 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_term_list(t, tp_text)
     _check_organisms(t, tp_text)
     _check_primitive(t, tp_text)
+    _check_dyn_cover(t, tp_text)
     n_chars = len(t)
     if n_chars > 6500:
-        warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
+        warn(f"主文件约 {n_chars} 字，偏长，进阶版一般控制在 6,000 字以内")
 
     # 视觉基调
     tones = load_tones(folder)

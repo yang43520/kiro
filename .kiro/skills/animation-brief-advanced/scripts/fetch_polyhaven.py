@@ -9,6 +9,8 @@
 选项：--dest <目录>，默认 ./assets
 
 Poly Haven 要求请求带 User-Agent，本脚本已设置。所有素材均为 CC0，可免费商用。
+
+注意：模型和 HDRI 只用于内部效果图。交给制作方的主文件只允许图像贴图，不能写进这里下载的模型和环境贴图。
 """
 import json
 import os
