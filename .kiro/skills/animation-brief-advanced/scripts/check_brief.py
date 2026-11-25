@@ -587,6 +587,22 @@ def _check_dyn_cover(t, tp_text):
     if re.search(ANIMALS, scene) and not re.search(r"体长|翼展|身长|\d+\s*条腿|\d+\s*节|\d+\s*对", scene):
         warn("场景里有动物，但没写结构拆解（体长比例、腿和节的数量等，见 references/organisms.md）")
 
+CLIP_METHOD = r"碰撞|障碍物|厚度|碰撞距离|实体化|边距|子步|品质步数|效果器"
+
+
+def _check_clipping(t, tp_text):
+    """防穿模（1.5 起，所有进阶版任务都查）：接触清单、重模拟的碰撞做法、走路爬行的反向动力学和贴地。"""
+    sents = re.split(r"[。\n]", t)
+    if not any(re.search(r"线框|X 射线|逐帧", x) and len(re.findall(r"第\s*[\d.]+\s*秒", x)) >= 3 for x in sents):
+        err("缺少接触清单（一句话列 3–5 个“第 S 秒 + 谁和谁”的关键接触，写明用线框和 X 射线视图逐帧看）")
+    eff = section(t, "## 关键效果和做法", "## 灯光和画面")
+    for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
+        if any(re.search(p, it) for p in HEAVY_SIMS.values()) and not re.search(CLIP_METHOD, it):
+            err(f"关键效果“{it.split('：')[0][:14]}…”用了重模拟，但没写碰撞体或障碍物的做法（厚度、碰撞距离、步数等）")
+    if re.search(r"步态|助跑|爬行|行走|走路|步足|横着走|迈步", t):
+        if "反向动力学" not in t or not re.search(r"地板约束|缩裹约束|锁住|贴住|贴地|不滑|不打滑", t):
+            err("有走路或爬行的动作，要写反向动力学和贴地、锁脚的做法（地板约束或缩裹约束、支撑脚锁住）")
+
 
 def _clauses(text):
     body = text.split("\n", 3)[-1]
@@ -659,9 +675,10 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_organisms(t, tp_text)
     _check_primitive(t, tp_text)
     _check_dyn_cover(t, tp_text)
+    _check_clipping(t, tp_text)
     n_chars = len(t)
-    if n_chars > 6500:
-        warn(f"主文件约 {n_chars} 字，偏长，进阶版一般控制在 6,000 字以内")
+    if n_chars > 7000:
+        warn(f"主文件约 {n_chars} 字，偏长，进阶版一般控制在 6,500 字以内")
 
     # 视觉基调
     tones = load_tones(folder)
@@ -938,9 +955,9 @@ def check_rubric(folder, rng, cat=None, v34=False, adv=False):
         if not isinstance(crit, list) or not crit:
             err("criteria 为空")
             crit = []
-        hi = 26 if adv else (25 if v34 else 22)
+        hi = 27 if adv else (25 if v34 else 22)
         if crit and not 12 <= len(crit) <= hi:
-            warn(f"评价项有 {len(crit)} 项，一般为 {'20–26' if adv else ('19–25' if v34 else '15–22')} 项")
+            warn(f"评价项有 {len(crit)} 项，一般为 {'20–27' if adv else ('19–25' if v34 else '15–22')} 项")
         total, n_crit, dur_ok = 0, 0, False
         for i, c in enumerate(crit, 1):
             tag = f"第 {i} 项"
@@ -1009,6 +1026,12 @@ def check_rubric(folder, rng, cat=None, v34=False, adv=False):
         elif mq.get("critical") is not True:
             err("“材质与制作底线”应为关键项")
         if adv:
+            if True:
+                c = by_dim.get("接触与防穿模")
+                if not c:
+                    err("缺少关键项“接触与防穿模”（进阶版 1.5 起必填）")
+                elif c.get("critical") is not True:
+                    err("“接触与防穿模”应为关键项")
             for d in ADV_DIMS:
                 c = by_dim.get(d)
                 if not c:
