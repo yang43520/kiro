@@ -19,6 +19,7 @@
 退出码：有 ERROR 时为 1，否则为 0。
 """
 import os
+import glob
 import re
 import sys
 
@@ -413,6 +414,42 @@ def _items(text):
     return [x for x in re.split(r"[、；;，,]", text.strip().rstrip("。")) if x.strip()]
 
 
+def _clauses(text):
+    body = text.split("\n", 3)[-1]
+    out = set()
+    for c in re.split(r"[。；！？\n]", body):
+        c = re.sub(r"\s+", "", c)
+        if len(c) >= 18 and not c.startswith(("#", "可借助", "视觉基调")):
+            out.add(c)
+    return out
+
+
+def _check_reuse(t, folder):
+    """同一仓库里其他进阶版任务的正文：整句重复太多时提醒。"""
+    root = os.path.dirname(os.path.abspath(folder))
+    mine = _clauses(t)
+    me = os.path.abspath(folder)
+    hits = []
+    for tp in glob.glob(os.path.join(root, "*", "*考点说明.md")):
+        d = os.path.dirname(os.path.abspath(tp))
+        if d == me:
+            continue
+        try:
+            if not is_adv(open(tp, encoding="utf-8-sig").read()):
+                continue
+            mains = [f for f in glob.glob(os.path.join(d, "*.md")) if "考点说明" not in f]
+            if not mains:
+                continue
+            other = _clauses(open(mains[0], encoding="utf-8-sig").read())
+        except OSError:
+            continue
+        same = mine & other
+        if len(same) >= 4:
+            hits.append((len(same), os.path.basename(d), sorted(same, key=len)[-1]))
+    for n, name, ex in sorted(hits, reverse=True)[:3]:
+        warn(f"和“{name}”有 {n} 句一模一样（例如“{ex[:24]}…”），换成这条片子自己的说法")
+
+
 def check_adv(t, tp_text, T, segs, folder):
     """进阶版 1.1：电影级要求和可执行参数都用人能写出来的口语写法，专业术语照样要写。"""
     scene = section(t, "## 场景和主体", "## 动作和镜头")
@@ -437,9 +474,13 @@ def check_adv(t, tp_text, T, segs, folder):
         warn("有零点几秒的间隔，人一般写“紧接着”“一个接一个”，或取到 0.5 秒")
     for phrase in ("全片一直在动的有", "近看要看得到的小细节有", "这三个画面最该好看", "用的是三分法",
                    "尺寸和时间都是参考，可以微调，但先后顺序不能动", "所有东西都在 Blender 里自己建，别用立方体、圆柱、球、圆锥加噪波凑主体",
-                   "别莫名其妙地卡一下", "画面要照片级写实，像", "一句话讲内容", "建模和材质的做法"):
+                   "别莫名其妙地卡一下", "画面要照片级写实，像", "一句话讲内容", "建模和材质的做法",
+                   "焦点一直落在离镜头最近", "先用低分辨率渲出来", "最好看的画面", "别加镜头光晕和星芒",
+                   "加一点暗角和极轻的胶片颗粒", "也别像一套崭新的布景", "辉光阈值设得很高",
+                   "这些决定了", "高光留住层次，不爆白", "整件事是这样的"):
         if phrase in t:
             warn(f"用了模板里的套话“{phrase}”，换成这条片子自己的说法")
+    _check_reuse(t, folder)
     n_chars = len(t)
     if n_chars > 6500:
         warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
@@ -560,6 +601,14 @@ def check_adv(t, tp_text, T, segs, folder):
         err("“场景和主体”缺少一句列出近看要看得到的小细节（例如“凑近了要看得到：……”）")
     elif len(_items(m.group(1))) < 6:
         err("近看要看得到的小细节至少写 6 样")
+    elif len(_items(m.group(1))) < 8:
+        warn(f"近看的小细节只写了 {len(_items(m.group(1)))} 样，建议 8 样以上")
+    for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
+        head, _, body = it.partition("：")
+        if re.search(r"材质|质感", head):
+            n = len(re.findall(REAL_NUM, body))
+            if n < 3:
+                warn(f"质感那一条只有 {n} 个带单位的物理特征，建议至少 3 种主材质各写一个（厚度、颗粒、磨损宽度、折射率等）")
 
 
 def check_cinematic(t, T, segs):
