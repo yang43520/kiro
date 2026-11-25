@@ -462,6 +462,45 @@ def _check_v12(t, tp_text, act, eff, light):
             if "高光" not in body:
                 say("质感那一条没写高光：每种材料的高光是宽是窄、是锐是糊")
 
+GENRE = r"(?:纪录片|广告|电影|大片|短片|冒险片|文艺片|灾难片|山水画|画|绘本|摄影|动画)"
+PAINTERLY = r"水墨|山水画|三渲二|平涂|描边|赛璐璐|油画感|水彩感|版画感"
+
+
+def _neg_free(text):
+    """去掉“别/不要/不能……”这类否定句，剩下的才算正面要求。"""
+    return "。".join(c for c in re.split(r"[。；]", text) if not re.search(r"别|不要|不能|不做|不用|不是|禁忌|不准", c))
+
+
+def _check_style_mix(t, tp_text, light, limit):
+    """进阶版 1.3：一个主风格，最多借一种镜头或光的手法；冲突的风格不能叠在一起。1.3 以下只提醒。"""
+    say = err if adv_version(tp_text) >= (1, 3) else warn
+    intro = re.sub(r"^.*?没有声音。", "", t.split("## 场景和主体")[0], count=1, flags=re.S)
+    anchors = re.findall(rf"像[^。：]{{0,40}}?{GENRE}", intro)
+    if len(anchors) > 1:
+        say(f"开头有 {len(anchors)} 个风格参照（{'；'.join(a[:16] for a in anchors)}），只留一个主风格")
+    first = re.split(r"[：:]", intro, 1)[0]
+    if re.search(r"又有|又像|同时又|只是[^。]{0,20}(一点|换成|改成|再)|带一点[^。]{0,10}(感|气魄|味|风)|混合|融合", first):
+        say("风格参照那句用了“又有/只是……一点/带一点……感”这类叠风格的句式，只写一个主风格")
+    body = _neg_free(t.replace(limit, ""))
+    m = re.search(PAINTERLY, body)
+    if m and re.search(r"写实|真实渲染", t + (tp_text or "")):
+        say(f"写实渲染的片子里出现了“{m.group(0)}”，渲染风格只能二选一")
+    if re.search(r"定格(?:动画|短片|片|跳帧)", body) and "运动模糊" in t:
+        say("写了定格（动画/短片），又要运动模糊和流畅动作，两种节奏只能选一种")
+    tone_m = re.search(r"\*\*视觉基调\*\*[：:]\s*(\S+)", tp_text or "")
+    tone = tone_m.group(1) if tone_m else ""
+    anchor_txt = "".join(anchors)
+    bad_pairs = {"奇幻史诗": r"纪录片", "温馨童话": r"纪录片", "自然纪录": r"童话|绘本|动画|奇幻", "东方意境": r"山水画|水墨|霓虹", "产品广告": r"纪录片|灾难片", "夜景都市": r"黑色电影"}
+    if tone in bad_pairs and re.search(bad_pairs[tone], anchor_txt):
+        say(f"视觉基调是{tone}，风格参照却是“{anchors[0][:16]}…”，两者的运镜、调色或景深要求互相打架")
+    if "Punchy" in light:
+        hot = len(re.findall(r"霓虹|荧光|原色|糖果|高饱和", body))
+        if hot >= 3 or re.search(r"\| 色彩基调 \| 高饱和明快", tp_text or ""):
+            say("题材本身颜色就很鲜（霓虹、原色、糖果等），再选 Punchy 会溢色，改用 Base Contrast 或 Medium High Contrast")
+    tag = re.search(r"\| 色彩基调 \| ([^|]+)\|", tp_text or "")
+    if tag and "黑金奢华" in tag.group(1) and tone != "产品广告":
+        say("色彩基调标签“黑金奢华”是产品广告用的，和视觉基调对不上")
+
 
 def _clauses(text):
     body = text.split("\n", 3)[-1]
@@ -642,6 +681,7 @@ def check_adv(t, tp_text, T, segs, folder):
             err("片子里有体积，渲染那一句要写体积步长")
 
     _check_v12(t, tp_text, act, eff, light)
+    _check_style_mix(t, tp_text, light, limit)
 
     # 场景和主体：三级细节、近看的小细节
     for k in ("大形", "中形", "小形"):
