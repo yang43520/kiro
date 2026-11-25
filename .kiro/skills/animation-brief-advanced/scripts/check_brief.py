@@ -501,6 +501,17 @@ def _check_style_mix(t, tp_text, light, limit):
     if tag and "黑金奢华" in tag.group(1) and tone != "产品广告":
         say("色彩基调标签“黑金奢华”是产品广告用的，和视觉基调对不上")
 
+def _check_term_list(t, tp_text):
+    """制作底线清单里列出的专业术语和近景贴图精度，必须真的写进主文件。"""
+    m = re.search(r"\*\*本片要用的专业术语\*\*[：:](.+)", tp_text or "")
+    if m:
+        terms = [x.strip(" 。") for x in re.split(r"[、，,]", re.sub(r"（[^）]*）|\([^)]*\)", "", m.group(1))) if x.strip(" 。")]
+        miss = [x for x in terms if x not in t]
+        if miss:
+            err(f"制作底线清单里的专业术语有 {len(miss)} 个没写进主文件：{'、'.join(miss)}（补进主文件，或从清单里删掉片子确实不用的）")
+    if not re.search(r"近景贴图精度|\d+\s*K\s*贴图|贴图[^。]{0,6}\d+\s*K", t):
+        err("主文件没写近景贴图精度（例如“近景贴图精度 4K”）")
+
 
 def _clauses(text):
     body = text.split("\n", 3)[-1]
@@ -567,8 +578,9 @@ def check_adv(t, tp_text, T, segs, folder):
                    "加一点暗角和极轻的胶片颗粒", "也别像一套崭新的布景", "辉光阈值设得很高",
                    "这些决定了", "高光留住层次，不爆白", "整件事是这样的"):
         if phrase in t:
-            warn(f"用了模板里的套话“{phrase}”，换成这条片子自己的说法")
+            warn(f"用了模板里的套话“{phrase}”：意思和里面的专业术语都保留，只把句式换成这条片子自己的说法")
     _check_reuse(t, folder)
+    _check_term_list(t, tp_text)
     n_chars = len(t)
     if n_chars > 6500:
         warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
