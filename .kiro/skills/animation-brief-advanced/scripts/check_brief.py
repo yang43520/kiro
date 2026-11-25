@@ -512,6 +512,17 @@ def _check_term_list(t, tp_text):
     if not re.search(r"近景贴图精度|\d+\s*K\s*贴图|贴图[^。]{0,6}\d+\s*K", t):
         err("主文件没写近景贴图精度（例如“近景贴图精度 4K”）")
 
+def _check_organisms(t, tp_text):
+    """动植物：比例要先用侧面剪影自查；拍不出来的高频振翅要写成虚影或放慢。只提醒。"""
+    cat = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp_text or "")
+    if cat and cat.group(1).startswith("角色动画/动物") and not re.search(r"剪影[^。]{0,20}(比例|对一下|对照)|侧面[^。]{0,10}剪影", t):
+        warn("动物做主体时，写一句“开工前先渲一张主体的侧面剪影，和真实比例对一下”")
+    for m in re.finditer(r"(?:振翅|扇翅|翅膀[^。]{0,12}?扇)[^。]{0,20}?每秒[^。]{0,6}?(\d+)", t):
+        if int(m.group(1)) >= 15:
+            sent = t[max(0, m.start() - 80): m.end() + 120]
+            if not re.search(r"虚影|模糊|高速摄影|放慢", sent):
+                warn(f"写了每秒 {m.group(1)} 次的振翅，30 帧/秒拍不出来，写成运动模糊的虚影或按高速摄影放慢")
+
 
 def _clauses(text):
     body = text.split("\n", 3)[-1]
@@ -581,6 +592,7 @@ def check_adv(t, tp_text, T, segs, folder):
             warn(f"用了模板里的套话“{phrase}”：意思和里面的专业术语都保留，只把句式换成这条片子自己的说法")
     _check_reuse(t, folder)
     _check_term_list(t, tp_text)
+    _check_organisms(t, tp_text)
     n_chars = len(t)
     if n_chars > 6500:
         warn(f"主文件约 {n_chars} 字，偏长，进阶版 1.1 一般控制在 6,000 字以内")
