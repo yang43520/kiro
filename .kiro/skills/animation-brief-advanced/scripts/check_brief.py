@@ -414,6 +414,55 @@ def _items(text):
     return [x for x in re.split(r"[、；;，,]", text.strip().rstrip("。")) if x.strip()]
 
 
+PARTICLE_NOUN = r"粒子|微尘|浮尘|尘|雨滴|雨丝|雪花|雪|火星|水点|水珠|种子|花粉|萤火虫|灰|气泡|水沫|飞絮|糖粉|冰晶|火山弹"
+SIZE_UNIT = r"\d[\d.]*\s*(?:–\s*\d[\d.]*\s*)?(?:毫米|厘米|微米)"
+
+
+def adv_version(tp_text):
+    m = re.search(r"\*\*规范版本\*\*[：:]\s*进阶版\s*(\d+)\.(\d+)", tp_text or "")
+    return (int(m.group(1)), int(m.group(2))) if m else (1, 0)
+
+
+def _check_v12(t, tp_text, act, eff, light):
+    """进阶版 1.2：色彩、色调、粒子、打光、构图、材质和风格都要写到能落地。1.1 的任务只提醒。"""
+    strict = adv_version(tp_text) >= (1, 2)
+    say = err if strict else warn
+    intro = t.split("## 场景和主体")[0]
+    if not re.search(r"像[^。]{0,30}(片|纪录片|广告|电影|摄影|大片|航拍|棚拍|画|绘本)", intro):
+        say("开头没有一句风格参照（用片种说，例如“像自然纪录片里的航拍”“像高端腕表广告的棚拍”）")
+    soft = re.findall(r"柔光|硬光|软光|影子边|阴影边|边缘[很]?[软硬虚利]|光源[^。]{0,10}[大小]|硬朗|柔和的影|锐利的影|影子[^。]{0,6}[软硬虚]", light)
+    if len(soft) < 2:
+        say("打光没写软硬：每层光要写光源大小或影子边是软是硬")
+    if len(re.findall(r"(?:主色|辅色|点缀色)[^。；]{0,40}?(?:[六五四三两二一]成|一半|大半|\d+\s*%|一小块|一点点)", light)) < 2:
+        say("色彩没写面积比例：主色、辅色、点缀色大概各占多少（例如六成、三成、一成）")
+    if "饱和" not in light:
+        say("色彩没写饱和度怎么控制（例如只有点缀色允许高饱和）")
+    if "档" not in light:
+        say("色调没写主体和背景的明暗关系（例如“背景比主体暗两档”）")
+    if re.search(r"粒子系统|粒子", t):
+        sized = re.search(rf"(?:{PARTICLE_NOUN})[^。；]{{0,30}}{SIZE_UNIT}|{SIZE_UNIT}[^。；]{{0,8}}(?:{PARTICLE_NOUN})", t)
+        if not sized:
+            say("粒子没写大小（带毫米、厘米这类单位）")
+        layered = re.search(r"前景[^。]{0,40}(少|稀|大|虚|糊)[^。]{0,60}(远|后)[^。]{0,40}(密|小|细)", t)
+        if not layered:
+            say("粒子没按前后分层（前景的少而大、虚焦，远处的密而小）")
+    blocks = [b for b in re.split(r"^(?=第\s*[\d.]+\s*–\s*[\d.]+\s*秒（)", act, flags=re.M) if re.match(r"第\s*[\d.]+", b)]
+    for term in ("对角线", "三分法"):
+        n = sum(1 for b in blocks if term in b)
+        if n > 1:
+            say(f"“{term}”用在了 {n} 段里，同一条片子里最多用一次，换成别的构图手法")
+    sized_segs = sum(1 for b in blocks if re.search(r"占[了满]?[^。]{0,6}(画面|画幅)|画面的?(一半|大半|小半|[二三四五六]分之[一二]|一小块|一角)", b))
+    if sized_segs < 2:
+        say(f"只有 {sized_segs} 段写了主体在画面里占多大，至少 2 段")
+    for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
+        head, _, body = it.partition("：")
+        if re.search(r"材质|质感", head):
+            if len(re.findall(REAL_NUM, body)) < 3:
+                say("质感那一条至少写 3 种主材质各自可测的物理特征（带单位）")
+            if "高光" not in body:
+                say("质感那一条没写高光：每种材料的高光是宽是窄、是锐是糊")
+
+
 def _clauses(text):
     body = text.split("\n", 3)[-1]
     out = set()
@@ -466,7 +515,7 @@ def check_adv(t, tp_text, T, segs, folder):
                        (r"坐标[：:]", "坐标系说明")):
         mm = re.search(pat, t)
         if mm:
-            err(f"主文件里出现了{label}：“{mm.group(0)}”，进阶版 1.1 起改成口语化的说法")
+            err(f"主文件里出现了{label}：“{mm.group(0)}”，进阶版起改成口语化的说法")
     fine = sorted(set(re.findall(r"第\s*(\d+\.(?:[1-46-9]|\d\d+))\s*秒", t)))
     if fine:
         warn(f"时间写得过细：第 {'、'.join(fine)} 秒，一般取到 0.5 秒")
@@ -592,6 +641,8 @@ def check_adv(t, tp_text, T, segs, folder):
         if re.search(r"体积", t) and "体积步长" not in r:
             err("片子里有体积，渲染那一句要写体积步长")
 
+    _check_v12(t, tp_text, act, eff, light)
+
     # 场景和主体：三级细节、近看的小细节
     for k in ("大形", "中形", "小形"):
         if k not in scene:
@@ -602,13 +653,7 @@ def check_adv(t, tp_text, T, segs, folder):
     elif len(_items(m.group(1))) < 6:
         err("近看要看得到的小细节至少写 6 样")
     elif len(_items(m.group(1))) < 8:
-        warn(f"近看的小细节只写了 {len(_items(m.group(1)))} 样，建议 8 样以上")
-    for it in re.findall(r"^\d+\.\s*(.+)$", eff, re.M):
-        head, _, body = it.partition("：")
-        if re.search(r"材质|质感", head):
-            n = len(re.findall(REAL_NUM, body))
-            if n < 3:
-                warn(f"质感那一条只有 {n} 个带单位的物理特征，建议至少 3 种主材质各写一个（厚度、颗粒、磨损宽度、折射率等）")
+        (err if adv_version(tp_text) >= (1, 2) else warn)(f"近看的小细节只写了 {len(_items(m.group(1)))} 样，至少 8 样")
 
 
 def check_cinematic(t, T, segs):
