@@ -468,7 +468,7 @@ PAINTERLY = r"水墨|山水画|三渲二|平涂|描边|赛璐璐|油画感|水�
 
 def _neg_free(text):
     """去掉“别/不要/不能……”这类否定句，剩下的才算正面要求。"""
-    return "。".join(c for c in re.split(r"[。；]", text) if not re.search(r"别|不要|不能|不做|不用|不是|禁忌|不准", c))
+    return "。".join(c for c in re.split(r"[。；]", text) if not re.search(r"别|不[要能做用是准拿靠以许]|禁忌|禁止|避免", c))
 
 
 def _check_style_mix(t, tp_text, light, limit):
