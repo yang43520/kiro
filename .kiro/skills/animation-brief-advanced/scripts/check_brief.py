@@ -535,6 +535,9 @@ def _check_primitive(t, tp_text):
         return
     if not re.search(r"灰模|白模", t):
         err("缺少灰模自查（例如“开工前先渲两张灰模，一张侧面剪影、一张四分之三角度，看比例和有没有几何体拼出来的地方”）")
+    cat = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp_text or "")
+    if cat and cat.group(1).startswith("图形动画/几何图形"):
+        return
     body = _neg_free(t)
     m = re.search(rf"(?:用|拿|以|靠)[^。，；]{{0,8}}(?:{PRIMS})[^。；]{{0,12}}?(?:做|当|拼|堆|凑|搭|组成|代替)", body)
     if m:
