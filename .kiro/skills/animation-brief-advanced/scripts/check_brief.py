@@ -676,6 +676,8 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_primitive(t, tp_text)
     _check_dyn_cover(t, tp_text)
     _check_clipping(t, tp_text)
+    if re.search(r"(?<!像小)瀑布", re.sub(r"像[^。，]{0,4}瀑布", "", t)) and not (re.search(r"水舌|唇|翻出", t) and re.search(r"白沫|泡沫|水沫", t)):
+        warn("写了瀑布，但没分段写清崖口的水舌、往下碎开的白水和落点的白沫（见 references/anti-primitive.md 第五节）")
     n_chars = len(t)
     if n_chars > 7000:
         warn(f"主文件约 {n_chars} 字，偏长，进阶版一般控制在 6,500 字以内")
