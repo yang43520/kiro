@@ -730,6 +730,54 @@ def _check_animals(t, tp_text, folder):
         err("动物（1.8）：rubric“动物形体与动作”的 0 分锚点要写到“看起来像玩具或游戏模型”")
 
 
+WHEELED = r"轿车|汽车|小车|公交|巴士|卡车|货车|SUV|跑车|摩托|电车|火车|列车|车厢"
+
+
+def _check_vehicles(t, tp_text, folder):
+    """进阶版 1.9：载具动画的主体，按 references/vehicles.md 写到比例、表面、内部结构、材质分层、使用痕迹和运动。"""
+    if adv_version(tp_text) < (1, 9):
+        return
+    cat = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp_text or "")
+    cat = cat.group(1) if cat else ""
+    if not cat.startswith("载具动画"):
+        return
+    scene = section(t, "## 场景和主体", "## 动作和镜头")
+    if not re.search(r"(?:分缝|缝)[^。]{0,16}\d+(?:–\d+)?\s*(?:毫米|厘米)|\d+(?:–\d+)?\s*(?:毫米|厘米)[^。]{0,8}(?:的分缝|的缝|间隙)", t):
+        err("车辆（1.9）：没写分缝或间隙的宽度（带毫米或厘米，见 references/vehicles.md 第三节）")
+    if not re.search(r"清漆|闪片|底漆|色漆|涂层", t):
+        err("车辆（1.9）：没写漆面分层（底漆、色漆、清漆或金属闪片）")
+    marks = set(re.findall(r"泥点|泥带|泥|刹车粉|划痕|漆点|虫渍|水渍|掉漆|磨亮|油渍|积碳|焊痕|积灰|锈", t))
+    if len(marks) < 2:
+        err("车辆（1.9）：使用痕迹不到两处（泥、刹车粉、划痕、掉漆、磨亮、油渍等，按位置分布）")
+    wheeled = cat.startswith("载具动画/陆地载具") or len(re.findall(WHEELED, scene)) >= 3
+    if wheeled:
+        if not (re.search(r"车长|全长|车身长", scene) and re.search(r"轴距|转向架", t)):
+            err("车辆（1.9）：轮式车辆要写车长和轴距（或转向架中心距）")
+        if not re.search(r"(?:轮胎|车轮|轮辋)[^。]{0,20}(?:\d+\s*(?:厘米|寸|毫米)|R\d+)", t):
+            err("车辆（1.9）：没写轮胎或车轮的尺寸")
+        if not re.search(r"特征线|腰线|肩线", t):
+            err("车辆（1.9）：没写车身的特征线（肩线、腰线）")
+        if not re.search(r"反射碗|透镜|灯珠|灯腔", t):
+            err("车辆（1.9）：车灯没写内部结构（反射碗或透镜、灯珠、灯腔）")
+        if not re.search(r"轮辋|辐条|刹车盘|卡钳|胎面|轮缘", t):
+            err("车辆（1.9）：轮子没写内部结构（轮辋、辐条、刹车盘、卡钳、胎面花纹）")
+        if not re.search(r"不打滑|轮半径|半径|按行驶距离|Rigacar", t):
+            err("车辆（1.9）：没写车轮转速和车速的联动（不打滑，或用 Rigacar 按行驶距离转）")
+        if not re.search(r"侧倾|点头|点下|抬头|微抬|悬挂|转向架", t):
+            err("车辆（1.9）：没写车身姿态（加速抬头、刹车点头、转弯侧倾或悬挂）")
+    m = re.search(r"车标|品牌标|车牌号", _neg_free(t))
+    if m:
+        err(f"车辆（1.9）：正文正面写了“{m.group(0)}”，车辆不出现车标和可读车牌")
+    rp = os.path.join(folder, "rubric.json")
+    if os.path.exists(rp):
+        try:
+            dims = {c["dimension"]: c for c in json.loads(open(rp, encoding="utf-8").read())["criteria"]}
+            if "车辆造型与运动" not in dims or not dims["车辆造型与运动"].get("critical"):
+                err("车辆（1.9）：rubric 缺少关键项“车辆造型与运动”")
+        except Exception:
+            pass
+
+
 def check_adv(t, tp_text, T, segs, folder):
     """进阶版 1.1：电影级要求和可执行参数都用人能写出来的口语写法，专业术语照样要写。"""
     scene = section(t, "## 场景和主体", "## 动作和镜头")
@@ -766,6 +814,7 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_primitive(t, tp_text)
     _check_surface(t, tp_text)
     _check_animals(t, tp_text, folder)
+    _check_vehicles(t, tp_text, folder)
     _check_dyn_cover(t, tp_text)
     _check_clipping(t, tp_text)
     if re.search(r"(?<!像小)瀑布", re.sub(r"像[^。，]{0,4}瀑布", "", t)) and not (re.search(r"水舌|唇|翻出", t) and re.search(r"白沫|泡沫|水沫", t)):
