@@ -707,6 +707,7 @@ def _check_animals(t, tp_text, folder):
     if not re.search(r"Rigify|骨骼", body):
         err("动物：没写绑定（用哪套 Rigify 模板或骨骼链）")
     rp = os.path.join(folder, "rubric.json")
+    dims = {}
     if os.path.exists(rp):
         try:
             dims = {c["dimension"]: c for c in json.loads(open(rp, encoding="utf-8").read())["criteria"]}
@@ -714,6 +715,19 @@ def _check_animals(t, tp_text, folder):
                 err("动物：rubric 缺少关键项“动物形体与动作”")
         except Exception:
             pass
+    if adv_version(tp_text) < (1, 8):
+        return
+    if re.search(r"毛|羽", scene) and not re.search(r"曲线毛发|毛发系统|(?:羽|羽片|羽毛)[^。]{0,20}实例化|实例化[^。]{0,20}(?:羽|羽片|羽毛)", body):
+        err("动物（1.8）：毛和羽不能只靠贴图，写曲线毛发或用几何节点按羽区一片片实例化")
+    if not re.search(r"角膜|瞳孔|虹膜", body):
+        err("动物（1.8）：中景以上的动物要写眼睛结构（角膜和反光、虹膜、按物种的瞳孔形状）")
+    if re.search(r"腿|爪|蹄|趾|足", scene) and not (re.search(r"反向动力学", body) and re.search(r"锁住|锁脚|地板约束|缩裹约束|包住|扣住|贴住", body)):
+        err("动物（1.8）：有腿的动物要写反向动力学加地板约束或缩裹约束，支撑脚锁住、爪包住栖木")
+    if not re.search(r"不比[^。]{0,16}(?:鲜|艳)|按真实物种|按物种", body):
+        warn("动物（1.8）：写一句颜色按真实物种、不比环境更鲜")
+    an = dims.get("动物形体与动作", {}).get("score_anchors", {}).get("0", "")
+    if dims.get("动物形体与动作") and not re.search(r"玩具|游戏模型", an):
+        err("动物（1.8）：rubric“动物形体与动作”的 0 分锚点要写到“看起来像玩具或游戏模型”")
 
 
 def check_adv(t, tp_text, T, segs, folder):
