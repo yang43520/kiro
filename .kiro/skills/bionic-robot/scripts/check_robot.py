@@ -72,7 +72,7 @@ CARD_ITEMS = ["原型", "尺寸和比例", "外观路线", "主要材料", "驱�
 KNOWN = (r"Atlas|Optimus|Spot|Sophia|Ameca|ASIMO|Figure 0\d|Unitree|宇树|波士顿动力|擎天柱|阿特拉斯|"
          r"终结者|T-800|瓦力|WALL-E|超能陆战队|高达|新世纪福音战士|变形金刚|阿童木|哆啦A梦|机器猫|C-3PO|R2-D2|BB-8|钢铁侠|"
          r"Ex Machina|底特律|Detroit|西部世界|赛博坦")
-DRIVES = r"无刷电机|电机|减速器|推杆|丝杠|液压缸|人工肌肉|钢丝绳|同步带|连杆|舵机"
+DRIVES = r"发条|蒸汽活塞|气缸|凸轮|擒纵|无刷电机|电机|减速器|推杆|丝杠|液压缸|人工肌肉|钢丝绳|同步带|连杆|舵机"
 
 
 def _sec(t, a, b=None):
@@ -97,9 +97,9 @@ def robot_checks(path):
     mp = re.search(r"\*\*原型\*\*[：:]\s*(\S+)", tp)
     if not mp:
         err("考点说明缺少“**原型**：<物种>”")
-    ml = re.search(r"\*\*外观\*\*[：:]\s*(工业写实|消费电子白壳)", tp)
+    ml = re.search(r"\*\*外观\*\*[：:]\s*(工业写实|消费电子白壳|机械朋克)", tp)
     if not ml:
-        err("考点说明缺少“**外观**：工业写实”或“**外观**：消费电子白壳”")
+        err("考点说明缺少“**外观**：工业写实”“消费电子白壳”或“机械朋克”")
     cat = (re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp) or [None, ""])[1]
     if not cat.startswith("角色动画/仿生机器人/"):
         err("主类目应在“角色动画/仿生机器人/…”下（见 references/robot-taxonomy.md）")
@@ -162,6 +162,13 @@ def robot_checks(path):
     # 外观路线不混
     if ml and ml.group(1) == "消费电子白壳" and re.search(r"油管|液压管|裸露的线缆", pos):
         warn("消费电子白壳路线里出现了外露的油管或线缆，确认没有混进工业写实")
+
+    if ml and ml.group(1) == "机械朋克":
+        m2 = re.search(r"屏幕|霓虹|灯带|LED|塑料白壳|电子元件|无刷电机|锂电", pos)
+        if m2:
+            err(f"机械朋克路线里出现了“{m2.group(0)}”，这条路线只用发条、蒸汽、齿轮和连杆，不混进电子元件")
+        if not re.search(r"黄铜|紫铜|铸铁", t):
+            err("机械朋克路线要写黄铜、紫铜或铸铁这些主材料")
 
     # rubric
     rp = os.path.join(folder, "rubric.json")
