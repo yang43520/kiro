@@ -20,6 +20,7 @@
 """
 import os
 import glob
+import json
 import re
 import sys
 
@@ -573,6 +574,11 @@ DYN_CLASSES = {
     "N": r"远处[^。]{0,16}(?:动|飘|走|晃|闪|推|翻|点头)|云[^。]{0,4}(?:走|移)",
 }
 ANIMALS = r"甲虫|步甲|蚂蚁|蜻蜓|蝴蝶|蜜蜂|蜗牛|螃蟹|寄居蟹|海鸥|鸽子|鸽群|鸟|鱼|猫|狗|鹿|海龟|青蛙|鲲"
+NOT_ANIMAL = r"雀斑|鼠标|龟裂|龟背纹|蜂窝|蜂蜡|燕尾|鹰嘴|鸭舌|牛仔|羊毛|狗尾巴草|鱼尾纹|鱼鳞瓦|鱼鳞纹|鱼鳞状|鱼骨|鱼肚白|鱼线|鱼竿|鱼丸|鸟瞰|鸟巢蕨|鸟居|猫眼|猫爪纹|狗尾草|马赛克|马路|马头墙|蝴蝶结|蝶形|龙骨|龙脑香|龙头"
+
+
+def _fauna_text(text):
+    return re.sub(NOT_ANIMAL, "", text)
 
 
 def _check_dyn_cover(t, tp_text):
@@ -586,7 +592,7 @@ def _check_dyn_cover(t, tp_text):
     if len(got) < 10 or miss:
         warn(f"动态形式大约覆盖了 {len(got)} 类（{''.join(sorted(got))}），要至少 10 类"
              + (f"，缺少{'、'.join(miss)}层" if miss else "") + "（分类见 references/richness-dynamics.md）")
-    scene = section(t, "## 场景和主体", "## 动作和镜头")
+    scene = _fauna_text(section(t, "## 场景和主体", "## 动作和镜头"))
     if re.search(ANIMALS, scene) and not re.search(r"体长|翼展|身长|\d+\s*条腿|\d+\s*节|\d+\s*对", scene):
         warn("场景里有动物，但没写结构拆解（体长比例、腿和节的数量等，见 references/organisms.md）")
 
@@ -670,8 +676,44 @@ def _check_surface(t, tp_text):
         got = set(re.findall(WEATHER, t))
         if len(got) < 2:
             err("写实场景里有建筑，但按高度和朝向分布的风化不到两处（返潮、泥溅、流痕、青苔、锈痕、磨亮等，见 references/surface-detail.md 第四节）")
-    if len(re.findall(FAUNA, scene)) >= 3 and not re.search(r"(?:毛|羽|鳞|甲壳|皮|刻点|盾鳞|骨板)[^。]{0,30}?\d+\s*(?:厘米|毫米)", t):
+    if len(re.findall(FAUNA, _fauna_text(scene))) >= 3 and not re.search(r"(?:毛|羽|鳞|甲壳|皮|刻点|盾鳞|骨板)[^。]{0,30}?\d+\s*(?:厘米|毫米)", t):
         err("写实场景里有动物，但表皮没写到带单位的尺寸（毛长、羽片、鳞片、刻点或褶皱，见 references/surface-detail.md 第三节）")
+
+
+FAUNA_WIDE = r"鳄|鸟|鸽|鸦|鸭|鹅|鹰|雀|燕|鹤|鹭|鸥|鱼|鲑|鳐|鲸|蟹|虾|蚁|蝶|蛾|蜂|蜓|甲虫|蜗牛|蛙|蛇|蜥|龟|狐|狼|鹿|熊|猫|狗|猴|鼠|巨兽"
+
+
+def _check_animals(t, tp_text, folder):
+    """进阶版 1.7：写实场景里动物是主要元素时，按 references/animals.md 写到结构、表皮、动作数值和接触。"""
+    if adv_version(tp_text) < (1, 7) or not _is_photoreal(t, tp_text):
+        return
+    cat = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp_text or "")
+    if not cat or not cat.group(1).startswith("场景动画"):
+        return
+    scene = _fauna_text(section(t, "## 场景和主体", "## 动作和镜头"))
+    if len(re.findall(FAUNA_WIDE, scene)) < 3:
+        return
+    body = _fauna_text(t)
+    if not re.search(r"体长|翼展|身长|肩高|体高", scene):
+        err("动物：没写体长、翼展或肩高（按相对体长写比例，见 references/animals.md）")
+    if not re.search(r"\d+\s*(?:条腿|条附肢|节|根(?:初级|次级|飞羽|尾羽)|片翅|对)|[一二三四五六七八两]\s*(?:条腿|对)|\d+ 条", scene):
+        err("动物：结构拆解没写到数量（腿几条、每条几节、飞羽几根、鳍或翅几片）")
+    if not re.search(r"(?:毛|羽|鳞|甲壳|皮|刻点|盾鳞|骨板|鳍)[^。]{0,30}?\d+\s*(?:厘米|毫米)", body):
+        err("动物：表皮没写到带单位的尺寸")
+    if not re.search(r"沾|挂着|裹着|带着[^。]{0,6}(?:泥|水|沙|雪|灰|盐)|嵌[^。]{0,4}(?:沙|泥)", body):
+        err("动物：没写身上沾了什么环境（泥、水珠、沙、雪、灰、盐）")
+    if not re.search(r"每秒[^。]{0,12}\d|\d+\s*(?:次|下)\s*/\s*秒|每分钟[^。]{0,8}\d", body):
+        err("动物：动作没写真实数值（速度、每秒几步、几次扇翅或摆尾）")
+    if not re.search(r"Rigify|骨骼", body):
+        err("动物：没写绑定（用哪套 Rigify 模板或骨骼链）")
+    rp = os.path.join(folder, "rubric.json")
+    if os.path.exists(rp):
+        try:
+            dims = {c["dimension"]: c for c in json.loads(open(rp, encoding="utf-8").read())["criteria"]}
+            if "动物形体与动作" not in dims or not dims["动物形体与动作"].get("critical"):
+                err("动物：rubric 缺少关键项“动物形体与动作”")
+        except Exception:
+            pass
 
 
 def check_adv(t, tp_text, T, segs, folder):
@@ -709,6 +751,7 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_organisms(t, tp_text)
     _check_primitive(t, tp_text)
     _check_surface(t, tp_text)
+    _check_animals(t, tp_text, folder)
     _check_dyn_cover(t, tp_text)
     _check_clipping(t, tp_text)
     if re.search(r"(?<!像小)瀑布", re.sub(r"像[^。，]{0,4}瀑布", "", t)) and not (re.search(r"水舌|唇|翻出", t) and re.search(r"白沫|泡沫|水沫", t)):
