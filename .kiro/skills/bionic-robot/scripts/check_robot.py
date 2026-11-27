@@ -69,8 +69,8 @@ cb.load_taxonomy, cb.load_baseline, cb.load_tones = load_taxonomy, load_baseline
 err, warn = cb.err, cb.warn
 MAIN = {"path": None}
 CARD_ITEMS = ["原型", "尺寸和比例", "外观路线", "主要材料", "驱动方式", "自由度", "原创说明"]
-KNOWN = (r"Atlas|Optimus|Spot|Sophia|Ameca|ASIMO|Pepper|Digit|Figure 0\d|Unitree|宇树|波士顿动力|擎天柱|阿特拉斯|"
-         r"终结者|T-800|瓦力|WALL-E|伊娃|大白|高达|EVA|变形金刚|阿童木|哆啦A梦|机器猫|C-3PO|R2-D2|BB-8|钢铁侠|"
+KNOWN = (r"Atlas|Optimus|Spot|Sophia|Ameca|ASIMO|Figure 0\d|Unitree|宇树|波士顿动力|擎天柱|阿特拉斯|"
+         r"终结者|T-800|瓦力|WALL-E|超能陆战队|高达|新世纪福音战士|变形金刚|阿童木|哆啦A梦|机器猫|C-3PO|R2-D2|BB-8|钢铁侠|"
          r"Ex Machina|底特律|Detroit|西部世界|赛博坦")
 DRIVES = r"无刷电机|电机|减速器|推杆|丝杠|液压缸|人工肌肉|钢丝绳|同步带|连杆|舵机"
 
