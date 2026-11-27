@@ -643,6 +643,37 @@ def _check_reuse(t, folder):
         warn(f"和“{name}”有 {n} 句一模一样（例如“{ex[:24]}…”），换成这条片子自己的说法")
 
 
+TREES = r"树干|树皮|主干|胸径|老树|古树|老樱"
+BUILDS = r"砖墙|砖楼|灰泥|石墙|石垣|瓦片|木构|老楼|楼群|仓库|寺|塔楼|城堡|城墙|民居|骑楼|吊脚楼"
+WEATHER = r"返潮|泥溅|流痕|水痕|青苔|地衣|锈痕|锈迹|磨亮|磨凹|剥落|霉斑|盐霜|积灰|雨渍|水位线"
+FAUNA = ANIMALS + r"|鸭|鳐|鹰|熊|狐|狼|蟹|蛇|蜥|巨兽|鹤|鹭|蜂"
+
+
+def _check_surface(t, tp_text):
+    """进阶版 1.6：材质细节。写实任务里的树、建筑和动物，表面要写到能落地（见 references/surface-detail.md）。"""
+    if adv_version(tp_text) < (1, 6) or not _is_photoreal(t, tp_text):
+        return
+    cat = re.search(r"\*\*主类目\*\*[：:]\s*(\S+)", tp_text or "")
+    cat = cat.group(1) if cat else ""
+    if not cat.startswith("场景动画") or "玩具" in cat:
+        return
+    scene = section(t, "## 场景和主体", "## 动作和镜头")
+    sents = re.split(r"[。\n]", t)
+    if len(re.findall(TREES, scene)) >= 2:
+        if not re.search(r"根张|板根", t):
+            err("写实场景里有树，但没写根张或板根（树干贴地处怎么张开、怎么埋进土里，见 references/surface-detail.md 第二节）")
+        if not any("树皮" in s and re.search(r"\d+\s*(?:厘米|毫米)", s) for s in sents):
+            err("写了树，但树皮没写带单位的起伏（沟深、脊宽或鳞块大小，例如“沟深 2–4 厘米”）")
+        if not re.search(r"顺着树干|沿着?树干|三平面", t):
+            err("树皮没写贴图方向（顺着树干往上走，分叉和根张用三平面投影贴图）")
+    if re.search(BUILDS, scene):
+        got = set(re.findall(WEATHER, t))
+        if len(got) < 2:
+            err("写实场景里有建筑，但按高度和朝向分布的风化不到两处（返潮、泥溅、流痕、青苔、锈痕、磨亮等，见 references/surface-detail.md 第四节）")
+    if len(re.findall(FAUNA, scene)) >= 3 and not re.search(r"(?:毛|羽|鳞|甲壳|皮|刻点|盾鳞|骨板)[^。]{0,30}?\d+\s*(?:厘米|毫米)", t):
+        err("写实场景里有动物，但表皮没写到带单位的尺寸（毛长、羽片、鳞片、刻点或褶皱，见 references/surface-detail.md 第三节）")
+
+
 def check_adv(t, tp_text, T, segs, folder):
     """进阶版 1.1：电影级要求和可执行参数都用人能写出来的口语写法，专业术语照样要写。"""
     scene = section(t, "## 场景和主体", "## 动作和镜头")
@@ -677,6 +708,7 @@ def check_adv(t, tp_text, T, segs, folder):
     _check_term_list(t, tp_text)
     _check_organisms(t, tp_text)
     _check_primitive(t, tp_text)
+    _check_surface(t, tp_text)
     _check_dyn_cover(t, tp_text)
     _check_clipping(t, tp_text)
     if re.search(r"(?<!像小)瀑布", re.sub(r"像[^。，]{0,4}瀑布", "", t)) and not (re.search(r"水舌|唇|翻出", t) and re.search(r"白沫|泡沫|水沫", t)):
